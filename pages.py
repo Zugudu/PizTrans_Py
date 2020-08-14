@@ -7,9 +7,9 @@ main_page = '''
 	<head>
 	<meta charset=utf8>
 	<meta name=viewport width=device-width>
-	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<link rel="stylesheet" type="text/css" href="static/css/style.css" />
 	<link rel="stylesheet" type="text/css" media="(max-device-width:480px)" 
-	href="css/mob.css"/>
+	href="static/css/mob.css"/>
 	</head>
 	<body>
 	<center>
