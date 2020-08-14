@@ -2,6 +2,10 @@ import pages
 import sqlite3
 from bottle import route, run, static_file
 from os import listdir
+from urllib.parse import quote
+
+
+db = sqlite3.connect('db')
 
 
 def prepare_str(text, *args):
@@ -12,7 +16,6 @@ def prepare_str(text, *args):
 		text (String): Templates string
 		args (any): What will be added to text
 	"""
-	print(text.format(*args).replace('\n', '').replace('\t', ''))
 	return text.format(*args).replace('\n', '').replace('\t', '')
 
 
@@ -41,7 +44,7 @@ def load_hentai(file):
 
 @route('/')
 def index():
-	cursor = sqlite3.connect('db').cursor()
+	cursor = db.cursor()
 	content = '<div class=wrap>'
 	for row in cursor.execute('select id,name,dir from hentai;'):
 		content = concat(content, '<div class=block><a href=manga/',
@@ -53,9 +56,29 @@ def index():
 	return prepare_str(pages.main_page, content)
 
 
-@route('/manga/<name>')
-def manga(name='Syka'):
-	return prepare_str(pages.zzz_test, name, 'po', 'jo')
+@route('/manga/<id:int>')
+def manga(id):
+	cursor = db.cursor()
+	cursor.execute('select name,dir from hentai where id=?;', (id,))
+	res = cursor.fetchone()
+	content = concat('<div class=name>', res[0],
+						'</div><div><div class=block><a href=show/',
+						quote(res[1]), '><img class=image src="/hentai/',
+						res[1], '/', listdir('hentai/' + res[1])[0],
+						'"></a></div><div class=disc>')
+	genres = cursor.execute('select id_genres from hentai_genres'
+	' where id_hentai=?;', (id,)).fetchall()
+	for genre in genres:
+		cursor.execute('select id,name from genres where id=?;', (genre[0],))
+		genre_info = cursor.fetchone()
+		content = concat(content, '<a id=genre href=genres/',
+			genre_info[0], '>', genre_info[1], '</a> ')
+
+	content = concat(content, '</div></div><div><a href=/><img class=control '
+		'src=/static/ico/la.png></a> <a href=show/', quote(res[1]),
+		'><img class=control src=/static/ico/ra.png></a></div>')
+	cursor.close()
+	return prepare_str(pages.manga, content)
 
 
 if __name__ == '__main__':
