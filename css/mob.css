@@ -1,0 +1,76 @@
+@font-face
+{
+	font-family: Anime;
+	src: url(a.ttf);
+}
+div
+{
+	font: 110% Anime;
+}
+a
+{
+	font: 250% Anime;
+}
+.wrap
+{
+	width: 95%;
+	margin: 0 auto;
+	display: block;
+}
+.block
+{
+	display: inline-block;
+	margin: 0 5%;
+	vertical-align: top;
+	width: 40%;
+}
+.image
+{
+	display: block;
+	width: 100%;
+	height: auto;
+}
+.caption
+{
+	display: block;
+	text-align: center;
+	width: 40%;
+	margin: 5% 0;
+}
+.name
+{
+	font: bold 300% Anime;
+}
+.disc
+{
+	display: inline-block;
+	vertical-align: top;
+	width: 50%;
+	margin-left:10px;
+}
+#imgs
+{
+	width: 100%;
+	margin: 0 auto;
+}
+.home
+{
+	position: fixed;
+	top: 10px;
+	left: 10px;
+	float: left;
+}
+.control
+{
+	width:15%;
+	height: auto;
+}
+#genre
+{
+	display: inline-block;
+	text-decoration: none;
+	background-color: #a1a1a1;
+	color: white;
+	padding: 5px;
+	margin: 5px;
+}
