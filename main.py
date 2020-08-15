@@ -2,7 +2,6 @@ import pages
 import sqlite3
 from bottle import route, run, static_file
 from os import listdir
-from urllib.parse import quote
 
 
 db = sqlite3.connect('db')
@@ -63,7 +62,7 @@ def manga(id):
 	res = cursor.fetchone()
 	content = concat('<div class=name>', res[0],
 						'</div><div><div class=block><a href=/show/',
-						quote(res[1]), '><img class=image src="/hentai/',
+						id, '><img class=image src="/hentai/',
 						res[1], '/', listdir('hentai/' + res[1])[0],
 						'"></a></div><div class=disc>')
 	genres = cursor.execute('select id_genres from hentai_genres'
@@ -75,7 +74,7 @@ def manga(id):
 			genre_info[0], '>', genre_info[1], '</a> ')
 
 	content = concat(content, '</div></div><div><a href=/><img class=control '
-		'src=/static/ico/la.png></a> <a href=/show/', quote(res[1]),
+		'src=/static/ico/la.png></a> <a href=/show/', id,
 		'><img class=control src=/static/ico/ra.png></a></div>')
 	cursor.close()
 	return prepare_str(pages.manga, content)
@@ -96,6 +95,17 @@ def genres(id):
 	content += '</div>'
 	cursor.close()
 	return prepare_str(pages.genres, content)
+
+
+@route('/show/<id:int>')
+def show(id):
+	cursor = db.cursor()
+	dir = cursor.execute('select dir from hentai where id=?;', (id, )).fetchone()[0]
+	content = ''
+	for img in listdir('hentai/' + dir):
+		content += '<img id=imgs src="/hentai/' + dir + '/' + img + '"><br>'
+	cursor.close()
+	return prepare_str(pages.show, content)
 
 
 if __name__ == '__main__':
