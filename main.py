@@ -47,8 +47,8 @@ def index():
 	cursor = db.cursor()
 	content = '<div class=wrap>'
 	for row in cursor.execute('select id,name,dir from hentai;'):
-		content = concat(content, '<div class=block><a href=manga/',
-				row[0], '><img class=image src="hentai/',
+		content = concat(content, '<div class=block><a href=/manga/',
+				row[0], '><img class=image src="/hentai/',
 				row[2], '/', listdir('hentai/'+row[2])[0],
 				'"></a><div class=caption>', row[1], '</div></div>')
 	content += '</div>'
@@ -62,7 +62,7 @@ def manga(id):
 	cursor.execute('select name,dir from hentai where id=?;', (id,))
 	res = cursor.fetchone()
 	content = concat('<div class=name>', res[0],
-						'</div><div><div class=block><a href=show/',
+						'</div><div><div class=block><a href=/show/',
 						quote(res[1]), '><img class=image src="/hentai/',
 						res[1], '/', listdir('hentai/' + res[1])[0],
 						'"></a></div><div class=disc>')
@@ -71,14 +71,31 @@ def manga(id):
 	for genre in genres:
 		cursor.execute('select id,name from genres where id=?;', (genre[0],))
 		genre_info = cursor.fetchone()
-		content = concat(content, '<a id=genre href=genres/',
+		content = concat(content, '<a id=genre href=/genres/',
 			genre_info[0], '>', genre_info[1], '</a> ')
 
 	content = concat(content, '</div></div><div><a href=/><img class=control '
-		'src=/static/ico/la.png></a> <a href=show/', quote(res[1]),
+		'src=/static/ico/la.png></a> <a href=/show/', quote(res[1]),
 		'><img class=control src=/static/ico/ra.png></a></div>')
 	cursor.close()
 	return prepare_str(pages.manga, content)
+
+
+@route('/genres/<id:int>')
+def genres(id):
+	cursor = db.cursor()
+	mangas = cursor.execute('select id,name,dir from hentai,hentai_genres '
+							'where id_hentai=id and id_genres=?;', (id, ))\
+							.fetchall()
+	content = '<div class=wrap>'
+	for manga in mangas:
+		content = concat(content, '<div class=block><a href=/manga/',
+						manga[0], '><img class=image src="/hentai/',
+						manga[2], '/', listdir('hentai/'+manga[2])[0],
+						'"></a><div class=caption>', manga[1], '</div></div>')
+	content += '</div>'
+	cursor.close()
+	return prepare_str(pages.genres, content)
 
 
 if __name__ == '__main__':
