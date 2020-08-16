@@ -87,10 +87,33 @@ def manga(id):
 		genre_info = cursor.fetchone()
 		content = concat(content, '<a id=genre href=/genres/',
 			genre_info[0], '>', genre_info[1], '</a> ')
+	content += '<div class="w3-row" style="width:480px;">' \
+		'<div class="w3-half">' \
+		'<form class="w3-container" method="post" action="/a_add">' \
+		'<input type="hidden" name=id value={}>'\
+		'<select multiple size=15 name="genres">'.format(id)
 
-	content = concat(content, '</div></div><div><a href=/><img class=control '
-		'src=/static/ico/la.png></a> <a href=/show/', id,
-		'><img class=control src=/static/ico/ra.png></a></div>')
+	genres_full = cursor.execute('select id, name from genres;').fetchall()
+	genres_exclude = [i for i in genres_full if (i[0],) not in genres]
+	genres_x = [i for i in genres_full if (i[0],) in genres]
+
+	for genre_i in genres_exclude:
+		content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
+	content += '</select><br><button class="w3-button '\
+		'w3-dark-gray" type="submit">Додати</button></form></div>'\
+		'<div class="w3-half">'\
+		'<form class="w3-container" method="post" action="/a_del">'\
+		'<input type="hidden" name=id value={}>'\
+		'<select multiple size=15 name="genres">'.format(id)
+
+	for genre_i in genres_x:
+		content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
+
+	content += '</select><br><button class="w3-button w3-dark-gray"'\
+		' type="submit">Видалити</button></form></div></div></div><div>'\
+		'<a href=/><img class=control src=/static/ico/la.png></a> '\
+		'<a href=/show/{}'\
+		'><img class=control src=/static/ico/ra.png></a></div>'.format(id)
 	cursor.close()
 	return prepare_str(pages.manga, content)
 
