@@ -87,33 +87,35 @@ def manga(id):
 		genre_info = cursor.fetchone()
 		content = concat(content, '<a id=genre href=/genres/',
 			genre_info[0], '>', genre_info[1], '</a> ')
-	content += '<div class="w3-row" style="width:480px;">' \
-		'<div class="w3-half">' \
-		'<form class="w3-container" method="post" action="/a_add">' \
-		'<input type="hidden" name=id value={}>'\
-		'<select multiple size=15 name="genres">'.format(id)
 
-	genres_full = cursor.execute('select id, name from genres;').fetchall()
-	genres_exclude = [i for i in genres_full if (i[0],) not in genres]
-	genres_x = [i for i in genres_full if (i[0],) in genres]
+	if request.get_cookie('admin') == ADMIN_KEY:
+		content += '<div class="w3-row" style="width:480px;">' \
+			'<div class="w3-half">' \
+			'<form class="w3-container" method="post" action="/a_add">' \
+			'<input type="hidden" name=id value={}>'\
+			'<select multiple size=15 name="genres">'.format(id)
 
-	for genre_i in genres_exclude:
-		content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
-	content += '</select><br><button class="w3-button '\
-		'w3-dark-gray" type="submit">Додати</button></form></div>'\
-		'<div class="w3-half">'\
-		'<form class="w3-container" method="post" action="/a_del">'\
-		'<input type="hidden" name=id value={}>'\
-		'<select multiple size=15 name="genres">'.format(id)
+		genres_full = cursor.execute('select id, name from genres;').fetchall()
+		genres_exclude = [i for i in genres_full if (i[0],) not in genres]
+		genres_x = [i for i in genres_full if (i[0],) in genres]
 
-	for genre_i in genres_x:
-		content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
+		for genre_i in genres_exclude:
+			content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
+		content += '</select><br><button class="w3-button '\
+			'w3-dark-gray" type="submit">Додати</button></form></div>'\
+			'<div class="w3-half">'\
+			'<form class="w3-container" method="post" action="/a_del">'\
+			'<input type="hidden" name=id value={}>'\
+			'<select multiple size=15 name="genres">'.format(id)
 
-	content += '</select><br><button class="w3-button w3-dark-gray"'\
-		' type="submit">Видалити</button></form></div></div></div><div>'\
-		'<a href=/><img class=control src=/static/ico/la.png></a> '\
-		'<a href=/show/{}'\
-		'><img class=control src=/static/ico/ra.png></a></div>'.format(id)
+		for genre_i in genres_x:
+			content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
+
+		content += '</select><br><button class="w3-button w3-dark-gray"'\
+			' type="submit">Видалити</button></form></div></div>'
+	content += '</div><div><a href=/><img class=control src=/static/ico/la.png>' \
+		'</a> <a href=/show/{}><img class=control src=/static/ico/ra.png>' \
+		'</a></div>'.format(id)
 	cursor.close()
 	return prepare_str(pages.manga, content)
 
@@ -169,6 +171,46 @@ def admin_post():
 		if request.POST['key'] == ADMIN_KEY:
 			response.set_cookie('admin', ADMIN_KEY)
 			redirect('/')
+		else:
+			abort(401)
+	else:
+		abort(404)
+
+
+@post('/a_add')
+def admin_add():
+	if ADMIN_ON:
+		if request.get_cookie('admin') == ADMIN_KEY:
+			try:
+				cursor = db.cursor()
+				for genre in request.forms.getall('genres'):
+					cursor.execute('insert into hentai_genres values(?, ?);',
+							(request.POST['id'], genre))
+				cursor.close()
+				db.commit()
+				redirect('/manga/{}'.format(request.POST['id']))
+			except KeyError:
+				abort(404)
+		else:
+			abort(401)
+	else:
+		abort(404)
+
+
+@post('/a_del')
+def admin_del():
+	if ADMIN_ON:
+		if request.get_cookie('admin') == ADMIN_KEY:
+			try:
+				cursor = db.cursor()
+				for genre in request.forms.getall('genres'):
+					cursor.execute('delete from hentai_genres where id_hentai=? '
+								'and id_genres=?;', (request.POST['id'], genre))
+				cursor.close()
+				db.commit()
+				redirect('/manga/{}'.format(request.POST['id']))
+			except KeyError:
+				abort(404)
 		else:
 			abort(401)
 	else:
