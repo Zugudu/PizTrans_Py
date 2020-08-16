@@ -1,9 +1,14 @@
 import pages
 import sqlite3
-from bottle import route, run, static_file
+from bottle import route, run, static_file, abort, post, response, request, redirect
 from os import listdir
+from random import choice
 
 
+ADMIN_KEY = 'gelgHsiaQzIAakVVO5gioywCqWktsc89'
+ADMIN_ON = True
+
+CHAR_DICT = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 db = sqlite3.connect('db')
 
 
@@ -44,7 +49,10 @@ def load_hentai(file):
 @route('/')
 def index():
 	cursor = db.cursor()
-	content = '<div class=wrap>'
+	content = ''
+	if ADMIN_ON:
+		content = pages.admin_header
+	content += '<div class=wrap>'
 	for row in cursor.execute('select id,name,dir from hentai;'):
 		content = concat(content, '<div class=block><a href=/manga/',
 				row[0], '><img class=image src="/hentai/',
@@ -60,7 +68,10 @@ def manga(id):
 	cursor = db.cursor()
 	cursor.execute('select name,dir from hentai where id=?;', (id,))
 	res = cursor.fetchone()
-	content = concat('<div class=name>', res[0],
+	content = ''
+	if ADMIN_ON:
+		content = pages.admin_header
+	content = concat(content, '<div class=name>', res[0],
 						'</div><div><div class=block><a href=/show/',
 						id, '><img class=image src="/hentai/',
 						res[1], '/', listdir('hentai/' + res[1])[0],
@@ -86,7 +97,12 @@ def genres(id):
 	mangas = cursor.execute('select id,name,dir from hentai,hentai_genres '
 							'where id_hentai=id and id_genres=?;', (id, ))\
 							.fetchall()
-	content = '<div class=wrap>'
+	content = ''
+	if ADMIN_ON:
+		content = pages.admin_header
+	else:
+		content = '<a href=/><img class="home control" src=/static/ico/home.png></a>'
+	content += '<div class=wrap>'
 	for manga in mangas:
 		content = concat(content, '<div class=block><a href=/manga/',
 						manga[0], '><img class=image src="/hentai/',
@@ -108,5 +124,30 @@ def show(id):
 	return prepare_str(pages.show, content)
 
 
+@route('/a')
+def admin():
+	if ADMIN_ON:
+		admin_welcome = choice(pages.admin_welcome)
+		admin_enter = choice(pages.admin_enter)
+		return prepare_str(pages.admin, admin_welcome, admin_enter)
+	else:
+		abort(404)
+
+
+@post('/a')
+def admin_post():
+	if ADMIN_ON:
+		if request.POST['key'] == ADMIN_KEY:
+			response.set_cookie('admin', ADMIN_KEY)
+			redirect('/')
+		else:
+			abort(401)
+	else:
+		abort(404)
+
+
 if __name__ == '__main__':
+	if ADMIN_KEY == '':
+		ADMIN_KEY = ADMIN_KEY.join(choice(CHAR_DICT) for i in range(32))
+	print('Admin key is:{}'.format((ADMIN_KEY,)))
 	run(host='127.0.0.1', port=80, debug=True)
