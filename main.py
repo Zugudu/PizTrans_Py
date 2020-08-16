@@ -3,10 +3,11 @@ import sqlite3
 from bottle import route, run, static_file, abort, post, response, request, redirect, error
 from os import listdir
 from random import choice
+from json import load, dump
 
 
-ADMIN_KEY = '1'
-ADMIN_ON = True
+ADMIN_KEY = ''
+ADMIN_ON = False
 
 CHAR_DICT = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 db = sqlite3.connect('db')
@@ -230,7 +231,30 @@ def err500(error):
 
 
 if __name__ == '__main__':
+	SETTING = None
+	RELOAD = False
+	QUITE = True
+	try:
+		with open('conf.json', 'r') as fd:
+			SETTING = load(fd)
+	except FileNotFoundError:
+		print('Config not found! Creating template...')
+		with open('conf.json', 'w') as fd:
+			dump({'ADMIN_KEY': '', 'ADMIN_MODE': False, 'RELOAD': False, 'QUITE': True}, fd)
+		print('Template was created')
+	if SETTING is not None:
+		RELOAD = SETTING['RELOAD']
+		QUITE = SETTING['QUITE']
+		ADMIN_KEY = SETTING['ADMIN_KEY']
+		ADMIN_ON = SETTING['ADMIN_MODE']
+		print('Config was load')
+	else:
+		print('Config not loaded')
+	print('RL:{} QT:{} AM:{}'.format(RELOAD, QUITE, ADMIN_ON))
+
 	if ADMIN_KEY == '':
 		ADMIN_KEY = ADMIN_KEY.join(choice(CHAR_DICT) for i in range(32))
-	print('Admin key is:{}'.format((ADMIN_KEY,)))
-	run(host='127.0.0.1', port=80, debug=True)
+	print('Admin key is: {}'.format(ADMIN_KEY))
+
+
+	run(host='127.0.0.1', port=80, quiet=QUITE, reloader=RELOAD)
