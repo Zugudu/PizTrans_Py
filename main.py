@@ -1,3 +1,4 @@
+#codec=utf-8
 import pages
 import sqlite3
 from bottle import route, run, static_file, abort, post, response, request, redirect, error
@@ -59,7 +60,7 @@ def index():
 	for row in cursor.execute('select id,name,dir from hentai;'):
 		content = concat(content, '<div class=block><a href=/manga/',
 				row[0], '><img class=image src="/hentai/',
-				row[2], '/', listdir('hentai/'+row[2])[0],
+				row[2], '/', sorted(listdir('hentai/'+row[2]))[0],
 				'"></a><div class=caption>', row[1], '</div></div>')
 	content += '</div>'
 	cursor.close()
@@ -80,7 +81,7 @@ def manga(id):
 		content = concat(content, '<div class=name>', res[0],
 							'</div><div><div class=block><a href=/show/',
 							id, '><img class=image src="/hentai/',
-							res[1], '/', listdir('hentai/' + res[1])[0],
+							res[1], '/', sorted(listdir('hentai/' + res[1]))[0],
 							'"></a></div><div class=disc>')
 		genres = cursor.execute('select id_genres from hentai_genres'
 		' where id_hentai=?;', (id,)).fetchall()
@@ -142,7 +143,7 @@ def genres(id):
 	for manga in mangas:
 		content = concat(content, '<div class=block><a href=/manga/',
 						manga[0], '><img class=image src="/hentai/',
-						manga[2], '/', listdir('hentai/'+manga[2])[0],
+						manga[2], '/', sorted(listdir('hentai/'+manga[2]))[0],
 						'"></a><div class=caption>', manga[1], '</div></div>')
 	content += '</div>'
 	cursor.close()
@@ -154,7 +155,7 @@ def show(id):
 	cursor = db.cursor()
 	dir = cursor.execute('select dir from hentai where id=?;', (id, )).fetchone()[0]
 	content = ''
-	for img in listdir('hentai/' + dir):
+	for img in sorted(listdir('hentai/' + dir)):
 		content += '<img id=imgs src="/hentai/' + dir + '/' + img + '"><br>'
 	cursor.close()
 	return prepare_str(pages.show, content)
@@ -243,19 +244,21 @@ if __name__ == '__main__':
 	SETTING = None
 	RELOAD = False
 	QUITE = True
+	IP = '127.0.0.1'
 	try:
 		with open('conf.json', 'r') as fd:
 			SETTING = load(fd)
 	except FileNotFoundError:
 		print('Config not found! Creating template...')
 		with open('conf.json', 'w') as fd:
-			dump({'ADMIN_KEY': '', 'ADMIN_MODE': False, 'RELOAD': False, 'QUITE': True}, fd)
+			dump({'ADMIN_KEY': '', 'ADMIN_MODE': False, 'RELOAD': False, 'QUITE': True, 'IP': '127.0.0.1'}, fd)
 		print('Template was created')
 	if SETTING is not None:
 		RELOAD = SETTING['RELOAD']
 		QUITE = SETTING['QUITE']
 		ADMIN_KEY = SETTING['ADMIN_KEY']
 		ADMIN_ON = SETTING['ADMIN_MODE']
+		IP = SETTING['IP']
 		print('Config was load')
 	else:
 		print('Config not loaded')
@@ -266,4 +269,4 @@ if __name__ == '__main__':
 	print('Admin key is: {}'.format(ADMIN_KEY))
 
 
-	run(host='127.0.0.1', port=80, quiet=QUITE, reloader=RELOAD)
+	run(host=IP, port=80, quiet=QUITE, reloader=RELOAD)
