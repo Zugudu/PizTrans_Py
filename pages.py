@@ -117,5 +117,25 @@ admin_header = '''
 	<a href=/a><button class="w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red">Admin</button></a>
 </div>
 '''
+admin_yes = '<div class="admin-status"><img height=128px src="/static/admin/{}"></div>'
 admin_welcome = ('Скільки годин?', 'Три останні цифри числа Пі', 'Я тебе звати?', 'CVV2 код твоєї картки', 'Що ти тут забув?', 'Як ти сюди потрапив?', 'Схоже я забув вимкнути відображення цієї сторінки...', 'Семпаю, тільки не ламай нічого')
 admin_enter = ('Банан', 'Сасай кудасай', 'Чємуске', 'Ручка', 'Пароль:root', 'Введіть сюди 4225', '42')
+
+
+error = '''
+<html>
+<head>
+<meta charset=utf8>
+<link rel="stylesheet" href="/static/css/w3.css">
+</head>
+<body>
+<center>
+<div class='w3-container' style='width:50%;'>
+<div class="w3-container w3-red w3-padding">{}</div>
+<img src="/static/ico/{}"><br>
+<a href="/" class="w3-button w3-block w3-dark-gray w3-margin-top">Назад</a>
+</div>
+</center>
+</body>
+</html>
+'''

@@ -1,11 +1,11 @@
 import pages
 import sqlite3
-from bottle import route, run, static_file, abort, post, response, request, redirect
+from bottle import route, run, static_file, abort, post, response, request, redirect, error
 from os import listdir
 from random import choice
 
 
-ADMIN_KEY = 'gelgHsiaQzIAakVVO5gioywCqWktsc89'
+ADMIN_KEY = '1'
 ADMIN_ON = True
 
 CHAR_DICT = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -52,6 +52,8 @@ def index():
 	content = ''
 	if ADMIN_ON:
 		content = pages.admin_header
+		if request.get_cookie('admin') == ADMIN_KEY:
+			content += pages.admin_yes.format(choice(listdir('static/admin')))
 	content += '<div class=wrap>'
 	for row in cursor.execute('select id,name,dir from hentai;'):
 		content = concat(content, '<div class=block><a href=/manga/',
@@ -71,6 +73,8 @@ def manga(id):
 	content = ''
 	if ADMIN_ON:
 		content = pages.admin_header
+		if request.get_cookie('admin') == ADMIN_KEY:
+			content += pages.admin_yes.format(choice(listdir('static/admin')))
 	content = concat(content, '<div class=name>', res[0],
 						'</div><div><div class=block><a href=/show/',
 						id, '><img class=image src="/hentai/',
@@ -100,6 +104,8 @@ def genres(id):
 	content = ''
 	if ADMIN_ON:
 		content = pages.admin_header
+		if request.get_cookie('admin') == ADMIN_KEY:
+			content += pages.admin_yes.format(choice(listdir('static/admin')))
 	else:
 		content = '<a href=/><img class="home control" src=/static/ico/home.png></a>'
 	content += '<div class=wrap>'
@@ -144,6 +150,18 @@ def admin_post():
 			abort(401)
 	else:
 		abort(404)
+
+
+@error(404)
+def err404(error):
+	return prepare_str(pages.error, 'Як ти сюди потрапив?', '404.png')
+
+
+@error(500)
+def err500(error):
+	return prepare_str(pages.error, 'Або ти лізеж куди не треба, або у нас '
+		'полетіла БД. І якщо це так то пізно срати. '
+		'Може полагодим скоро, може ні', '500.png')
 
 
 if __name__ == '__main__':
