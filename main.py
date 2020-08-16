@@ -14,15 +14,16 @@ CHAR_DICT = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 db = sqlite3.connect('db')
 
 
-def prepare_str(text, *args):
-	"""
-	Optimize templates and format it
+def _optimize(text):
+	return text.replace('\n', '').replace('\t', '')
 
-	Parameters:
-		text (String): Templates string
-		args (any): What will be added to text
-	"""
-	return text.format(*args).replace('\n', '').replace('\t', '')
+
+def prepare_main(text):
+	return _optimize(pages.main_page.format(text))
+	
+
+def prepare_err(text, ico):
+	return _optimize(pages.main_plain.format(pages.error.format(text, ico)))
 
 
 def concat(text, *args):
@@ -64,7 +65,7 @@ def index():
 				'"></a><div class=caption>', row[1], '</div></div>')
 	content += '</div>'
 	cursor.close()
-	return prepare_str(pages.main_page, content)
+	return prepare_main(content)
 
 
 @route('/manga/<id:int>')
@@ -78,7 +79,7 @@ def manga(id):
 			content = pages.admin_header
 			if request.get_cookie('admin') == ADMIN_KEY:
 				content += pages.admin_yes.format(choice(listdir('static/admin')))
-		content = concat(content, '<div class=name>', res[0],
+		content = concat(content, '<div class=name style="margin: 15px 0;">', res[0],
 							'</div><div><div class=block><a href=/show/',
 							id, '><img class=image src="/hentai/',
 							res[1], '/', sorted(listdir('hentai/' + res[1]))[0],
@@ -120,7 +121,7 @@ def manga(id):
 			'</a> <a href=/show/{}><img class=control src=/static/ico/ra.png>' \
 			'</a></div>'.format(id)
 		cursor.close()
-		return prepare_str(pages.manga, content)
+		return prepare_main(content)
 	else:
 		cursor.close()
 		abort(500)
@@ -147,7 +148,7 @@ def genres(id):
 						'"></a><div class=caption>', manga[1], '</div></div>')
 	content += '</div>'
 	cursor.close()
-	return prepare_str(pages.genres, content)
+	return prepare_main(content)
 
 
 @route('/show/<id:int>')
@@ -158,7 +159,7 @@ def show(id):
 	for img in sorted(listdir('hentai/' + dir)):
 		content += '<img id=imgs src="/hentai/' + dir + '/' + img + '"><br>'
 	cursor.close()
-	return prepare_str(pages.show, content)
+	return prepare_main(pages.show.format(content))
 
 
 @route('/a')
@@ -166,7 +167,7 @@ def admin():
 	if ADMIN_ON:
 		admin_welcome = choice(pages.admin_welcome)
 		admin_enter = choice(pages.admin_enter)
-		return prepare_str(pages.admin, admin_welcome, admin_enter)
+		return _optimize(pages.main_plain.format(pages.admin.format(admin_welcome, admin_enter)))
 	else:
 		abort(404)
 
@@ -225,19 +226,20 @@ def admin_del():
 
 @error(404)
 def err404(err):
-	return prepare_str(pages.error, 'Як ти сюди потрапив?', '404.png')
+	return prepare_err('Як ти сюди потрапив?', '404.png')
 
 
 @error(500)
 def err500(err):
-	return prepare_str(pages.error, 'Або ти лізеж куди не треба, або у нас '
+	return prepare_err('Або ти лізеж куди не треба, або у нас '
 		'полетіла БД. І якщо це так — то пізно срати. '
 		'Може полагодим скоро, може ні', '500.png')
 
 
 @error(401)
 def err401(err):
-	return prepare_str(pages.error, 'У тебе немає доступу до цього. Йди-но звідси доки не втрапив у халепу', '401.png')
+	return prepare_err('У тебе немає доступу до цього.'
+		' Йди-но звідси доки не втрапив у халепу', '401.png')
 
 
 if __name__ == '__main__':
