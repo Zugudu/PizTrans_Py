@@ -82,3 +82,4 @@ div
 	background-color: #a1a1a1;
 	outline: #000000 inset 5px;
 }
+.admin-status{position:fixed;right:10px;top:10px;}

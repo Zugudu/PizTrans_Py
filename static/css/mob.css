@@ -1,8 +1,3 @@
-@font-face
-{
-	font-family: Anime;
-	src: url(a.ttf);
-}
 div
 {
 	font: 110% Anime;
@@ -15,25 +10,19 @@ a
 {
 	width: 95%;
 	margin: 0 auto;
-	display: block;
 }
 .block
 {
-	display: inline-block;
 	margin: 0 5%;
-	vertical-align: top;
 	width: 40%;
 }
 .image
 {
-	display: block;
 	width: 100%;
 	height: auto;
 }
 .caption
 {
-	display: block;
-	text-align: center;
 	width: 40%;
 	margin: 5% 0;
 }
@@ -67,9 +56,6 @@ a
 }
 #genre
 {
-	display: inline-block;
-	text-decoration: none;
-	background-color: #a1a1a1;
 	color: white;
 	padding: 5px;
 	margin: 5px;
