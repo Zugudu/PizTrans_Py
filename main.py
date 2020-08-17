@@ -257,13 +257,14 @@ if __name__ == '__main__':
 	RELOAD = False
 	QUITE = True
 	IP = '127.0.0.1'
+	SERVER = 'wsgiref'
 	try:
 		with open('conf.json', 'r') as fd:
 			SETTING = load(fd)
 	except FileNotFoundError:
 		print('Config not found! Creating template...')
 		with open('conf.json', 'w') as fd:
-			dump({'ADMIN_KEY': '', 'ADMIN_MODE': False, 'RELOAD': False, 'QUITE': True, 'IP': '127.0.0.1'}, fd)
+			dump({'ADMIN_KEY': '', 'ADMIN_MODE': False, 'RELOAD': False, 'QUITE': True, 'IP': '127.0.0.1', 'SRV': 'wsgiref'}, fd)
 		print('Template was created')
 	if SETTING is not None:
 		RELOAD = SETTING['RELOAD']
@@ -271,6 +272,7 @@ if __name__ == '__main__':
 		ADMIN_KEY = SETTING['ADMIN_KEY']
 		ADMIN_ON = SETTING['ADMIN_MODE']
 		IP = SETTING['IP']
+		SERVER = SETTING['SRV']
 		print('Config was load')
 	else:
 		print('Config not loaded')
@@ -280,4 +282,4 @@ if __name__ == '__main__':
 		ADMIN_KEY = ADMIN_KEY.join(choice(CHAR_DICT) for i in range(32))
 	print('Admin key is: {}'.format(ADMIN_KEY))
 
-	run(host=IP, port=80, quiet=QUITE, reloader=RELOAD)
+	run(server=SERVER, host=IP, port=80, quiet=QUITE, reloader=RELOAD)

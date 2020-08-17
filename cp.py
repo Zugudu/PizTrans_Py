@@ -23,6 +23,10 @@ cp = '''
 	<th><input type="text" class="w3-input" style="display: table-cell;" name="IP" value="{}"></th>
 </tr>
 <tr>
+	<th><label class="we-medium" style="display: table-cell;vertical-align: middle;padding-right:10px;">WSGI server</label></th>
+	<th><input type="text" class="w3-input" style="display: table-cell;" name="SRV" value="{}"></th>
+</tr>
+<tr>
 	<th><label class="we-medium" style="display: table-cell;vertical-align: middle;padding-right:10px;">Reload</label></th>
 	<th><input type="checkbox" class="toggle" style="display: table-cell;" {} name="RLD"></th>
 </tr>
@@ -55,6 +59,7 @@ def index():
 		QUT = ''
 		ADM = ''
 		ADK = SETTING['ADMIN_KEY']
+		SRV = SETTING['SRV']
 		IP = SETTING['IP']
 		if SETTING['RELOAD']:
 			RLD = 'checked'
@@ -62,11 +67,11 @@ def index():
 			QUT = 'checked'
 		if SETTING['ADMIN_MODE']:
 			ADM = 'checked'
-		return _optimize(cp.format(ADK, IP, RLD, QUT, ADM))
+		return _optimize(cp.format(ADK, IP, SRV, RLD, QUT, ADM))
 	except FileNotFoundError:
 		print('Config not found! Creating template...')
 		with open('conf.json', 'w') as fd:
-			dump({'ADMIN_KEY': '', 'ADMIN_MODE': False, 'RELOAD': False, 'QUITE': True, 'IP': '127.0.0.1'}, fd)
+			dump({'ADMIN_KEY': '', 'ADMIN_MODE': False, 'RELOAD': False, 'QUITE': True, 'IP': '127.0.0.1', 'SRV': 'wsgiref'}, fd)
 		print('Template was created')
 		return _optimize(cp.format('', '127.0.0.1', '', 'checked', ''))
 
@@ -81,9 +86,12 @@ def i_post():
 	if request.forms.get('ADM'):
 		flags[2] = True
 	with open('conf.json', 'w') as fd:
-		dump({'ADMIN_KEY': request.forms.get('ADK', ''), 'ADMIN_MODE': flags[2],
+		dump({'ADMIN_KEY': request.forms.get('ADK', ''),
+				'ADMIN_MODE': flags[2],
 				'RELOAD': flags[0],
-				'QUITE': flags[1], 'IP': request.forms.get('IP', '127.0.0.1')}, fd)
+				'QUITE': flags[1],
+				'IP': request.forms.get('IP', '127.0.0.1'),
+				'SRV': request.forms.get('SRV', 'wsgiref')}, fd)
 	redirect('/')
 
 
