@@ -18,8 +18,12 @@ def _optimize(text):
 	return text.replace('\n', '').replace('\t', '')
 
 
-def prepare_main(text):
-	return _optimize(pages.main_page.format(text))
+def prepare_main(text, header=''):
+	return _optimize(pages.main_page.format(header+text))
+	
+	
+def prepare_plain(text, header=''):
+	return _optimize(pages.main_plain.format(header+text))
 	
 
 def prepare_err(text, ico):
@@ -37,6 +41,22 @@ def concat(text, *args):
 	for i in args:
 		ret += str(i)
 	return ret
+	
+	
+def get_header(c_request):
+	"""
+	Check admin mode status and generate header
+	
+	:param c_request: gotted request
+	"""
+	header = ''
+	if ADMIN_ON:
+		header = pages.header.format(pages.admin_button)
+		if c_request.get_cookie('admin') == ADMIN_KEY:
+			header += pages.admin_yes.format(choice(listdir('static/admin')))
+	else:
+		header = pages.header.format('')
+	return header
 
 
 @route('/static/<file:path>')
@@ -52,12 +72,8 @@ def load_hentai(file):
 @route('/')
 def index():
 	cursor = db.cursor()
-	content = ''
-	if ADMIN_ON:
-		content = pages.admin_header
-		if request.get_cookie('admin') == ADMIN_KEY:
-			content += pages.admin_yes.format(choice(listdir('static/admin')))
-	content += '<div class=wrap>'
+	
+	content = '<div class=wrap>'
 	for row in cursor.execute('select id,name,dir from hentai;'):
 		content = concat(content, '<div class=block><a href=/manga/',
 				row[0], '><img class=image src="/hentai/',
@@ -65,7 +81,7 @@ def index():
 				'"></a><div class=caption>', row[1], '</div></div>')
 	content += '</div>'
 	cursor.close()
-	return prepare_main(content)
+	return prepare_main(content, get_header(request))
 
 
 @route('/manga/<id:int>')
@@ -73,13 +89,8 @@ def manga(id):
 	cursor = db.cursor()
 	cursor.execute('select name,dir from hentai where id=?;', (id,))
 	res = cursor.fetchone()
-	if res is not None:
-		content = ''
-		if ADMIN_ON:
-			content = pages.admin_header
-			if request.get_cookie('admin') == ADMIN_KEY:
-				content += pages.admin_yes.format(choice(listdir('static/admin')))
-		content = concat(content, '<div class=name style="margin: 15px 0;">', res[0],
+	if res is not None:		
+		content = concat('<div class=name style="margin: 15px 0;">', res[0],
 							'</div><div><div class=block><a href=/show/',
 							id, '><img class=image src="/hentai/',
 							res[1], '/', sorted(listdir('hentai/' + res[1]))[0],
@@ -121,7 +132,7 @@ def manga(id):
 			'</a> <a href=/show/{}><img class=control src=/static/ico/ra.png>' \
 			'</a></div>'.format(id)
 		cursor.close()
-		return prepare_main(content)
+		return prepare_main(content, get_header(request))
 	else:
 		cursor.close()
 		abort(500)
@@ -133,14 +144,8 @@ def genres(id):
 	mangas = cursor.execute('select id,name,dir from hentai,hentai_genres '
 							'where id_hentai=id and id_genres=?;', (id, ))\
 							.fetchall()
-	content = ''
-	if ADMIN_ON:
-		content = pages.admin_header
-		if request.get_cookie('admin') == ADMIN_KEY:
-			content += pages.admin_yes.format(choice(listdir('static/admin')))
-	else:
-		content = '<a href=/><img class="home control" src=/static/ico/home.png></a>'
-	content += '<div class=wrap>'
+	content = '<div class=wrap>'
+
 	for manga in mangas:
 		content = concat(content, '<div class=block><a href=/manga/',
 						manga[0], '><img class=image src="/hentai/',
@@ -148,7 +153,7 @@ def genres(id):
 						'"></a><div class=caption>', manga[1], '</div></div>')
 	content += '</div>'
 	cursor.close()
-	return prepare_main(content)
+	return prepare_main(content, get_header(request))
 
 
 @route('/show/<id:int>')
@@ -167,7 +172,7 @@ def admin():
 	if ADMIN_ON:
 		admin_welcome = choice(pages.admin_welcome)
 		admin_enter = choice(pages.admin_enter)
-		return _optimize(pages.main_plain.format(pages.admin.format(admin_welcome, admin_enter)))
+		return prepare_plain(pages.admin.format(admin_welcome, admin_enter), get_header(request))
 	else:
 		abort(404)
 
@@ -222,6 +227,11 @@ def admin_del():
 			abort(401)
 	else:
 		abort(404)
+		
+		
+@route('/about')
+def about():
+	return prepare_plain(pages.about, get_header(request))
 
 
 @error(404)
@@ -269,6 +279,5 @@ if __name__ == '__main__':
 	if ADMIN_KEY == '':
 		ADMIN_KEY = ADMIN_KEY.join(choice(CHAR_DICT) for i in range(32))
 	print('Admin key is: {}'.format(ADMIN_KEY))
-
 
 	run(host=IP, port=80, quiet=QUITE, reloader=RELOAD)
