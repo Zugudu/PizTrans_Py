@@ -73,7 +73,7 @@ def index():
 		with open('conf.json', 'w') as fd:
 			dump({'ADMIN_KEY': '', 'ADMIN_MODE': False, 'RELOAD': False, 'QUITE': True, 'IP': '127.0.0.1', 'SRV': 'wsgiref'}, fd)
 		print('Template was created')
-		return _optimize(cp.format('', '127.0.0.1', '', 'checked', ''))
+		return _optimize(cp.format('', '127.0.0.1', '', 'wsgiref', 'checked', ''))
 
 
 @post('/')
