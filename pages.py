@@ -79,6 +79,7 @@ about = '''
 <ul class="w3-ul w3-border w3-light-gray w3-margin w3-hoverable" style="width:300px;">
 <a href="https://github.com/Zugudu" target="_blank" rel="noopener noreferrer" style="text-decoration: none;"><li style="border-bottom:1px solid #ddd;" class="anime">Ісус</li></a>
 <li class="anime">Шурік</li>
+<a href="https://myanimelist.net/profile/s0fko" target="_blank" rel="noopener noreferrer" style="text-decoration: none;"><li class="anime">s0fko</li></a>
 </ul>
 </div>
 '''
