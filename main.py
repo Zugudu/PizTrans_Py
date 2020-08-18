@@ -282,4 +282,7 @@ if __name__ == '__main__':
 		ADMIN_KEY = ADMIN_KEY.join(choice(CHAR_DICT) for i in range(32))
 	print('Admin key is: {}'.format(ADMIN_KEY))
 
-	run(server=SERVER, host=IP, port=80, quiet=QUITE, reloader=RELOAD)
+	try:
+		run(server=SERVER, host=IP, port=80, quiet=QUITE, reloader=RELOAD)
+	except BrokenPipeError:
+		print('Someone disconect!')
