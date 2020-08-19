@@ -21,10 +21,6 @@ def _optimize(text):
 def prepare_main(text, header=''):
 	return _optimize(pages.main_page.format(header+text))
 	
-	
-def prepare_plain(text, header=''):
-	return _optimize(pages.main_plain.format(header+text))
-	
 
 def prepare_err(text, ico):
 	return _optimize(pages.main_plain.format(pages.error.format(text, ico)))
@@ -143,7 +139,7 @@ def manga(id, cursor):
 		for genre in genres:
 			cursor.execute('select id,name from genres where id=?;', (genre[0],))
 			genre_info = cursor.fetchone()
-			content = concat(content, '<a id=genre href=/genres/',
+			content = concat(content, '<a class=genre href=/genres/',
 				genre_info[0], '>', genre_info[1], '</a> ')
 
 		if request.get_cookie('admin') == ADMIN_KEY:
@@ -186,7 +182,7 @@ def show(id, cursor):
 	dir = cursor.execute('select dir from hentai where id=?;', (id, )).fetchone()[0]
 	content = ''
 	for img in sorted(listdir('hentai/' + dir)):
-		content += '<img id=imgs src="/hentai/' + dir + '/' + img + '"><br>'
+		content += '<img class=imgs src="/hentai/' + dir + '/' + img + '"><br>'
 	return prepare_main(pages.show.format(content))
 
 
@@ -195,7 +191,7 @@ def admin():
 	if ADMIN_ON:
 		admin_welcome = choice(pages.admin_welcome)
 		admin_enter = choice(pages.admin_enter)
-		return prepare_plain(pages.admin.format(admin_welcome, admin_enter), get_header(request))
+		return prepare_main(pages.admin.format(admin_welcome, admin_enter), get_header(request))
 	else:
 		abort(404)
 
@@ -254,7 +250,7 @@ def admin_del():
 		
 @route('/about')
 def about():
-	return prepare_plain(pages.about, get_header(request))
+	return prepare_main(pages.about, get_header(request))
 
 
 @error(404)

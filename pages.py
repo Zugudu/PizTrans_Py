@@ -20,23 +20,6 @@ href="/static/css/mob.css"/>
 '''
 
 
-main_plain = '''
-<html>
-<head>
-<meta charset=utf8>
-<meta name=viewport width=device-width>
-<link rel="stylesheet" href="/static/css/w3.css">
-<title>Piztrans</title>
-</head>
-<body>
-<center>
-{}
-</center>
-</body>
-</html>
-'''
-
-
 show = '<a href=/><img class="control home" src=/static/ico/home.png></a>{}'
 
 
