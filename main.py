@@ -66,7 +66,7 @@ def get_flag(id):
 		flag = pages.flag_ua
 	cursor.close()
 	return flag
-
+	
 
 @route('/static/<file:path>')
 def load_static(file):
@@ -78,24 +78,58 @@ def load_hentai(file):
 	return static_file(file, 'hentai', 'image/jpg')
 
 
-@route('/')
-def index():
-	cursor = db.cursor()
+def db_work(func):
+	def wrap(*a, **ka):
+		cursor = db.cursor()
+		ret = func(*a, cursor=cursor, **ka)
+		cursor.close()
+		return ret
+	return wrap
 	
+
+@db_work
+def get_manga(sql, param='', cursor=''):
+	"""
+	:param sql: sql query to get id, name, dir
+	:param param: tuple param to sql
+	"""
+	if cursor == '':
+		abort(500)
+	ind = cursor.execute(sql, param).fetchall()
 	content = '<div class=wrap>'
-	for row in cursor.execute('select id,name,dir from hentai;').fetchall():
+	for row in ind:
 		content = concat(content, '<div class=block>', get_flag(row[0]), '<a href=/manga/',
 				row[0], '><img class=image src="/hentai/',
 				row[2], '/', sorted(listdir('hentai/'+row[2]))[0],
 				'"></a><div class=caption>', row[1], '</div></div>')
 	content += '</div>'
-	cursor.close()
-	return prepare_main(content, get_header(request))
+	return content
+
+
+@route('/')
+def index():
+	return prepare_main(get_manga('select id,name,dir from hentai;'), get_header(request))
+
+
+@route('/genres/<id:int>')
+def genres(id):
+	return prepare_main(
+		get_manga(
+			'select id,name,dir from hentai,hentai_genres where id_hentai=id and id_genres=?;',
+			(id, )),
+		get_header(request))
+	
+	
+@route('/lang/<id:int>')
+def lang(id):
+	return prepare_main(
+		get_manga('select id, name, dir from hentai, lang where id_hentai = id;'),
+		get_header(request))
 
 
 @route('/manga/<id:int>')
-def manga(id):
-	cursor = db.cursor()
+@db_work
+def manga(id, cursor):
 	cursor.execute('select name,dir from hentai where id=?;', (id,))
 	res = cursor.fetchone()
 	if res is not None:
@@ -140,39 +174,19 @@ def manga(id):
 		content += '</div><div><a href=/><img class=control src=/static/ico/la.png>' \
 			'</a> <a href=/show/{}><img class=control src=/static/ico/ra.png>' \
 			'</a></div>'.format(id)
-		cursor.close()
 		return prepare_main(content, get_header(request))
 	else:
 		cursor.close()
 		abort(500)
 
 
-@route('/genres/<id:int>')
-def genres(id):
-	cursor = db.cursor()
-	mangas = cursor.execute('select id,name,dir from hentai,hentai_genres '
-							'where id_hentai=id and id_genres=?;', (id, ))\
-							.fetchall()
-	content = '<div class=wrap>'
-
-	for manga in mangas:
-		content = concat(content, '<div class=block>', get_flag(manga[0]), '<a href=/manga/',
-						manga[0], '><img class=image src="/hentai/',
-						manga[2], '/', sorted(listdir('hentai/'+manga[2]))[0],
-						'"></a><div class=caption>', manga[1], '</div></div>')
-	content += '</div>'
-	cursor.close()
-	return prepare_main(content, get_header(request))
-
-
 @route('/show/<id:int>')
-def show(id):
-	cursor = db.cursor()
+@db_work
+def show(id, cursor):
 	dir = cursor.execute('select dir from hentai where id=?;', (id, )).fetchone()[0]
 	content = ''
 	for img in sorted(listdir('hentai/' + dir)):
 		content += '<img id=imgs src="/hentai/' + dir + '/' + img + '"><br>'
-	cursor.close()
 	return prepare_main(pages.show.format(content))
 
 

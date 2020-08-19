@@ -86,4 +86,4 @@ about = '''
 '''
 
 
-flag_ua = '<div class="flag-231 w3-blue"></div><div class="flag-232 w3-yellow"></div>'
+flag_ua = '<a href="/lang/1" class="flag"><div class="flag-231 w3-blue"></div><div class="flag-232 w3-yellow"></div></a>'
