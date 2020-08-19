@@ -57,6 +57,15 @@ def get_header(c_request):
 	else:
 		header = pages.header.format('')
 	return header
+	
+
+def get_flag(id):
+	cursor = db.cursor()
+	flag = ''
+	if cursor.execute('select * from lang where id_hentai=?;', (id, )).fetchone() is not None:
+		flag = pages.flag_ua
+	cursor.close()
+	return flag
 
 
 @route('/static/<file:path>')
@@ -74,8 +83,8 @@ def index():
 	cursor = db.cursor()
 	
 	content = '<div class=wrap>'
-	for row in cursor.execute('select id,name,dir from hentai;'):
-		content = concat(content, '<div class=block><a href=/manga/',
+	for row in cursor.execute('select id,name,dir from hentai;').fetchall():
+		content = concat(content, '<div class=block>', get_flag(row[0]), '<a href=/manga/',
 				row[0], '><img class=image src="/hentai/',
 				row[2], '/', sorted(listdir('hentai/'+row[2]))[0],
 				'"></a><div class=caption>', row[1], '</div></div>')
@@ -89,9 +98,9 @@ def manga(id):
 	cursor = db.cursor()
 	cursor.execute('select name,dir from hentai where id=?;', (id,))
 	res = cursor.fetchone()
-	if res is not None:		
+	if res is not None:
 		content = concat('<div class=name style="margin: 15px 0;">', res[0],
-							'</div><div><div class=block><a href=/show/',
+							'</div><div><div class=block>', get_flag(id), '<a href=/show/',
 							id, '><img class=image src="/hentai/',
 							res[1], '/', sorted(listdir('hentai/' + res[1]))[0],
 							'"></a></div><div class=disc>')
@@ -147,7 +156,7 @@ def genres(id):
 	content = '<div class=wrap>'
 
 	for manga in mangas:
-		content = concat(content, '<div class=block><a href=/manga/',
+		content = concat(content, '<div class=block>', get_flag(manga[0]), '<a href=/manga/',
 						manga[0], '><img class=image src="/hentai/',
 						manga[2], '/', sorted(listdir('hentai/'+manga[2]))[0],
 						'"></a><div class=caption>', manga[1], '</div></div>')
