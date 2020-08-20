@@ -41,6 +41,20 @@ header = '''
 	<a href=/about><button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red">Про нас</button></a>
 </div>
 '''
+
+
+admin_mode = '''
+<form method="post" class="w3-padding" action="a_am">
+<div style="width:300px;">
+	<div class="w3-medium" style="padding-bottom:16px;"><b>Додати нову мангу</b></div>
+	<div><input type="text" class="w3-input" style="display: table-cell;" name="name" placeholder="Назва"></div>
+	<div><input type="text" class="w3-input" style="display: table-cell;" name="dir" placeholder="Місцезнаходження"></div>
+	<div style="padding-top:10px;"><button class="w3-button w3-light-gray w3-border" type="submit">Внести зміни</button></div>
+</div>
+</form>
+'''
+
+
 admin_button = '<a href=/a><button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red">Адмінка</button></a>'
 admin_yes = '<div class="admin-status"><img height=128px src="/static/admin/{}"></div>'
 admin_welcome = ('Скільки годин?', 'Три останні цифри числа Пі', 'Я тебе звати?', 'CVV2 код твоєї картки', 'Що ти тут забув?', 'Як ти сюди потрапив?', 'Схоже я забув вимкнути відображення цієї сторінки...', 'Семпаю, тільки не ламай нічого')

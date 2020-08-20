@@ -189,11 +189,29 @@ def show(id, cursor):
 @route('/a')
 def admin():
 	if ADMIN_ON:
-		admin_welcome = choice(pages.admin_welcome)
-		admin_enter = choice(pages.admin_enter)
-		return prepare_main(pages.admin.format(admin_welcome, admin_enter), get_header(request))
+		if request.get_cookie('admin') == ADMIN_KEY:
+				return prepare_main(pages.admin_mode, get_header(request))
+		else:
+			admin_welcome = choice(pages.admin_welcome)
+			admin_enter = choice(pages.admin_enter)
+			return prepare_main(pages.admin.format(admin_welcome, admin_enter), get_header(request))
 	else:
 		abort(404)
+		
+		
+def admin_test(func):
+	def wrap(*a, **ka):
+		if ADMIN_ON:
+			if request.get_cookie('admin') == ADMIN_KEY:
+				try:
+					return func(*a, **ka)
+				except KeyError:
+					abort(404)
+			else:
+				abort(401)
+		else:
+			abort(404)
+	return wrap
 
 
 @post('/a')
@@ -209,43 +227,39 @@ def admin_post():
 
 
 @post('/a_add')
+@admin_test
 def admin_add():
-	if ADMIN_ON:
-		if request.get_cookie('admin') == ADMIN_KEY:
-			try:
-				cursor = db.cursor()
-				for genre in request.forms.getall('genres'):
-					cursor.execute('insert into hentai_genres values(?, ?);',
-							(request.POST['id'], genre))
-				cursor.close()
-				db.commit()
-				redirect('/manga/{}'.format(request.POST['id']))
-			except KeyError:
-				abort(404)
-		else:
-			abort(401)
-	else:
-		abort(404)
+	cursor = db.cursor()
+	for genre in request.forms.getall('genres'):
+		cursor.execute('insert into hentai_genres values(?, ?);',
+				(request.POST['id'], genre))
+	cursor.close()
+	db.commit()
+	redirect('/manga/{}'.format(request.POST['id']))
 
 
 @post('/a_del')
+@admin_test
 def admin_del():
-	if ADMIN_ON:
-		if request.get_cookie('admin') == ADMIN_KEY:
-			try:
-				cursor = db.cursor()
-				for genre in request.forms.getall('genres'):
-					cursor.execute('delete from hentai_genres where id_hentai=? '
-								'and id_genres=?;', (request.POST['id'], genre))
-				cursor.close()
-				db.commit()
-				redirect('/manga/{}'.format(request.POST['id']))
-			except KeyError:
-				abort(404)
-		else:
-			abort(401)
-	else:
-		abort(404)
+	cursor = db.cursor()
+	for genre in request.forms.getall('genres'):
+		cursor.execute('delete from hentai_genres where id_hentai=? '
+					'and id_genres=?;', (request.POST['id'], genre))
+	cursor.close()
+	db.commit()
+	redirect('/manga/{}'.format(request.POST['id']))
+		
+
+@post('/a_am')
+@admin_test
+def admin_add_manga():
+	cursor = db.cursor()
+	cursor.execute('insert into hentai values(null, ?, ?);',
+		(request.forms.name,
+		request.forms.dir))
+	cursor.close()
+	db.commit()
+	redirect('/')
 		
 		
 @route('/about')
