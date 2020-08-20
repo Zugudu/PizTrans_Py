@@ -23,7 +23,7 @@ def prepare_main(text, header=''):
 	
 
 def prepare_err(text, ico):
-	return _optimize(pages.main_plain.format(pages.error.format(text, ico)))
+	return _optimize(pages.main_page.format(pages.error.format(text, ico)))
 
 
 def concat(text, *args):
@@ -259,7 +259,18 @@ def admin_add_manga():
 		request.forms.dir))
 	cursor.close()
 	db.commit()
-	redirect('/')
+	redirect('/a')
+	
+	
+@post('/a_at')
+@admin_test
+def admin_add_tag():
+	cursor = db.cursor()
+	cursor.execute('insert into genres values(null, ?);',
+		(request.forms.name, ))
+	cursor.close()
+	db.commit()
+	redirect('/a')
 		
 		
 @route('/about')

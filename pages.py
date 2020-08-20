@@ -44,14 +44,23 @@ header = '''
 
 
 admin_mode = '''
-<form method="post" class="w3-padding" action="a_am">
-<div style="width:300px;">
-	<div class="w3-medium" style="padding-bottom:16px;"><b>Додати нову мангу</b></div>
-	<div><input type="text" class="w3-input" style="display: table-cell;" name="name" placeholder="Назва"></div>
-	<div><input type="text" class="w3-input" style="display: table-cell;" name="dir" placeholder="Місцезнаходження"></div>
-	<div style="padding-top:10px;"><button class="w3-button w3-light-gray w3-border" type="submit">Внести зміни</button></div>
+<div>
+<div style="width:300px;display:inline-block;padding-right:20px;">
+	<form method="post" class="w3-padding" action="a_am">
+		<div class="w3-medium" style="padding-bottom:16px;"><b>Додати мангу</b></div>
+		<div><input type="text" class="w3-input" style="display: table-cell;" name="name" placeholder="Назва"></div>
+		<div><input type="text" class="w3-input" style="display: table-cell;" name="dir" placeholder="Місцезнаходження"></div>
+		<div style="padding-top:10px;"><button class="w3-button w3-light-gray w3-border" type="submit">Додати</button></div>
+	</form>
 </div>
-</form>
+<div style="width:300px;display:inline-block;">
+	<form method="post" class="w3-padding" action="a_at">
+		<div class="w3-medium" style="padding-bottom:16px;"><b>Додати тег</b></div>
+		<div><input type="text" class="w3-input" style="display: table-cell;" name="name" placeholder="Назва"></div>
+		<div style="padding-top:10px;"><button class="w3-button w3-light-gray w3-border" type="submit">Додати</button></div>
+	</form>
+</div>
+</div>
 '''
 
 
