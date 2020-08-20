@@ -82,6 +82,7 @@ error = '''
 about = '''
 <div class="w3-medium w3-padding" style="width:880px;">
 Привіт, як ти вже встиг помітити, ти знаходишся на сайті з хєнтаєм.<br>Весь код є власністю Клубу Кібернетики Коледжу (ККК)<br>
+Зворотній зв'язок <a href="https://t.me/Zugudu" target="_blank" rel="noopener noreferrer" class="w3-text-blue">@Zugudu</a><br>
 Розробкою сайту займалися:
 <ul class="w3-ul w3-border w3-light-gray w3-margin w3-hoverable" style="width:300px;">
 <a href="https://github.com/Zugudu" target="_blank" rel="noopener noreferrer" style="text-decoration: none;"><li style="border-bottom:1px solid #ddd;" class="anime">Ісус</li></a>
