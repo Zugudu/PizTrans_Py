@@ -94,10 +94,15 @@ def get_manga(sql, param='', cursor=''):
 	ind = cursor.execute(sql, param).fetchall()
 	content = '<div class=wrap>'
 	for row in ind:
-		content = concat(content, '<div class=block>', get_flag(row[0]), '<a href=/manga/',
-				row[0], '><img class=image src="/hentai/',
-				row[2], '/', sorted(listdir('hentai/'+row[2]))[0],
-				'"></a><div class=caption>', row[1], '</div></div>')
+		content += f'''
+			<div class=block>
+			{get_flag(row[0])}
+			<a href=/manga/{row[0]}>
+			<img class=image src="/hentai/{row[2]}/
+			{sorted(listdir('hentai/'+row[2]))[0]}">
+			</a>
+			<div class=caption>{row[1]}</div>
+			</div>'''
 	content += '</div>'
 	return content
 
@@ -129,47 +134,50 @@ def manga(id, cursor):
 	cursor.execute('select name,dir from hentai where id=?;', (id,))
 	res = cursor.fetchone()
 	if res is not None:
-		content = concat('<div class=name style="margin: 15px 0;">', res[0],
-							'</div><div><div class=block>', get_flag(id), '<a href=/show/',
-							id, '><img class=image src="/hentai/',
-							res[1], '/', sorted(listdir('hentai/' + res[1]))[0],
-							'"></a></div><div class=disc>')
+		content = f'''
+				<div class=name style="margin: 15px 0;">{res[0]}</div>
+				<div><div class=block>{get_flag(id)}<a href=/show/{id}>
+				<img class=image src="/hentai/
+				{res[1]}/{sorted(listdir('hentai/' + res[1]))[0]}"></a>
+				</div><div class=disc>'''
 		genres = cursor.execute('select id_genres from hentai_genres'
 		' where id_hentai=?;', (id,)).fetchall()
 		for genre in genres:
 			cursor.execute('select id,name from genres where id=?;', (genre[0],))
 			genre_info = cursor.fetchone()
-			content = concat(content, '<a class=genre href=/genres/',
-				genre_info[0], '>', genre_info[1], '</a> ')
+			content += f'''
+					<a class=genre href=/genres/{genre_info[0]}>
+					{genre_info[1]}
+					</a>'''
 
 		if request.get_cookie('admin') == ADMIN_KEY:
-			content += '<div class="w3-row" style="width:480px;">' \
+			content += f'<div class="w3-row" style="width:480px;">' \
 				'<div class="w3-half">' \
 				'<form class="w3-container" method="post" action="/a_add">' \
-				'<input type="hidden" name=id value={}>'\
-				'<select multiple size=15 name="genres">'.format(id)
+				'<input type="hidden" name=id value={id}>'\
+				'<select multiple size=15 name="genres">'
 
 			genres_full = cursor.execute('select id, name from genres;').fetchall()
 			genres_exclude = [i for i in genres_full if (i[0],) not in genres]
 			genres_x = [i for i in genres_full if (i[0],) in genres]
 
 			for genre_i in genres_exclude:
-				content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
-			content += '</select><br><button class="w3-button '\
+				content += f'<option value="{genre_i[0]}">{genre_i[1]}</option>'
+			content += f'</select><br><button class="w3-button '\
 				'w3-dark-gray" type="submit">Додати</button></form></div>'\
 				'<div class="w3-half">'\
 				'<form class="w3-container" method="post" action="/a_del">'\
-				'<input type="hidden" name=id value={}>'\
-				'<select multiple size=15 name="genres">'.format(id)
+				'<input type="hidden" name=id value={id}>'\
+				'<select multiple size=15 name="genres">'
 
 			for genre_i in genres_x:
-				content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
+				content += f'<option value="{genre_i[0]}">{genre_i[1]}</option>'
 
 			content += '</select><br><button class="w3-button w3-dark-gray"'\
 				' type="submit">Видалити</button></form></div></div>'
-		content += '</div><div><a href=/><img class=control src=/static/ico/la.png>' \
-			'</a> <a href=/show/{}><img class=control src=/static/ico/ra.png>' \
-			'</a></div>'.format(id)
+		content += f'</div><div><a href=/><img class=control src=/static/ico/la.png>' \
+			'</a> <a href=/show/{id}><img class=control src=/static/ico/ra.png>' \
+			'</a></div>'
 		return prepare_main(content, get_header(request))
 	else:
 		cursor.close()
@@ -182,7 +190,7 @@ def show(id, cursor):
 	dir = cursor.execute('select dir from hentai where id=?;', (id, )).fetchone()[0]
 	content = ''
 	for img in sorted(listdir('hentai/' + dir)):
-		content += '<img class=imgs src="/hentai/' + dir + '/' + img + '"><br>'
+		content += f'<img class=imgs src="/hentai/{dir}/{img}"><br>'
 	return prepare_main(pages.show.format(content))
 
 
@@ -320,11 +328,11 @@ if __name__ == '__main__':
 		print('Config was load')
 	else:
 		print('Config not loaded')
-	print('RL:{} QT:{} AM:{}'.format(RELOAD, QUITE, ADMIN_ON))
+	print(f'RL:{RELOAD} QT:{QUITE} AM:{ADMIN_ON}')
 
 	if ADMIN_KEY == '':
 		ADMIN_KEY = ADMIN_KEY.join(choice(CHAR_DICT) for i in range(32))
-	print('Admin key is: {}'.format(ADMIN_KEY))
+	print(f'Admin key is: {ADMIN_KEY}')
 
 	try:
 		run(server=SERVER, host=IP, port=80, quiet=QUITE, reloader=RELOAD)
