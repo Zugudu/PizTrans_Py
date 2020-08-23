@@ -37,6 +37,7 @@ admin = '''
 header = '''
 <div class="w3-bar">
 	<a href=/><button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red">Головна</button></a>
+	<a href=/genres><button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red">Жанри</button></a>
 	{}
 	<a href=/about><button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red">Про нас</button></a>
 </div>

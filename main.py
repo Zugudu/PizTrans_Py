@@ -276,7 +276,19 @@ def admin_add_tag():
 @route('/about')
 def about():
 	return prepare_main(pages.about, get_header(request))
-
+	
+	
+@route('/genres')
+@db_work
+def genres_list(cursor):
+	genres = cursor.execute('SELECT * from genres;').fetchall()
+	genres.sort(key = lambda el: el[1])
+	content = '<div style="width: 800px">'
+	for i in genres:
+		content += concat('<a class=genre href=/genres/', i[0], '>',
+			i[1],'</a>')
+	content += '</div>'
+	return prepare_main(content, get_header(request))
 
 @error(404)
 def err404(err):
