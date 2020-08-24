@@ -337,8 +337,12 @@ if __name__ == '__main__':
 	if ADMIN_KEY == '':
 		ADMIN_KEY = ADMIN_KEY.join(choice(CHAR_DICT) for i in range(32))
 	print('Admin key is: {}'.format(ADMIN_KEY))
-
+	
 	try:
-		run(server=SERVER, host=IP, port=80, quiet=QUITE, reloader=RELOAD)
+		if SERVER == 'gevent':
+			from gevent import monkey; monkey.patch_all()
+			run(server=SERVER, host=IP, port=443, quiet=QUITE, reloader=RELOAD, keyfile='/etc/letsencrypt/live/uhentai.tk/privkey.pem', certfile='/etc/letsencrypt/live/uhentai.tk/fullchain.pem')
+		else:
+			run(server=SERVER, host=IP, port=80, quiet=QUITE, reloader=RELOAD)
 	except BrokenPipeError:
 		print('Someone disconect!')

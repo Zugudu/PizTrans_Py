@@ -9,7 +9,7 @@ main_page = '''
 <link rel="stylesheet" href="/static/css/style.css" />
 <link rel="stylesheet" media="(max-device-width:480px)" 
 href="/static/css/mob.css"/>
-<title>Piztrans</title>
+<title>uHentai</title>
 </head>
 <body>
 <center>
