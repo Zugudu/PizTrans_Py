@@ -86,9 +86,9 @@ about = '''
 Зворотній зв'язок <a href="https://t.me/Zugudu" target="_blank" rel="noopener noreferrer" class="w3-text-blue">@Zugudu</a><br>
 Розробкою сайту займалися:
 <ul class="w3-ul w3-border w3-light-gray w3-margin w3-hoverable" style="width:300px;">
-<a href="https://github.com/Zugudu" target="_blank" rel="noopener noreferrer" style="text-decoration: none;"><li style="border-bottom:1px solid #ddd;" class="anime">Ісус</li></a>
-<li class="anime w3-hover-none">Шурік</li>
-<a href="https://myanimelist.net/profile/s0fko" target="_blank" rel="noopener noreferrer" style="text-decoration: none;"><li class="anime">s0fko</li></a>
+<a href="https://github.com/Zugudu" target="_blank" rel="noopener noreferrer" style="text-decoration: none;"><li style="border-bottom:1px solid #ddd;" class="anime" title="Програміст, прости Госоподи веб-дизайнер, системний адміністратор, спеціаліст інформаційної безпеки і просто хороша людина">Ісус</li></a>
+<li class="anime w3-hover-none" title="Додавання та присвоєння жанрів">Шурік</li>
+<a href="https://myanimelist.net/profile/s0fko" target="_blank" rel="noopener noreferrer" style="text-decoration: none;"><li class="anime" title="Переклад хентаю українською">s0fko</li></a>
 </ul>
 </div>
 '''
