@@ -3,7 +3,7 @@ main_page = '''
 <html>
 <head>
 <meta charset=utf8>
-<meta name=viewport width=device-width>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name=keywords content="хєнтай, хентай, манга, hentai, manga, порно, комикси, комікси">
 <link rel="stylesheet" href="/static/css/w3.css">
 <link rel="stylesheet" href="/static/css/style.css" />
@@ -20,7 +20,22 @@ href="/static/css/mob.css"/>
 '''
 
 
-show = '<a href=/><img class="control home" src=/static/ico/home.png></a>{}'
+show = '<a href="/manga/{}"><img class=home src="/static/ico/home.png"></a>{}'
+show_book = '<a href="{}"><img class=imgs src="/hentai/{}/{}"></a><br>'
+genre_button = '<a class=genre href=/genres/{}>{}</a>'
+
+
+manga = '''
+<div class="name" style="margin: 15px 0;">{}</div>
+<div>
+<div class="block"><a href="/show/{}"><img class="image" src="/hentai/{}/{}"></a></div>
+<div class="disc">{}</div>
+<div>
+<a class="w3-button w3-blue w3-mobile read-btn" href="/show/{}/0">Читати немов книгу</a>
+<a class="w3-button w3-blue w3-mobile read-btn" href="/show/{}">Читати немов сувій</a>
+</div>
+</div>
+'''
 
 
 admin = '''
@@ -81,7 +96,7 @@ error = '''
 
 
 about = '''
-<div class="w3-medium w3-padding" style="width:880px;">
+<div class="w3-medium w3-padding" style="width:90%;">
 Привіт, як ти вже встиг помітити, ти знаходишся на сайті з хєнтаєм.<br>Весь код є власністю Клубу Кібернетики Коледжу (ККК)<br>
 Зворотній зв'язок <a href="https://t.me/Zugudu" target="_blank" rel="noopener noreferrer" class="w3-text-blue">@Zugudu</a><br>
 Розробкою сайту займалися:

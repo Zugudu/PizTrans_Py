@@ -129,18 +129,17 @@ def manga(id, cursor):
 	cursor.execute('select name,dir from hentai where id=?;', (id,))
 	res = cursor.fetchone()
 	if res is not None:
-		content = concat('<div class=name style="margin: 15px 0;">', res[0],
-							'</div><div><div class=block>', get_flag(id), '<a href=/show/',
-							id, '><img class=image src="/hentai/',
-							res[1], '/', sorted(listdir('hentai/' + res[1]))[0],
-							'"></a></div><div class=disc>')
 		genres = cursor.execute('select id_genres from hentai_genres'
 		' where id_hentai=?;', (id,)).fetchall()
+		genres_content = ''
 		for genre in genres:
 			cursor.execute('select id,name from genres where id=?;', (genre[0],))
 			genre_info = cursor.fetchone()
-			content = concat(content, '<a class=genre href=/genres/',
-				genre_info[0], '>', genre_info[1], '</a> ')
+			genres_content += pages.genre_button.format(genre_info[0], genre_info[1])
+			
+		content = pages.manga.format(res[0], id, res[1],
+			sorted(listdir('hentai/' + res[1]))[0],
+			genres_content, id, id)
 
 		if request.get_cookie('admin') == ADMIN_KEY:
 			content += '<div class="w3-row" style="width:480px;">' \
@@ -167,9 +166,6 @@ def manga(id, cursor):
 
 			content += '</select><br><button class="w3-button w3-dark-gray"'\
 				' type="submit">Видалити</button></form></div></div>'
-		content += '</div><div><a href=/><img class=control src=/static/ico/la.png>' \
-			'</a> <a href=/show/{}><img class=control src=/static/ico/ra.png>' \
-			'</a></div>'.format(id)
 		return prepare_main(content, get_header(request))
 	else:
 		cursor.close()
@@ -183,7 +179,21 @@ def show(id, cursor):
 	content = ''
 	for img in sorted(listdir('hentai/' + dir)):
 		content += '<img class=imgs src="/hentai/' + dir + '/' + img + '"><br>'
-	return prepare_main(pages.show.format(content))
+	return prepare_main(pages.show.format(id, content))
+
+
+@route('/show/<id:int>/<page:int>')
+@db_work
+def show(id, page, cursor):
+	dir = cursor.execute('select dir from hentai where id=?;', (id, )).fetchone()[0]
+	hentai = listdir('hentai/' + dir)
+	if len(hentai) < page:
+		abort(404)
+	elif len(hentai) <= page+1:
+		content = pages.show_book.format('/manga/'+str(id), dir, listdir('hentai/' + dir)[page])
+	else:
+		content = pages.show_book.format('/show/'+str(id)+'/'+str(page+1), dir, listdir('hentai/' + dir)[page])
+	return prepare_main(pages.show.format(id, content))
 
 
 @route('/a')
@@ -283,10 +293,9 @@ def about():
 def genres_list(cursor):
 	genres = cursor.execute('SELECT * from genres;').fetchall()
 	genres.sort(key = lambda el: el[1])
-	content = '<div style="width: 800px">'
+	content = '<div style="width: 80%">'
 	for i in genres:
-		content += concat('<a class=genre href=/genres/', i[0], '>',
-			i[1],'</a>')
+		content += pages.genre_button.format(i[0], i[1])
 	content += '</div>'
 	return prepare_main(content, get_header(request))
 
