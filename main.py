@@ -190,9 +190,9 @@ def show(id, page, cursor):
 	if len(hentai) < page:
 		abort(404)
 	elif len(hentai) <= page+1:
-		content = pages.show_book.format('/manga/'+str(id), dir, listdir('hentai/' + dir)[page])
+		content = pages.show_book.format('/manga/'+str(id), dir, sorted(listdir('hentai/' + dir))[page])
 	else:
-		content = pages.show_book.format('/show/'+str(id)+'/'+str(page+1), dir, listdir('hentai/' + dir)[page])
+		content = pages.show_book.format('/show/'+str(id)+'/'+str(page+1), dir, sorted(listdir('hentai/' + dir))[page])
 	return prepare_main(pages.show.format(id, content))
 
 
