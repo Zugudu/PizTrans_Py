@@ -28,7 +28,7 @@ genre_button = '<a class=genre href=/genres/{}>{}</a>'
 manga = '''
 <div class="name" style="margin: 15px 0;">{}</div>
 <div>
-<div class="block"><a href="/show/{}"><img class="image" src="/hentai/{}/{}"></a></div>
+<div class="block">{}<a href="/show/{}"><img class="image" src="/hentai/{}/{}"></a></div>
 <div class="disc">{}</div>
 <div>
 <a class="w3-button w3-blue w3-mobile read-btn" href="/show/{}/0">Читати немов книгу</a>

@@ -137,7 +137,7 @@ def manga(id, cursor):
 			genre_info = cursor.fetchone()
 			genres_content += pages.genre_button.format(genre_info[0], genre_info[1])
 			
-		content = pages.manga.format(res[0], id, res[1],
+		content = pages.manga.format(res[0], get_flag(id), id, res[1],
 			sorted(listdir('hentai/' + res[1]))[0],
 			genres_content, id, id)
 
