@@ -5,13 +5,19 @@ from bottle import route, run, static_file, abort, post, response, request, redi
 from os import listdir
 from random import choice
 from json import load, dump
+from sys import argv
+from os import path
 
 
 ADMIN_KEY = ''
 ADMIN_ON = False
 
 CHAR_DICT = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-db = sqlite3.connect('db')
+db = ''
+
+
+def get_path(file):
+	return path.join(path.dirname(path.abspath(__file__)), argv[1],file)
 
 
 def _optimize(text):
@@ -71,7 +77,7 @@ def load_static(file):
 
 @route('/hentai/<file:path>')
 def load_hentai(file):
-	return static_file(file, 'hentai', 'image/jpg')
+	return static_file(file, get_path('hentai'), 'image/jpg')
 
 
 def db_work(func):
@@ -96,7 +102,7 @@ def get_manga(sql, param='', cursor=''):
 	for row in ind:
 		content = concat(content, '<div class=block>', get_flag(row[0]), '<a href=/manga/',
 				row[0], '><img class=image src="/hentai/',
-				row[2], '/', sorted(listdir('hentai/'+row[2]))[0],
+				row[2], '/', sorted(listdir(path.join(get_path('hentai'),row[2])))[0],
 				'"></a><div class=caption>', row[1], '</div></div>')
 	content += '</div>'
 	return content
@@ -138,7 +144,7 @@ def manga(id, cursor):
 			genres_content += pages.genre_button.format(genre_info[0], genre_info[1])
 			
 		content = pages.manga.format(res[0], get_flag(id), id, res[1],
-			sorted(listdir('hentai/' + res[1]))[0],
+			sorted(listdir(path.join(get_path('hentai'),res[1])))[0],
 			genres_content, id, id)
 
 		if request.get_cookie('admin') == ADMIN_KEY:
@@ -177,7 +183,7 @@ def manga(id, cursor):
 def show(id, cursor):
 	dir = cursor.execute('select dir from hentai where id=?;', (id, )).fetchone()[0]
 	content = ''
-	for img in sorted(listdir('hentai/' + dir)):
+	for img in sorted(listdir(path.join(get_path('hentai'), dir))):
 		content += '<img class=imgs src="/hentai/' + dir + '/' + img + '"><br>'
 	return prepare_main(pages.show.format(id, content))
 
@@ -186,13 +192,13 @@ def show(id, cursor):
 @db_work
 def show(id, page, cursor):
 	dir = cursor.execute('select dir from hentai where id=?;', (id, )).fetchone()[0]
-	hentai = listdir('hentai/' + dir)
+	hentai = listdir(path.join(get_path('hentai'), dir))
 	if len(hentai) < page:
 		abort(404)
 	elif len(hentai) <= page+1:
-		content = pages.show_book.format('/manga/'+str(id), dir, sorted(listdir('hentai/' + dir))[page])
+		content = pages.show_book.format('/manga/'+str(id), dir, sorted(listdir(path.join(get_path('hentai'), dir)))[page])
 	else:
-		content = pages.show_book.format('/show/'+str(id)+'/'+str(page+1), dir, sorted(listdir('hentai/' + dir))[page])
+		content = pages.show_book.format('/show/'+str(id)+'/'+str(page+1), dir, sorted(listdir(path.join(get_path('hentai'), dir)))[page])
 	return prepare_main(pages.show.format(id, content))
 
 
@@ -318,40 +324,40 @@ def err401(err):
 
 
 if __name__ == '__main__':
+	if len(argv) < 1:
+		print('Specify work dir')
+		exit(1)
+	db = sqlite3.connect(get_path('db'))
+	
 	SETTING = None
-	RELOAD = False
-	QUITE = True
-	IP = '127.0.0.1'
-	SERVER = 'wsgiref'
 	try:
-		with open('conf.json', 'r') as fd:
+		with open(get_path('conf.json'), 'r') as fd:
 			SETTING = load(fd)
 	except FileNotFoundError:
 		print('Config not found! Creating template...')
-		with open('conf.json', 'w') as fd:
-			dump({'ADMIN_KEY': '', 'ADMIN_MODE': False, 'RELOAD': False, 'QUITE': True, 'IP': '127.0.0.1', 'SRV': 'wsgiref'}, fd)
+		SETTING = {'ADMIN_KEY': '', 'ADMIN_MODE': False, 'RELOAD': False, 'QUITE': True, 'IP': '127.0.0.1', 'SRV': 'wsgiref', 'PORT': 80, 'SSL': ''}
+		with open(get_path('conf.json'), 'w') as fd:
+			dump(SETTING, fd)
 		print('Template was created')
-	if SETTING is not None:
-		RELOAD = SETTING['RELOAD']
-		QUITE = SETTING['QUITE']
-		ADMIN_KEY = SETTING['ADMIN_KEY']
-		ADMIN_ON = SETTING['ADMIN_MODE']
-		IP = SETTING['IP']
-		SERVER = SETTING['SRV']
-		print('Config was load')
-	else:
-		print('Config not loaded')
-	print('RL:{} QT:{} AM:{}'.format(RELOAD, QUITE, ADMIN_ON))
+		
+	print('RL:{} QT:{} AM:{}'.format(SETTING['RELOAD'], SETTING['QUITE'], SETTING['ADMIN_MODE']))
 
-	if ADMIN_KEY == '':
-		ADMIN_KEY = ADMIN_KEY.join(choice(CHAR_DICT) for i in range(32))
-	print('Admin key is: {}'.format(ADMIN_KEY))
+	if SETTING['ADMIN_KEY'] == '':
+		SETTING['ADMIN_KEY'] = SETTING['ADMIN_KEY'].join(choice(CHAR_DICT) for i in range(32))
+	print('Admin key is: {}'.format(SETTING['ADMIN_KEY']))
+	
+	ADMIN_ON = SETTING['ADMIN_MODE']
+	ADMIN_KEY = SETTING['ADMIN_KEY']
 	
 	try:
-		if SERVER == 'gevent':
+		if SETTING['SRV'] == 'gevent':
 			from gevent import monkey; monkey.patch_all()
-			run(server=SERVER, host=IP, port=443, quiet=QUITE, reloader=RELOAD, keyfile='/etc/letsencrypt/live/uhentai.tk/privkey.pem', certfile='/etc/letsencrypt/live/uhentai.tk/fullchain.pem')
+			run(server=SETTING['SRV'], host=SETTING['IP'],
+					port=SETTING['PORT'], quiet=SETTING['QUITE'],
+					reloader=SETTING['RELOAD'],
+					keyfile=SETTING['SSL']+'privkey.pem',
+					certfile=SETTING['SSL']+'fullchain.pem')
 		else:
-			run(server=SERVER, host=IP, port=80, quiet=QUITE, reloader=RELOAD)
+			run(server=SETTING['SRV'], host=SETTING['IP'], port=SETTING['PORT'], quiet=SETTING['QUITE'], reloader=SETTING['RELOAD'])
 	except BrokenPipeError:
 		print('Someone disconect!')
