@@ -324,7 +324,7 @@ def err401(err):
 
 
 if __name__ == '__main__':
-	if len(argv) < 1:
+	if len(argv) <= 0:
 		print('Specify work dir')
 		exit(1)
 	db = sqlite3.connect(get_path('db'))
