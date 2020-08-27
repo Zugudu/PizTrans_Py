@@ -1,0 +1,117 @@
+@font-face
+{
+	font-family: Anime;
+	src: url(a.ttf);
+	font-display: swap;
+}
+.anime, .genre, .caption
+{
+	font: 100% Anime;
+}
+a
+{
+	text-decoration: none;
+}
+.wrap
+{
+	width: 880px;
+	margin: 10px auto;
+	display: block;
+}
+.block
+{
+	display: inline-block;
+	margin: 0 10px 10px 10px;
+	vertical-align: top;
+	position:relative;
+}
+.image
+{
+	display: block;
+	outline: #2195f3 solid 4px;
+	width:200px;
+	height:300px;
+}
+.image:hover
+{
+	outline: #f44336 inset 5px;
+}
+.caption
+{
+	display: block;
+	text-align: center;
+	width: 200px;
+	margin-top: 10px;
+}
+.name
+{
+	font: bold 120% Anime;
+	width: 80%;
+}
+.disc
+{
+	display: inline-block;
+	vertical-align: top;
+	width: 400px;
+	padding: 10px;
+}
+.imgs
+{
+	width: 60%;
+	margin: 0 auto;
+}
+.home
+{
+	width: 40px;
+	height: auto;
+	position: fixed;
+	top: 10px;
+	left: 10px;
+	float: left;
+}
+.genre
+{
+	display: inline-block;
+	text-decoration: none;
+	background-color: #d4e8f3;
+	color: black;
+	padding: 5px;
+	margin: 5px;
+	border: #2195f3b4 solid 3px;
+	border-radius: 5px;
+}
+.genre:hover
+{
+	border: #f44336 solid 3px;
+	border-radius: 5px;
+	background-color: #fddbda;
+}
+.flag
+{
+	width:30px;
+	height:20px;
+	left:0px;
+	position:absolute;
+}
+.flag:hover
+{
+	width:36px;
+	height:24px;
+}
+.flag-231, .flag-232
+{
+	width:100%;
+	height:50%;
+	position:absolute;
+}
+.flag-232{bottom:0px;}
+
+.admin-status{
+	position:fixed;
+	right:10px;
+	top:10px;
+}
+
+.read-btn{
+	margin:5px;
+}
