@@ -293,17 +293,45 @@ def admin_add_tag():
 def about():
 	return prepare_main(pages.about, get_header(request))
 	
-	
+#Сашенька грається в пісочку	
 @route('/genres')
 @db_work
 def genres_list(cursor):
-	genres = cursor.execute('SELECT * from genres;').fetchall()
+	genres = cursor.execute('select * from genres;').fetchall()
 	genres.sort(key = lambda el: el[1])
-	content = '<div style="width: 80%">'
-	for i in genres:
-		content += pages.genre_button.format(i[0], i[1])
+	content = ''
+	current_symbol = genres[0][1][0]
+	content += f'''<div class=genre_group>
+					<a name="{current_symbol}">
+						<div  class=symbol>
+							{current_symbol}
+						</div>
+					</a>'''
+	symbols = [current_symbol]
+	for g_id, name in genres:
+		if name[0] != current_symbol:
+			current_symbol = name[0]
+			content += f'''</div>
+						<div class=genre_group>
+							<a name="{current_symbol}">
+								<div  class=symbol>
+									{current_symbol}
+								</div>
+							</a>'''
+			symbols += current_symbol
+		content += f'''<a class=genre href=/genres/{g_id}>
+							{name}
+						</a>'''
+
+	content += '''</div><div class="bottombar w3-bar w3-mobile-hide">'''
+	for i in symbols:
+		content += f'''<a href="#{i}" class="anime w3-button w3-medium w3-bar-item w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red w3-topbar">
+						{i}
+					</a>'''
+
 	content += '</div>'
 	return prepare_main(content, get_header(request))
+
 
 @error(404)
 def err404(err):
@@ -324,7 +352,7 @@ def err401(err):
 
 
 if __name__ == '__main__':
-	if len(argv) <= 1:
+	if len(argv) <= 0:
 		print('Specify work dir')
 		exit(1)
 	db = sqlite3.connect(get_path('db'))
