@@ -113,14 +113,34 @@ def index():
 	return prepare_main(get_manga('select id,name,dir from hentai;'), get_header(request))
 
 
+@route('/search')
+def search():
+	return prepare_main(pages.search, get_header(request))
+
+
 @route('/search/<type>/<id:int>')
-def search(type, id):
-	if type in ('char', 'genres', 'series'):
+def search_engine(type, id):
+	if type in ('chars', 'genres', 'series'):
 		return prepare_main(
 		get_manga(
 			'select id,name,dir from hentai,hentai_' + type + ' where id_hentai=id and id_' + type + '=?;',
 			(id, )),
 		get_header(request))
+	else:
+		abort(404)
+
+
+@route('/list/<type>')
+@db_work
+def genres_list(type, cursor):
+	if type in ('chars', 'genres', 'series'):
+		genres = cursor.execute('SELECT * from ' + type + ';').fetchall()
+		genres.sort(key = lambda el: el[1])
+		content = '<div style="width: 80%">'
+		for i in genres:
+			content += pages.genre_button.format(type, i[0], i[1])
+		content += '</div>'
+		return prepare_main(content, get_header(request))
 	else:
 		abort(404)
 
@@ -144,7 +164,7 @@ def manga(id, cursor):
 		for genre in genres:
 			cursor.execute('select id,name from genres where id=?;', (genre[0],))
 			genre_info = cursor.fetchone()
-			genres_content += pages.genre_button.format(genre_info[0], genre_info[1])
+			genres_content += pages.genre_button.format('genres', genre_info[0], genre_info[1])
 
 		content = pages.manga.format(res[0], get_flag(id), id, res[1],
 			sorted(listdir(path.join(get_path('hentai'),res[1])))[0],
@@ -296,17 +316,6 @@ def admin_add_tag():
 def about():
 	return prepare_main(pages.about, get_header(request))
 
-
-@route('/genres')
-@db_work
-def genres_list(cursor):
-	genres = cursor.execute('SELECT * from genres;').fetchall()
-	genres.sort(key = lambda el: el[1])
-	content = '<div style="width: 80%">'
-	for i in genres:
-		content += pages.genre_button.format(i[0], i[1])
-	content += '</div>'
-	return prepare_main(content, get_header(request))
 
 @error(404)
 def err404(err):
