@@ -95,7 +95,7 @@ admin_enter = ('Сасай кудасай', 'Чємуске', 'Пароль:root
 
 
 error = '''
-<div class='w3-container' style='width:50%;'>
+<div class='w3-container error'>
 <div class="w3-container w3-red w3-padding">{}</div>
 <img src="/static/ico/{}"><br>
 <a href="/" class="w3-button w3-block w3-dark-gray w3-margin-top">Назад</a>
