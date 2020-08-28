@@ -32,19 +32,6 @@ def prepare_err(text, ico):
 	return _optimize(pages.main_page.format(pages.error.format(text, ico)))
 
 
-def concat(text, *args):
-	"""
-	Concat multiple strings
-
-	:param text: Initial text
-	:param args: Secondary texts
-	"""
-	ret = text
-	for i in args:
-		ret += str(i)
-	return ret
-
-
 def get_header(c_request):
 	"""
 	Check admin mode status and generate header
@@ -101,10 +88,11 @@ def get_manga(sql, param='', cursor=''):
 	content = '<div class=wrap>'
 	if len(ind) > 0:
 		for row in ind:
-			content = concat(content, '<div class=block>', get_flag(row[0]), '<a href=/manga/',
-					row[0], '><img class=image src="/hentai/',
-					row[2], '/', sorted(listdir(path.join(get_path('hentai'),row[2])))[0],
-					'"></a><div class=caption>', row[1], '</div></div>')
+			content += '''<div class=block>
+			{}<a href=/manga/{}>
+			<img class=image src="/hentai/{}/{}"></a>
+			<div class=caption>{}</div>
+			</div>'''.format(get_flag(row[0]), row[0], row[2], sorted(listdir(path.join(get_path('hentai'),row[2])))[0], row[1])
 	else:
 		content += '<img src="/static/ico/MNF.png" class=w3-margin-bottom><br><div class=anime>Схоже мальописи відсутні</div>'
 	content += '</div>'
@@ -113,7 +101,7 @@ def get_manga(sql, param='', cursor=''):
 
 @route('/')
 def index():
-	return prepare_main(get_manga('select id,name,dir from hentai;'), get_header(request))
+	return prepare_main(get_manga('select id,name,dir from hentai order by id desc;'), get_header(request))
 
 
 @route('/search')
