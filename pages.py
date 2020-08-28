@@ -24,7 +24,7 @@ href="/static/css/mob.css"/>
 
 show = '<a href="/manga/{}"><img class=home src="/static/ico/home.png"></a>{}'
 show_book = '<a href="{}"><img class=imgs src="/hentai/{}/{}"></a><br>'
-genre_button = '<a class=genre href=/genres/{}>{}</a>'
+genre_button = '<a class=genre href=/search/{}/{}>{}</a>'
 
 
 manga = '''
@@ -52,12 +52,20 @@ admin = '''
 
 
 header = '''
-<div class="w3-bar">
-	<a href=/><button class="anime w3-button w3-medium w3-bar-item w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red w3-bottombar">Головна</button></a>
-	<a href=/genres><button class="anime w3-button w3-medium w3-bar-item w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red w3-bottombar">Жанри</button></a>
+<div class="w3-bar w3-margin-bottom">
+	<a href=/><button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red">Головна</button></a>
+	<a href=/search><button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red">Пошук</button></a>
 	{}
 	<a href=/about><button class="anime w3-button w3-medium w3-bar-item w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red w3-bottombar">Про нас</button></a>
 </div>
+'''
+
+
+search = '''
+<div class="anime w3-margin-bottom">Пошук по:</div>
+<a href="/list/chars" class="anime w3-button w3-mobile w3-blue read-btn">персонажу</a>
+<a href="/list/series" class="anime w3-button w3-mobile w3-blue read-btn">серії мальописів</a>
+<a href="/list/genres" class="anime w3-button w3-mobile w3-blue read-btn">жанру</a>
 '''
 
 
@@ -89,7 +97,7 @@ admin_enter = ('Сасай кудасай', 'Чємуске', 'Пароль:root
 
 
 error = '''
-<div class='w3-container' style='width:50%;'>
+<div class='w3-container error'>
 <div class="w3-container w3-red w3-padding">{}</div>
 <img src="/static/ico/{}"><br>
 <a href="/" class="w3-button w3-block w3-dark-gray w3-margin-top">Назад</a>
@@ -98,8 +106,8 @@ error = '''
 
 
 about = '''
-<div class="w3-medium w3-padding" style="width:90%;">
-Привіт, як ти вже встиг помітити, ти знаходишся на сайті з хєнтаєм.<br>Весь код є власністю Клубу Кібернетики Коледжу (ККК)<br>
+<div class="w3-medium" style="width:90%;">
+Привіт, як ти вже встиг помітити, ти знаходишся на сайті з хентаєм.<br>Весь код є власністю Клубу Кібернетики Коледжу (ККК)<br>
 Зворотній зв'язок <a href="https://t.me/Zugudu" target="_blank" rel="noopener noreferrer" class="w3-text-blue">@Zugudu</a><br>
 Розробкою сайту займалися:
 <ul class="w3-ul w3-border w3-light-gray w3-margin w3-hoverable" style="width:300px;">
