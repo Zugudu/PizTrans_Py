@@ -99,11 +99,14 @@ def get_manga(sql, param='', cursor=''):
 		abort(500)
 	ind = cursor.execute(sql, param).fetchall()
 	content = '<div class=wrap>'
-	for row in ind:
-		content = concat(content, '<div class=block>', get_flag(row[0]), '<a href=/manga/',
-				row[0], '><img class=image src="/hentai/',
-				row[2], '/', sorted(listdir(path.join(get_path('hentai'),row[2])))[0],
-				'"></a><div class=caption>', row[1], '</div></div>')
+	if len(ind) > 0:
+		for row in ind:
+			content = concat(content, '<div class=block>', get_flag(row[0]), '<a href=/manga/',
+					row[0], '><img class=image src="/hentai/',
+					row[2], '/', sorted(listdir(path.join(get_path('hentai'),row[2])))[0],
+					'"></a><div class=caption>', row[1], '</div></div>')
+	else:
+		content += '<img src="/static/ico/MNF.png" class=w3-margin-bottom><br><div class=anime>Схоже мальописи відсутні</div>'
 	content += '</div>'
 	return content
 
@@ -158,17 +161,38 @@ def manga(id, cursor):
 	cursor.execute('select name,dir from hentai where id=?;', (id,))
 	res = cursor.fetchone()
 	if res is not None:
+		disc_content = ''
+		
+		genres = cursor.execute('select id_series from hentai_series'
+		' where id_hentai=?;', (id,)).fetchall()
+		if len(genres) > 0:
+			disc_content += '<div class="anime">Серія мальописів</div>'
+		for genre in genres:
+			cursor.execute('select id,name from series where id=?;', (genre[0],))
+			genre_info = cursor.fetchone()
+			disc_content += pages.genre_button.format('series', genre_info[0], genre_info[1])
+			
+		genres = cursor.execute('select id_chars from hentai_chars'
+		' where id_hentai=?;', (id,)).fetchall()
+		if len(genres) > 0:
+			disc_content += '<div class="anime">Персонажі</div>'
+		for genre in genres:
+			cursor.execute('select id,name from chars where id=?;', (genre[0],))
+			genre_info = cursor.fetchone()
+			disc_content += pages.genre_button.format('chars', genre_info[0], genre_info[1])
+		
 		genres = cursor.execute('select id_genres from hentai_genres'
 		' where id_hentai=?;', (id,)).fetchall()
-		genres_content = ''
+		if len(genres) > 0:
+			disc_content += '<div class="anime">Жанри</div>'
 		for genre in genres:
 			cursor.execute('select id,name from genres where id=?;', (genre[0],))
 			genre_info = cursor.fetchone()
-			genres_content += pages.genre_button.format('genres', genre_info[0], genre_info[1])
+			disc_content += pages.genre_button.format('genres', genre_info[0], genre_info[1])
 
 		content = pages.manga.format(res[0], get_flag(id), id, res[1],
 			sorted(listdir(path.join(get_path('hentai'),res[1])))[0],
-			genres_content, id, id)
+			disc_content, id, id)
 
 		if request.get_cookie('admin') == ADMIN_KEY:
 			content += '<div class="w3-row" style="width:480px;">' \
