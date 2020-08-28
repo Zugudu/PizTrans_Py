@@ -26,7 +26,7 @@ def _optimize(text):
 
 def prepare_main(text, header=''):
 	return _optimize(pages.main_page.format(header+text))
-	
+
 
 def prepare_err(text, ico):
 	return _optimize(pages.main_page.format(pages.error.format(text, ico)))
@@ -43,12 +43,12 @@ def concat(text, *args):
 	for i in args:
 		ret += str(i)
 	return ret
-	
-	
+
+
 def get_header(c_request):
 	"""
 	Check admin mode status and generate header
-	
+
 	:param c_request: gotted request
 	"""
 	header = ''
@@ -59,7 +59,7 @@ def get_header(c_request):
 	else:
 		header = pages.header.format('')
 	return header
-	
+
 
 def get_flag(id):
 	cursor = db.cursor()
@@ -68,7 +68,7 @@ def get_flag(id):
 		flag = pages.flag_ua
 	cursor.close()
 	return flag
-	
+
 
 @route('/static/<file:path>')
 def load_static(file):
@@ -87,7 +87,7 @@ def db_work(func):
 		cursor.close()
 		return ret
 	return wrap
-	
+
 
 @db_work
 def get_manga(sql, param='', cursor=''):
@@ -113,15 +113,18 @@ def index():
 	return prepare_main(get_manga('select id,name,dir from hentai;'), get_header(request))
 
 
-@route('/genres/<id:int>')
-def genres(id):
-	return prepare_main(
+@route('/search/<type>/<id:int>')
+def search(type, id):
+	if type in ('char', 'genres', 'series'):
+		return prepare_main(
 		get_manga(
-			'select id,name,dir from hentai,hentai_genres where id_hentai=id and id_genres=?;',
+			'select id,name,dir from hentai,hentai_' + type + ' where id_hentai=id and id_' + type + '=?;',
 			(id, )),
 		get_header(request))
-	
-	
+	else:
+		abort(404)
+
+
 @route('/lang/<id:int>')
 def lang(id):
 	return prepare_main(
@@ -142,7 +145,7 @@ def manga(id, cursor):
 			cursor.execute('select id,name from genres where id=?;', (genre[0],))
 			genre_info = cursor.fetchone()
 			genres_content += pages.genre_button.format(genre_info[0], genre_info[1])
-			
+
 		content = pages.manga.format(res[0], get_flag(id), id, res[1],
 			sorted(listdir(path.join(get_path('hentai'),res[1])))[0],
 			genres_content, id, id)
@@ -213,8 +216,8 @@ def admin():
 			return prepare_main(pages.admin.format(admin_welcome, admin_enter), get_header(request))
 	else:
 		abort(404)
-		
-		
+
+
 def admin_test(func):
 	def wrap(*a, **ka):
 		if ADMIN_ON:
@@ -264,7 +267,7 @@ def admin_del():
 	cursor.close()
 	db.commit()
 	redirect('/manga/{}'.format(request.POST['id']))
-		
+
 
 @post('/a_am')
 @admin_test
@@ -276,8 +279,8 @@ def admin_add_manga():
 	cursor.close()
 	db.commit()
 	redirect('/a')
-	
-	
+
+
 @post('/a_at')
 @admin_test
 def admin_add_tag():
@@ -287,13 +290,13 @@ def admin_add_tag():
 	cursor.close()
 	db.commit()
 	redirect('/a')
-		
-		
+
+
 @route('/about')
 def about():
 	return prepare_main(pages.about, get_header(request))
-	
-	
+
+
 @route('/genres')
 @db_work
 def genres_list(cursor):
@@ -328,7 +331,7 @@ if __name__ == '__main__':
 		print('Specify work dir')
 		exit(1)
 	db = sqlite3.connect(get_path('db'))
-	
+
 	SETTING = None
 	try:
 		with open(get_path('conf.json'), 'r') as fd:
@@ -339,16 +342,16 @@ if __name__ == '__main__':
 		with open(get_path('conf.json'), 'w') as fd:
 			dump(SETTING, fd)
 		print('Template was created')
-		
+
 	print('RL:{} QT:{} AM:{}'.format(SETTING['RELOAD'], SETTING['QUITE'], SETTING['ADMIN_MODE']))
 
 	if SETTING['ADMIN_KEY'] == '':
 		SETTING['ADMIN_KEY'] = SETTING['ADMIN_KEY'].join(choice(CHAR_DICT) for i in range(32))
 	print('Admin key is: {}'.format(SETTING['ADMIN_KEY']))
-	
+
 	ADMIN_ON = SETTING['ADMIN_MODE']
 	ADMIN_KEY = SETTING['ADMIN_KEY']
-	
+
 	try:
 		if SETTING['SRV'] == 'gevent':
 			from gevent import monkey; monkey.patch_all()
