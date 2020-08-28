@@ -299,36 +299,18 @@ def about():
 def genres_list(cursor):
 	genres = cursor.execute('select * from genres;').fetchall()
 	genres.sort(key = lambda el: el[1])
-	content = ''
 	current_symbol = genres[0][1][0]
-	content += f'''<div class=genre_group>
-					<a name="{current_symbol}">
-						<div  class=symbol>
-							{current_symbol}
-						</div>
-					</a>'''
+	content = pages.genre_group.format(current_symbol, current_symbol)
 	symbols = [current_symbol]
 	for g_id, name in genres:
 		if name[0] != current_symbol:
 			current_symbol = name[0]
-			content += f'''</div>
-						<div class=genre_group>
-							<a name="{current_symbol}">
-								<div  class=symbol>
-									{current_symbol}
-								</div>
-							</a>'''
+			content += '</div>' + pages.genre_group.format(current_symbol, current_symbol)
 			symbols += current_symbol
-		content += f'''<a class=genre href=/genres/{g_id}>
-							{name}
-						</a>'''
-
-	content += '''</div><div class="bottombar w3-bar w3-mobile-hide">'''
+		content += pages.genre_button.format(g_id, name)
+	content += '</div><div class="bottombar w3-bar w3-mobile-hide">'
 	for i in symbols:
-		content += f'''<a href="#{i}" class="anime w3-button w3-medium w3-bar-item w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red w3-topbar">
-						{i}
-					</a>'''
-
+		content += pages.genres_bottom_bar.format(i, pages.w3_button, i)
 	content += '</div>'
 	return prepare_main(content, get_header(request))
 

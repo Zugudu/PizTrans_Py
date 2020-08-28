@@ -1,4 +1,6 @@
 #codec=utf-8
+w3_button = 'anime w3-button w3-medium w3-bar-item w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red'
+
 main_page = '''
 <html>
 <head>
@@ -51,10 +53,10 @@ admin = '''
 
 header = '''
 <div class="w3-bar">
-	<a href=/><button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red">Головна</button></a>
-	<a href=/genres><button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red">Жанри</button></a>
+	<a href=/><button class="anime w3-button w3-medium w3-bar-item w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red w3-bottombar">Головна</button></a>
+	<a href=/genres><button class="anime w3-button w3-medium w3-bar-item w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red w3-bottombar">Жанри</button></a>
 	{}
-	<a href=/about><button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red">Про нас</button></a>
+	<a href=/about><button class="anime w3-button w3-medium w3-bar-item w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red w3-bottombar">Про нас</button></a>
 </div>
 '''
 
@@ -110,3 +112,20 @@ about = '''
 
 
 flag_ua = '<a href="/lang/1" class="flag"><div class="flag-231 w3-blue"></div><div class="flag-232 w3-yellow"></div></a>'
+
+
+#Сашенька в пісочку
+genre_group = '''
+<div class=genre_group>
+	<a name="{}">
+		<div  class=symbol>
+			{}
+		</div>
+	</a>
+'''
+
+genres_bottom_bar = '''
+<a href="#{}" class="{} w3-topbar">
+	{}
+</a>
+'''
