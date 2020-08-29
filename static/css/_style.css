@@ -7,11 +7,9 @@
 .anime, .genre, .caption
 {
 	font: 100% Anime;
-}
-a
-{
-	text-decoration: none;
-}
+}і
+a{text-decoration: none;}
+
 .wrap
 {
 	width: 880px;
@@ -104,23 +102,18 @@ a
 	height:50%;
 	position:absolute;
 }
-.flag-232
-{
-	bottom:0px;}
+.flag-232{bottom:0px;}
+
 .admin-status
 {
 	position:fixed;
 	right:10px;
 	top:10px;
 }
-.read-btn
-{
-	margin:5px;
-}
-.error
-{
-    width: 50%;
-}
+.read-btn{margin:5px;}
+
+.error{width: 50%;}
+
 .genre_group
 {
 	width: 60%;

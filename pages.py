@@ -1,6 +1,7 @@
 #codec=utf-8
 w3_button = 'anime w3-button w3-medium w3-bar-item w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red'
 
+
 main_page = '''
 <html>
 <head>

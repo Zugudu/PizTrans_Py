@@ -138,7 +138,7 @@ def genres_list(type, cursor):
 				symbols += current_symbol
 			content += pages.genre_button.format(type, g_id, name)
 		content += '</div><div class="bottombar w3-bar w3-mobile-hide">'
-		
+
 		for i in symbols:
 			content += pages.genres_bottom_bar.format(i, pages.w3_button, i)
 		content += '</div>'
