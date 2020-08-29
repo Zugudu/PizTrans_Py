@@ -127,9 +127,20 @@ def genres_list(type, cursor):
 	if type in ('chars', 'genres', 'series'):
 		genres = cursor.execute('SELECT * from ' + type + ';').fetchall()
 		genres.sort(key = lambda el: el[1])
-		content = '<div style="width: 80%">'
-		for i in genres:
-			content += pages.genre_button.format(type, i[0], i[1])
+		
+		current_symbol = genres[0][1][0]
+		content = pages.genre_group.format(current_symbol, current_symbol)
+		symbols = [current_symbol]
+		for g_id, name in genres:
+			if name[0] != current_symbol:
+				current_symbol = name[0]
+				content += '</div>' + pages.genre_group.format(current_symbol, current_symbol)
+				symbols += current_symbol
+			content += pages.genre_button.format(type, g_id, name)
+		content += '</div><div class="bottombar w3-bar w3-mobile-hide">'
+
+		for i in symbols:
+			content += pages.genres_bottom_bar.format(i, pages.w3_button, i)
 		content += '</div>'
 		return prepare_main(content, get_header(request))
 	else:
@@ -348,7 +359,7 @@ def err401(err):
 
 
 if __name__ == '__main__':
-	if len(argv) <= 1:
+	if len(argv) <= 0:
 		print('Specify work dir')
 		exit(1)
 	db = sqlite3.connect(get_path('db'))
