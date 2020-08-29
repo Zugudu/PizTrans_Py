@@ -120,30 +120,14 @@ def search_engine(type, id):
 	else:
 		abort(404)
 
-'''
+
 @route('/list/<type>')
 @db_work
 def genres_list(type, cursor):
 	if type in ('chars', 'genres', 'series'):
 		genres = cursor.execute('SELECT * from ' + type + ';').fetchall()
 		genres.sort(key = lambda el: el[1])
-		content = '<div style="width: 80%">'
-		for i in genres:
-			content += pages.genre_button.format(type, i[0], i[1])
-		content += '</div>'
-		return prepare_main(content, get_header(request))
-	else:
-		abort(404)'''
-
-
-#Сашенька грається в пісочку	
-@route('/list/<type>')
-@db_work
-def genres_list(type, cursor):
-	if type in ('chars', 'genres', 'series'):
-		genres = cursor.execute('SELECT * from ' + type + ';').fetchall()
-		genres.sort(key = lambda el: el[1])
-
+		
 		current_symbol = genres[0][1][0]
 		content = pages.genre_group.format(current_symbol, current_symbol)
 		symbols = [current_symbol]
