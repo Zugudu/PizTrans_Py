@@ -62,10 +62,10 @@ header = '''
 
 
 search = '''
-<div class="anime w3-margin-bottom">Пошук по:</div>
-<a href="/list/chars" class="anime w3-button w3-mobile w3-blue read-btn">персонажу</a>
-<a href="/list/series" class="anime w3-button w3-mobile w3-blue read-btn">серії мальописів</a>
-<a href="/list/genres" class="anime w3-button w3-mobile w3-blue read-btn">жанру</a>
+<div class="anime w3-margin-bottom">Пошук за:</div>
+<a href="/list/chars" class="anime w3-button w3-mobile w3-blue read-btn">персонажем</a>
+<a href="/list/series" class="anime w3-button w3-mobile w3-blue read-btn">серією мальописів</a>
+<a href="/list/genres" class="anime w3-button w3-mobile w3-blue read-btn">жанром</a>
 '''
 
 
