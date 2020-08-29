@@ -124,16 +124,12 @@ flag_ua = '<a href="/lang/1" class="flag"><div class="flag-231 w3-blue"></div><d
 
 #Сашенька в пісочку
 genre_group = '''
-<div class=genre_group>
+<div class="genre_group">
 	<a name="{}">
-		<div  class=symbol>
+		<div  class="symbol">
 			{}
 		</div>
 	</a>
 '''
 
-genres_bottom_bar = '''
-<a href="#{}" class="{} w3-topbar">
-	{}
-</a>
-'''
+genres_bottom_bar = '<a href="#{}" class="{} w3-topbar">{}</a>'
