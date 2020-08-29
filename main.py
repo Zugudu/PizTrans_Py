@@ -337,7 +337,7 @@ def admin_add_tag():
 
 @route('/about')
 def about():
-	return prepare_main(pages.about, get_header(request))	
+	return prepare_main(pages.about, get_header(request))
 
 
 @error(404)

@@ -7,7 +7,7 @@
 .anime, .genre, .caption
 {
 	font: 100% Anime;
-}і
+}
 a{text-decoration: none;}
 
 .wrap
@@ -32,7 +32,7 @@ a{text-decoration: none;}
 }
 .image:hover
 {
-	outline: #f44336 solid 5px;
+	outline: #f44336 inset 5px;
 }
 .caption
 {
