@@ -140,3 +140,19 @@ a{text-decoration: none;}
 	width: 100%;
 	background-color: #ffffff;
 }
+.dropdown{float: left;}
+
+.dropdown_content
+{
+	display: none;
+	position: absolute;
+	min-width: 160px;
+	z-index: 1;
+	width: 200px;
+}
+.dropdown_content a
+{
+	width: 200px;
+	margin: 0;
+}
+.dropdown:hover .dropdown_content{display: block;}
