@@ -2,10 +2,8 @@
 {
 	font: 80%;
 }
-a
-{
-	font: 80%;
-}
+a{font: 80%;}
+
 .wrap
 {
 	width: 95%;
@@ -26,16 +24,12 @@ a
 	width: 100%;
 	margin: 5% 0;
 }
-.name
-{
-	font-size: 100%;
-}
+.name{font-size: 100%;}
 .disc
 {
 	display: inline-block;
 	vertical-align: top;
-	width: 50%;
-	margin-left:10px;
+	width: 100%;
 }
 .imgs
 {
@@ -51,15 +45,12 @@ a
 	left: 10px;
 	float: left;
 }
-.genre
-{
-	padding: 5px;
-	margin: 5px;
-}
-.read-btn{
-	margin:5px 0px;
-}
+.read-btn{margin:5px 0px;}
 
-.error{
-	width: 100%;
+.error{width: 100%;}
+
+.list
+{
+	margin-bottom: 10px;
+	width: 95%;
 }
