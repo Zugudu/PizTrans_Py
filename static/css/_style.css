@@ -30,10 +30,10 @@ a{text-decoration: none;}
 	width:200px;
 	height:300px;
 }
-.image:hover
-{
-	outline: #f44336 inset 5px;
-}
+.image:hover{outline: #f44336 inset 5px;}
+
+.block a:focus .image{outline: #f44336 inset 5px;}
+
 .caption
 {
 	display: block;
@@ -96,6 +96,11 @@ a{text-decoration: none;}
 	width:36px;
 	height:24px;
 }
+.flag:focus
+{
+	width:36px;
+    height:24px;
+}
 .flag-231, .flag-232
 {
 	width:100%;
@@ -152,7 +157,7 @@ a{text-decoration: none;}
 }
 .dropdown_content a
 {
-	width: 200px;
-	margin: 0;
+    width: 198;
+    margin: 0;
 }
 .dropdown:hover .dropdown_content{display: block;}

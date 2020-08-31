@@ -57,7 +57,7 @@ header = '''
 	<a href=/><button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red">Головна</button></a>
   	<div class="dropdown">
 		<button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red" style="float: none;">Пошук за:</button>
-		<div class="dropdown_content">
+		<div class="dropdown_content w3-border w3-border-black">
 			<a href="/list/chars" class="anime w3-button w3-mobile w3-blue read-btn">персонажем</a>
 			<a href="/list/series" class="anime w3-button w3-mobile w3-blue read-btn">серією мальописів</a>
 			<a href="/list/genres" class="anime w3-button w3-mobile w3-blue read-btn">жанром</a>
