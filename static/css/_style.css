@@ -4,6 +4,7 @@
 	src: url(a.ttf);
 	font-display: swap;
 }
+
 .anime, .genre, .caption
 {
 	font: 100% Anime;
@@ -99,7 +100,7 @@ a{text-decoration: none;}
 .flag:focus
 {
 	width:36px;
-    height:24px;
+	height:24px;
 }
 .flag-231, .flag-232
 {
@@ -151,13 +152,14 @@ a{text-decoration: none;}
 {
 	display: none;
 	position: absolute;
-	min-width: 160px;
+	max-width: 200px;
+	max-height: 119px;
 	z-index: 1;
-	width: 200px;
+	border: #000000 solid 1px;
 }
 .dropdown_content a
 {
-    width: 198;
-    margin: 0;
+	width: 198px;
+	margin: 0;
 }
 .dropdown:hover .dropdown_content{display: block;}
