@@ -55,18 +55,17 @@ admin = '''
 header = '''
 <div class="w3-bar w3-margin-bottom">
 	<a href=/><button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red">Головна</button></a>
-	<a href=/search><button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red">Пошук</button></a>
+  	<div class="dropdown">
+		<button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red" style="float: none;">Пошук за:</button>
+		<div class="dropdown_content">
+			<a href="/list/chars" class="anime w3-button w3-mobile w3-blue read-btn" style="border-bottom: #000 solid 1px">персонажем</a>
+			<a href="/list/series" class="anime w3-button w3-mobile w3-blue read-btn" style="border-bottom: #000 solid 1px">серією мальописів</a>
+			<a href="/list/genres" class="anime w3-button w3-mobile w3-blue read-btn">жанром</a>
+		</div>
+	</div>
 	{}
 	<a href=/about><button class="anime w3-button w3-medium w3-bar-item w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red w3-bottombar">Про нас</button></a>
 </div>
-'''
-
-
-search = '''
-<div class="anime w3-margin-bottom">Пошук за:</div>
-<a href="/list/chars" class="anime w3-button w3-mobile w3-blue read-btn">персонажем</a>
-<a href="/list/series" class="anime w3-button w3-mobile w3-blue read-btn">серією мальописів</a>
-<a href="/list/genres" class="anime w3-button w3-mobile w3-blue read-btn">жанром</a>
 '''
 
 

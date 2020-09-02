@@ -4,6 +4,7 @@
 	src: url(a.ttf);
 	font-display: swap;
 }
+
 .anime, .genre, .caption
 {
 	font: 100% Anime;
@@ -30,10 +31,10 @@ a{text-decoration: none;}
 	width:200px;
 	height:300px;
 }
-.image:hover
-{
-	outline: #f44336 inset 5px;
-}
+.image:hover{outline: #f44336 inset 5px;}
+
+.block a:focus .image{outline: #f44336 inset 5px;}
+
 .caption
 {
 	display: block;
@@ -96,6 +97,11 @@ a{text-decoration: none;}
 	width:36px;
 	height:24px;
 }
+.flag:focus
+{
+	width:36px;
+	height:24px;
+}
 .flag-231, .flag-232
 {
 	width:100%;
@@ -140,3 +146,20 @@ a{text-decoration: none;}
 	width: 100%;
 	background-color: #ffffff;
 }
+.dropdown{float: left;}
+
+.dropdown_content
+{
+	display: none;
+	position: absolute;
+	max-width: 200px;
+	max-height: 119px;
+	z-index: 1;
+	border: #000000 solid 1px;
+}
+.dropdown_content a
+{
+	width: 198px;
+	margin: 0;
+}
+.dropdown:hover .dropdown_content{display: block;}

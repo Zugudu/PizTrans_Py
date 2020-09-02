@@ -104,11 +104,6 @@ def index():
 	return prepare_main(get_manga('select id,name,dir from hentai order by id desc;'), get_header(request))
 
 
-@route('/search')
-def search():
-	return prepare_main(pages.search, get_header(request))
-
-
 @route('/search/<type>/<id:int>')
 def search_engine(type, id):
 	if type in ('chars', 'genres', 'series'):
