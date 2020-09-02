@@ -54,4 +54,4 @@ a{font: 80%;}
 	margin-bottom: 10px;
 	width: 95%;
 }
-.no-touch .dropdown:hover .dropdown_content{display: block;}
+.touch .dropdown:hover .dropdown_content{display: block;}
