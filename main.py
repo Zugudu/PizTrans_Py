@@ -57,9 +57,14 @@ def get_flag(id):
 	return flag
 
 
-@route('/sitemap')
+@route('/sitemap.xml')
 def sitemap():
 	return static_file("sitemap.xml", argv[1])
+	
+
+@route('/robots.txt')
+def sitemap():
+	return static_file("robots.txt", argv[1])
 
 
 @route('/static/<file:path>')
