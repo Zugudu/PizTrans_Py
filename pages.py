@@ -7,11 +7,12 @@ main_page = '''
 <head>
 <meta charset=utf8>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name=keywords content="хєнтай, хентай, манга, hentai, manga, порно, комикси, комікси">
+<meta name=keywords content="хєнтай хентай манга манґа мангу манґу hentai manga порно комикси комікси українською читати онлайн юхентай uhentai">
 <link rel="stylesheet" href="/static/css/w3.css">
 <link rel="stylesheet" href="/static/css/style.css" />
 <link rel="stylesheet" media="(max-device-width:480px)" 
 href="/static/css/mob.css"/>
+<link rel="icon" type="image/png" href="/static/ico/logo.png">
 <title>uHentai</title>
 </head>
 <body>
