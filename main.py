@@ -57,6 +57,11 @@ def get_flag(id):
 	return flag
 
 
+@route('/sitemap')
+def sitemap():
+	return static_file("sitemap.xml", argv[1])
+
+
 @route('/static/<file:path>')
 def load_static(file):
 	return static_file(file, 'static')
