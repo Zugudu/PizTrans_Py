@@ -93,7 +93,7 @@ admin_mode = '''
 
 admin_button = '<a href=/a><button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red">Адмінка</button></a>'
 admin_yes = '<div class="admin-status"><img height=128px src="/static/admin/{}"></div>'
-admin_welcome = ('Скільки годин?', 'Три останні цифри числа Пі', 'Я тебе звати?', 'CVV2 код твоєї картки', 'Що ти тут забув?', 'Як ти сюди потрапив?', 'Схоже я забув вимкнути відображення цієї сторінки...', 'Семпаю, тільки не ламай нічого')
+admin_welcome = ('Скільки годин?', 'Три останні цифри числа Пі', 'Як тебе звати?', 'CVV2 код твоєї картки', 'Що ти тут забув?', 'Як ти сюди потрапив?', 'Схоже я забув вимкнути відображення цієї сторінки...', 'Семпаю, тільки не ламай нічого')
 admin_enter = ('Сасай кудасай', 'Чємуске', 'Пароль:root', 'Введіть сюди 4225')
 
 
