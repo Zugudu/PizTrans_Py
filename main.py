@@ -14,6 +14,7 @@ ADMIN_ON = False
 
 CHAR_DICT = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 db = ''
+sql_search = ('chars', 'genres', 'series', 'comands')
 
 
 def get_path(file):
@@ -60,7 +61,7 @@ def get_flag(id):
 @route('/sitemap.xml')
 def sitemap():
 	return static_file("sitemap.xml", argv[1])
-	
+
 
 @route('/robots.txt')
 def sitemap():
@@ -116,7 +117,7 @@ def index():
 
 @route('/search/<type>/<id:int>')
 def search_engine(type, id):
-	if type in ('chars', 'genres', 'series'):
+	if type in sql_search:
 		return prepare_main(
 		get_manga(
 			'select id,name,dir from hentai,hentai_' + type + ' where id_hentai=id and id_' + type + '=?;',
@@ -129,7 +130,7 @@ def search_engine(type, id):
 @route('/list/<type>')
 @db_work
 def genres_list(type, cursor):
-	if type in ('chars', 'genres', 'series'):
+	if type in sql_search:
 		genres = cursor.execute('SELECT * from ' + type + ';').fetchall()
 		genres.sort(key = lambda el: el[1])
 
@@ -169,32 +170,17 @@ def manga(id, cursor):
 	if res is not None:
 		disc_content = ''
 
-		genres = cursor.execute('select id_series from hentai_series'
-		' where id_hentai=?;', (id,)).fetchall()
-		if len(genres) > 0:
-			disc_content += '<div class="anime">Серія мальописів</div>'
-		for genre in genres:
-			cursor.execute('select id,name from series where id=?;', (genre[0],))
-			genre_info = cursor.fetchone()
-			disc_content += pages.genre_button.format('series', genre_info[0], genre_info[1])
-
-		genres = cursor.execute('select id_chars from hentai_chars'
-		' where id_hentai=?;', (id,)).fetchall()
-		if len(genres) > 0:
-			disc_content += '<div class="anime">Персонажі</div>'
-		for genre in genres:
-			cursor.execute('select id,name from chars where id=?;', (genre[0],))
-			genre_info = cursor.fetchone()
-			disc_content += pages.genre_button.format('chars', genre_info[0], genre_info[1])
-
-		genres = cursor.execute('select id_genres from hentai_genres'
-		' where id_hentai=?;', (id,)).fetchall()
-		if len(genres) > 0:
-			disc_content += '<div class="anime">Жанри</div>'
-		for genre in genres:
-			cursor.execute('select id,name from genres where id=?;', (genre[0],))
-			genre_info = cursor.fetchone()
-			disc_content += pages.genre_button.format('genres', genre_info[0], genre_info[1])
+		info = ('Серія мальописів', 'Персонажі', 'Жанри', 'Переклали')
+		for i in range(len(info)):
+			genres = cursor.execute(
+				'select id_{0} from hentai_{0} where id_hentai=?;'.format(sql_search[i]), (id,)
+			).fetchall()
+			if len(genres) > 0:
+				disc_content += '<div class="anime">{}</div>'.format(info[i])
+			for genre in genres:
+				cursor.execute('select id,name from {} where id=?;'.format(sql_search[i]), (genre[0],))
+				genre_info = cursor.fetchone()
+				disc_content += pages.genre_button.format(sql_search[i], genre_info[0], genre_info[1])
 
 		content = pages.manga.format(res[0], get_flag(id), id, res[1],
 			sorted(listdir(path.join(get_path('hentai'),res[1])))[0],
@@ -225,6 +211,7 @@ def manga(id, cursor):
 
 			content += '</select><br><button class="w3-button w3-dark-gray"'\
 				' type="submit">Видалити</button></form></div></div>'
+
 		return prepare_main(content, get_header(request))
 	else:
 		cursor.close()
