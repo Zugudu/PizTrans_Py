@@ -61,7 +61,8 @@ header = '''
 		<div class="dropdown_content">
 			<a href="/list/chars" class="anime w3-button w3-mobile w3-blue read-btn" style="border-bottom: #000 solid 1px">персонажем</a>
 			<a href="/list/series" class="anime w3-button w3-mobile w3-blue read-btn" style="border-bottom: #000 solid 1px">серією мальописів</a>
-			<a href="/list/genres" class="anime w3-button w3-mobile w3-blue read-btn">жанром</a>
+			<a href="/list/genres" class="anime w3-button w3-mobile w3-blue read-btn" style="border-bottom: #000 solid 1px">жанром</a>
+			<a href="/list/genres" class="anime w3-button w3-mobile w3-blue read-btn">перекладачем</a>
 		</div>
 	</div>
 	{}
