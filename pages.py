@@ -108,13 +108,14 @@ error = '''
 
 about = '''
 <div class="w3-medium" style="width:90%;">
-Привіт, як ти вже встиг помітити, ти знаходишся на сайті з хентаєм.<br>Весь код є власністю Клубу Кібернетики Коледжу (ККК)<br>
-Зворотній зв'язок <a href="https://t.me/Zugudu" target="_blank" rel="noopener noreferrer" class="w3-text-blue">@Zugudu</a><br>
+Привіт, як ти вже встиг помітити, ти знаходишся на сайті з хентаєм.<br>Весь код є власністю Наукової ради з питань розвитку хентаю в Україні<br>
+Зворотній зв'язок <a href="https://t.me/ukrMango" target="_blank" rel="noopener noreferrer" class="w3-text-blue">@ukrMango</a><br>
 Розробкою сайту займалися:
 <ul class="w3-ul w3-border w3-light-gray w3-margin w3-hoverable" style="width:300px;">
-<a href="https://github.com/Zugudu" target="_blank" rel="noopener noreferrer" style="text-decoration: none;"><li style="border-bottom:1px solid #ddd;" class="anime" title="Програміст, прости Госоподи веб-дизайнер, системний адміністратор, спеціаліст інформаційної безпеки і просто хороша людина">Ісус</li></a>
+<li style="border-bottom:1px solid #ddd;" class="anime w3-hover-none" title="Програміст, прости Госоподи веб-дизайнер, системний адміністратор, спеціаліст інформаційної безпеки і просто хороша людина">Zugudu</li>
 <li class="anime w3-hover-none" title="Додавання та присвоєння жанрів">Шурік</li>
-<a href="https://myanimelist.net/profile/s0fko" target="_blank" rel="noopener noreferrer" style="text-decoration: none;"><li class="anime" title="Переклад хентаю українською">s0fko</li></a>
+<a href="https://myanimelist.net/profile/s0fko" target="_blank" rel="noopener noreferrer" style="text-decoration: none;"><li style="border-bottom:1px solid #ddd;" class="anime" title="Переклад хентаю українською">s0fko</li></a>
+<li class="anime w3-hover-none" title="Розробка дизайну">MrSancho</li>
 </ul>
 </div>
 '''
