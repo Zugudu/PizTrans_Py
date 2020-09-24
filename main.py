@@ -170,7 +170,7 @@ def manga(id, cursor):
 	if res is not None:
 		disc_content = ''
 
-		info = ('Серія мальописів', 'Персонажі', 'Жанри', 'Переклали')
+		info = ('Персонажі', 'Жанри', 'Серія мальописів', 'Переклали')
 		for i in range(len(info)):
 			genres = cursor.execute(
 				'select id_{0} from hentai_{0} where id_hentai=?;'.format(sql_search[i]), (id,)
