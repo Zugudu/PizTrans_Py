@@ -166,3 +166,42 @@ a{text-decoration: none;}
 	border-right: #000000 solid 1px;
 }
 .dropdown:hover .dropdown_content{display: block;}
+
+.page_scroll {display: inline-block;}
+
+.page_scroll div, form
+{
+	float: left;
+	height: 30px;
+	margin: 5px 0 5px 0;
+}
+.page_scroll img
+{
+	width: 28px;
+	height: 30px;
+}
+.ps_form input, button
+{
+	vertical-align: top;
+	height: 30px;
+	padding: 0px;
+}
+.ps_form input
+{
+	border: 2px solid #f44336b2;
+	border-top-left-radius: 15px;
+	border-bottom-left-radius: 15px;
+	padding-left: 4px;
+	padding-right: 4px;
+	border-right: 0;
+}
+.ps_form button
+{
+	width: 35px;
+	border: 0;
+	padding-right: 3px;
+	background-color: #f44336b2;
+	border-top-right-radius: 15px;
+	border-bottom-right-radius: 15px;
+}
+.ps_form button:hover {background-color: #f44336;}

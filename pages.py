@@ -127,3 +127,23 @@ flag_ua = '<a href="/lang/1" class="flag"><div class="flag-231 w3-blue"></div><d
 
 genre_group = '<div class="genre_group"><a class="symbol" name="{}">{}</a>'
 genres_bottom_bar = '<a href="#{}" class="{} w3-topbar">{}</a>'
+
+
+page_scroll = '''
+<div class="page_scroll">
+	<div style="visibility: {};">
+		<a href="{}"><img src="/static/ico/double_arrow.svg"></a>
+		<a href="{}"><img src="/static/ico/arrow.svg"></a>
+	</div>
+	<form class="ps_form" method="post">
+		<input type="text" name="page" size="8" placeholder="{} з {}">
+		<button type="submit">
+			<img style="width: 19px; height: 19px;" src="/static/ico/lupa.svg">
+		</button>
+	</form>
+	<div style="visibility: {};">
+		<a href="{}"><img style="transform: rotate(180deg);" src="/static/ico/arrow.svg"></a>
+		<a href="{}"><img style="transform: rotate(180deg);" src="/static/ico/double_arrow.svg"></a>
+	</div>
+</div>
+'''
