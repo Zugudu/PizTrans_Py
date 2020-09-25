@@ -228,30 +228,17 @@ def show(id, cursor):
 	return prepare_main(pages.show.format(id, content))
 
 
-def page_scroll(id, page, last_page):
-	args = ['', '/show/'+str(id)+'/0', '/show/'+str(id)+'/'+str(page-1), page + 1, last_page, '',
-		'/show/'+str(id)+'/'+str(page+1), '/show/'+str(id)+'/'+str(last_page - 1)]
-	if page == 0:
-		args[0], args[5] = 'hidden', 'visible'
-	elif page == last_page - 1:
-		args[0], args[5] = 'visible', 'hidden'
-	else:
-		args[0], args[5] = 'visible', 'visible'
-	return pages.page_scroll.format(*args)
-
-
 @route('/show/<id:int>/<page:int>')
 @db_work
 def show(id, page, cursor):
 	dir = cursor.execute('select dir from hentai where id=?;', (id, )).fetchone()[0]
-	l_manga = len(listdir(path.join(get_path('hentai'), dir)))
-	if l_manga <= page or 0 > page:
+	hentai = listdir(path.join(get_path('hentai'), dir))
+	if len(hentai) < page:
 		abort(404)
-	elif l_manga <= page+1:
+	elif len(hentai) <= page+1:
 		content = pages.show_book.format('/manga/'+str(id), dir, sorted(listdir(path.join(get_path('hentai'), dir)))[page])
 	else:
 		content = pages.show_book.format('/show/'+str(id)+'/'+str(page+1), dir, sorted(listdir(path.join(get_path('hentai'), dir)))[page])
-	content += page_scroll(id, page, l_manga)
 	return prepare_main(pages.show.format(id, content))
 
 
@@ -281,19 +268,6 @@ def admin_test(func):
 		else:
 			abort(404)
 	return wrap
-
-
-@post('/show/<id:int>/<page:int>')
-@db_work
-def show_post(id, page, cursor):
-	dir = cursor.execute('select dir from hentai where id=?;', (id, )).fetchone()[0]
-	hentai = len(listdir(path.join(get_path('hentai'), dir)))
-	try:
-		new_page = int(request.forms.page) - 1
-		if new_page < 0 or new_page >= hentai: 
-			redirect(request.url)
-		else: redirect('/show/{}/{}'.format(dict(request.url_args)['id'], new_page))
-	except ValueError: redirect(request.url)
 
 
 @post('/a')
