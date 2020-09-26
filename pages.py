@@ -72,15 +72,8 @@ header = '''
 
 
 admin_mode = '''
+<a href=/a_manga><div class="w3-button w3-light-gray w3-border">Додати нову манґу</div></a><hr>
 <div>
-<div style="width:300px;display:inline-block;padding-right:20px;">
-	<form method="post" class="w3-padding" action="a_am">
-		<div class="w3-medium" style="padding-bottom:16px;"><b>Додати мангу</b></div>
-		<div><input type="text" class="w3-input" style="display: table-cell;" name="name" placeholder="Назва"></div>
-		<div><input type="text" class="w3-input" style="display: table-cell;" name="dir" placeholder="Місцезнаходження"></div>
-		<div style="padding-top:10px;"><button class="w3-button w3-light-gray w3-border" type="submit">Додати</button></div>
-	</form>
-</div>
 <div style="width:300px;display:inline-block;">
 	<form method="post" class="w3-padding" action="a_at">
 		<div class="w3-medium" style="padding-bottom:16px;"><b>Додати тег</b></div>
@@ -119,6 +112,17 @@ about = '''
 <li class="anime w3-hover-none" title="Розробка дизайну">MrSancho</li>
 </ul>
 </div>
+'''
+
+
+add_manga = '''
+<form action="/a_manga" method="post" enctype="multipart/form-data">
+<table class=anime>
+<tr><td align=right>Назва</td><td><input type="text" name="dir" /></td></tr>
+<tr><td align=right>Zip архів з манґою</td><td><input type="file" name="zip" class="w3-button w3-light-gray w3-border"/></td></tr>
+<tr><td colspan=2><center><button type="submit" class="w3-button w3-light-gray w3-border">Завантажити</button></center></td><tr>
+</table>
+</form>
 '''
 
 

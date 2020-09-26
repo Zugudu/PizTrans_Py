@@ -2,17 +2,16 @@
 import pages
 import sqlite3
 from bottle import route, run, static_file, abort, post, response, request, redirect, error
-from os import listdir
 from random import choice
 from json import load, dump
 from sys import argv
-from os import path
+from os import path, mkdir, listdir, remove, rmdir
+from zipfile import ZipFile, BadZipFile
 
 
 ADMIN_KEY = ''
 ADMIN_ON = False
 
-CHAR_DICT = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 db = ''
 sql_search = ('chars', 'genres', 'series', 'comands')
 
@@ -193,6 +192,7 @@ def manga(id, cursor):
 				'<input type="hidden" name=id value={}>'\
 				'<select multiple size=15 name="genres">'.format(id)
 
+			genres = cursor.execute('select id_genres from hentai_genres where id_hentai={}'.format(id)).fetchall()
 			genres_full = cursor.execute('select id, name from genres;').fetchall()
 			genres_exclude = [i for i in genres_full if (i[0],) not in genres]
 			genres_x = [i for i in genres_full if (i[0],) in genres]
@@ -281,6 +281,44 @@ def admin_test(func):
 		else:
 			abort(404)
 	return wrap
+	
+	
+@route('/a_manga')
+@admin_test
+def add_manga():
+	return prepare_main(pages.add_manga, get_header(request))
+	
+	
+@post('/a_manga')
+@admin_test
+def p_add_manga():
+	name = request.forms.get('dir')
+	dir = name.replace('.', '').replace('/', '').replace('\\', '')
+	if path.exists(get_path(path.join('hentai/', dir))):
+		suffix=0
+		while path.exists(get_path(path.join('hentai/', dir + '-' + str(suffix)))):
+			suffix += 1
+		dir += '-' + str(suffix)
+	zip = request.files.get('zip')
+	file, ext = path.splitext(zip.filename)
+	if ext != '.zip':
+		return 'То людина чи компутор? Я тобі кажу zip мені кидай'
+	
+	mkdir(get_path(path.join('hentai/', dir)))
+	zip.save(get_path(path.join('hentai/', dir)))
+	try:
+		with ZipFile(get_path(path.join('hentai/', dir, zip.filename))) as file:
+			file.extractall(get_path(path.join('hentai/', dir)))
+	except BadZipFile:
+		remove(get_path(path.join('hentai/', dir, zip.filename)))
+		rmdir(get_path(path.join('hentai/', dir)))
+		return 'Поганий файл, йолопе'
+	remove(get_path(path.join('hentai/', dir, zip.filename)))
+	cursor = db.cursor()
+	cursor.execute('insert into hentai values (null, ?, ?);', (name, dir))
+	cursor.close()
+	db.commit()
+	redirect('/')
 
 
 @post('/show/<id:int>/<page:int>')
@@ -398,10 +436,12 @@ if __name__ == '__main__':
 	print('RL:{} QT:{} AM:{}'.format(SETTING['RELOAD'], SETTING['QUITE'], SETTING['ADMIN_MODE']))
 
 	if SETTING['ADMIN_KEY'] == '':
-		SETTING['ADMIN_KEY'] = SETTING['ADMIN_KEY'].join(choice(CHAR_DICT) for i in range(32))
+		print('Admin key not specified, admin mode disabled')
+		ADMIN_ON = False
+	else:
+		ADMIN_ON = SETTING['ADMIN_MODE']
 	print('Admin key is: {}'.format(SETTING['ADMIN_KEY']))
 
-	ADMIN_ON = SETTING['ADMIN_MODE']
 	ADMIN_KEY = SETTING['ADMIN_KEY']
 
 	try:
