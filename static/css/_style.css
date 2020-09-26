@@ -169,7 +169,7 @@ a{text-decoration: none;}
 
 .page_scroll {display: inline-block;}
 
-.page_scroll div, form
+.page_scroll div, .page_scroll form
 {
 	float: left;
 	height: 30px;
