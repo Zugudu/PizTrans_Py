@@ -8,24 +8,31 @@ from sys import argv
 from os import path, mkdir, listdir, remove, rmdir
 from zipfile import ZipFile, BadZipFile
 
+
 ADMIN_KEY = ''
 ADMIN_ON = False
 MAIN_TYPE = 0
 
+
 db = ''
 sql_search = ('chars', 'genres', 'series', 'comands')
+
 
 def get_path(file):
 	return path.join(path.dirname(path.abspath(__file__)), argv[1],file)
 
+
 def _optimize(text):
 	return text.replace('\n', '').replace('\t', '')
+
 
 def prepare_main(text, header=''):
 	return _optimize(pages.main_page.format(header+text))
 
+
 def prepare_err(text, ico):
 	return _optimize(pages.main_page.format(pages.error.format(text, ico)))
+
 
 def get_header(c_request):
 	"""
@@ -42,6 +49,7 @@ def get_header(c_request):
 		header = pages.header.format('')
 	return header
 
+
 def get_flag(id):
 	cursor = db.cursor()
 	flag = ''
@@ -50,21 +58,26 @@ def get_flag(id):
 	cursor.close()
 	return flag
 
+
 @route('/sitemap.xml')
 def sitemap():
 	return static_file("sitemap.xml", argv[1])
+
 
 @route('/robots.txt')
 def sitemap():
 	return static_file("robots.txt", argv[1])
 
+
 @route('/static/<file:path>')
 def load_static(file):
 	return static_file(file, 'static')
 
+
 @route('/hentai/<file:path>')
 def load_hentai(file):
 	return static_file(file, get_path('hentai'), 'image/jpg')
+
 
 def db_work(func):
 	def wrap(*a, **ka):
@@ -73,6 +86,7 @@ def db_work(func):
 		cursor.close()
 		return ret
 	return wrap
+
 
 @db_work
 def get_manga(sql, param='', cursor=''):
@@ -96,11 +110,20 @@ def get_manga(sql, param='', cursor=''):
 	content += '</div>'
 	return content
 
+
 @route('/')
 def index():
 	if MAIN_TYPE == 1:
 		pass
 	return prepare_main(get_manga('select id,name,dir from hentai order by id desc;'), get_header(request))
+
+
+@route('/search/series/<id:int>')
+@db_work
+def search_engine(id, cursor):
+	cursor.execute('select id_hentai from hentai_series where id_series=? order by id_hentai;', (id,))
+	redirect('/manga/{}'.format(cursor.fetchone()[0]))
+
 
 @route('/search/<type>/<id:int>')
 def search_engine(type, id):
@@ -140,11 +163,13 @@ def genres_list(type, cursor):
 	else:
 		abort(404)
 
+
 @route('/lang/<id:int>')
 def lang(id):
 	return prepare_main(
 		get_manga('select id, name, dir from hentai, lang where id_hentai = id;'),
 		get_header(request))
+
 
 @route('/manga/<id:int>')
 @db_work
@@ -216,6 +241,7 @@ def manga(id, cursor):
 		cursor.close()
 		abort(500)
 
+
 @route('/show/<id:int>')
 @db_work
 def show(id, cursor):
@@ -224,6 +250,7 @@ def show(id, cursor):
 	for img in sorted(listdir(path.join(get_path('hentai'), dir))):
 		content += '<img class=imgs src="/hentai/' + dir + '/' + img + '"><br>'
 	return prepare_main(pages.show.format(id, content))
+
 
 def page_scroll(id, page, last_page):
 	args = ['', '/show/'+str(id)+'/0', '/show/'+str(id)+'/'+str(page-1), page + 1, last_page, '',
@@ -235,6 +262,7 @@ def page_scroll(id, page, last_page):
 	else:
 		args[0], args[5] = 'visible', 'visible'
 	return pages.page_scroll.format(*args)
+
 
 @route('/show/<id:int>/<page:int>')
 @db_work
@@ -250,6 +278,7 @@ def show(id, page, cursor):
 	content += page_scroll(id, page, l_manga)
 	return prepare_main(pages.show.format(id, content))
 
+
 @route('/a')
 def admin():
 	if ADMIN_ON:
@@ -261,6 +290,7 @@ def admin():
 			return prepare_main(pages.admin.format(admin_welcome, admin_enter), get_header(request))
 	else:
 		abort(404)
+
 
 def admin_test(func):
 	def wrap(*a, **ka):
@@ -276,10 +306,12 @@ def admin_test(func):
 			abort(404)
 	return wrap
 
+
 @route('/a_manga')
 @admin_test
 def add_manga():
 	return prepare_main(pages.add_manga, get_header(request))
+
 
 @post('/a_manga')
 @admin_test
@@ -312,6 +344,7 @@ def p_add_manga():
 	db.commit()
 	redirect('/')
 
+
 @post('/show/<id:int>/<page:int>')
 @db_work
 def show_post(id, page, cursor):
@@ -324,6 +357,7 @@ def show_post(id, page, cursor):
 		else: redirect('/show/{}/{}'.format(dict(request.url_args)['id'], new_page))
 	except ValueError: redirect(request.url)
 
+
 @post('/a')
 def admin_post():
 	if ADMIN_ON:
@@ -334,6 +368,7 @@ def admin_post():
 			abort(401)
 	else:
 		abort(404)
+
 
 @post('/a_add')
 @admin_test
@@ -346,6 +381,7 @@ def admin_add():
 	db.commit()
 	redirect('/manga/{}'.format(request.POST['id']))
 
+
 @post('/a_del')
 @admin_test
 def admin_del():
@@ -356,6 +392,7 @@ def admin_del():
 	cursor.close()
 	db.commit()
 	redirect('/manga/{}'.format(request.POST['id']))
+
 
 @post('/a_am')
 @admin_test
@@ -368,6 +405,7 @@ def admin_add_manga():
 	db.commit()
 	redirect('/a')
 
+
 @post('/a_at')
 @admin_test
 def admin_add_tag():
@@ -378,13 +416,16 @@ def admin_add_tag():
 	db.commit()
 	redirect('/a')
 
+
 @route('/about')
 def about():
 	return prepare_main(pages.about, get_header(request))
 
+
 @error(404)
 def err404(err):
 	return prepare_err('Як ти сюди потрапив?', '404.png')
+
 
 @error(500)
 def err500(err):
@@ -392,10 +433,12 @@ def err500(err):
 		'полетіла БД. І якщо це так — то пізно срати. '
 		'Може полагодим скоро, може ні', '500.png')
 
+
 @error(401)
 def err401(err):
 	return prepare_err('У тебе немає доступу до цього.'
 		' Йди-но звідси доки не втрапив у халепу', '401.png')
+
 
 if __name__ == '__main__':
 	if len(argv) <= 0:
