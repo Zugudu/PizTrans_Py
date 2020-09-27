@@ -8,29 +8,24 @@ from sys import argv
 from os import path, mkdir, listdir, remove, rmdir
 from zipfile import ZipFile, BadZipFile
 
-
 ADMIN_KEY = ''
 ADMIN_ON = False
+MAIN_TYPE = 0
 
 db = ''
 sql_search = ('chars', 'genres', 'series', 'comands')
 
-
 def get_path(file):
 	return path.join(path.dirname(path.abspath(__file__)), argv[1],file)
-
 
 def _optimize(text):
 	return text.replace('\n', '').replace('\t', '')
 
-
 def prepare_main(text, header=''):
 	return _optimize(pages.main_page.format(header+text))
 
-
 def prepare_err(text, ico):
 	return _optimize(pages.main_page.format(pages.error.format(text, ico)))
-
 
 def get_header(c_request):
 	"""
@@ -47,7 +42,6 @@ def get_header(c_request):
 		header = pages.header.format('')
 	return header
 
-
 def get_flag(id):
 	cursor = db.cursor()
 	flag = ''
@@ -56,26 +50,21 @@ def get_flag(id):
 	cursor.close()
 	return flag
 
-
 @route('/sitemap.xml')
 def sitemap():
 	return static_file("sitemap.xml", argv[1])
-
 
 @route('/robots.txt')
 def sitemap():
 	return static_file("robots.txt", argv[1])
 
-
 @route('/static/<file:path>')
 def load_static(file):
 	return static_file(file, 'static')
 
-
 @route('/hentai/<file:path>')
 def load_hentai(file):
 	return static_file(file, get_path('hentai'), 'image/jpg')
-
 
 def db_work(func):
 	def wrap(*a, **ka):
@@ -84,7 +73,6 @@ def db_work(func):
 		cursor.close()
 		return ret
 	return wrap
-
 
 @db_work
 def get_manga(sql, param='', cursor=''):
@@ -108,11 +96,11 @@ def get_manga(sql, param='', cursor=''):
 	content += '</div>'
 	return content
 
-
 @route('/')
 def index():
+	if MAIN_TYPE == 1:
+		pass
 	return prepare_main(get_manga('select id,name,dir from hentai order by id desc;'), get_header(request))
-
 
 @route('/search/<type>/<id:int>')
 def search_engine(type, id):
@@ -124,7 +112,6 @@ def search_engine(type, id):
 		get_header(request))
 	else:
 		abort(404)
-
 
 @route('/list/<type>')
 @db_work
@@ -153,13 +140,11 @@ def genres_list(type, cursor):
 	else:
 		abort(404)
 
-
 @route('/lang/<id:int>')
 def lang(id):
 	return prepare_main(
 		get_manga('select id, name, dir from hentai, lang where id_hentai = id;'),
 		get_header(request))
-
 
 @route('/manga/<id:int>')
 @db_work
@@ -181,10 +166,24 @@ def manga(id, cursor):
 				genre_info = cursor.fetchone()
 				disc_content += pages.genre_button.format(sql_search[i], genre_info[0], genre_info[1])
 
+		controler = '<a class="w3-button w3-blue w3-mobile read-btn" href="/show/{0}/0">Читати немов книгу</a>'\
+					'<a class="w3-button w3-blue w3-mobile read-btn" href="/show/{0}">Читати немов сувій</a>'.format(id)
+
+		cursor.execute('select id_series from hentai_series where id_hentai=?;', (id,))
+		id_series = cursor.fetchone()
+		if id_series:
+			cursor.execute('select id_hentai, name, dir from hentai_series,hentai where id_series=? and id_hentai=id;', id_series)
+			controler += '<div class=\'w3-container w3-card w3-padding\' style=\'width:300px;\'><ul class=\'w3-ul w3-hoverable\' style=\'height:200px;overflow:hidden; overflow-y:scroll;\'>'
+			mangas = cursor.fetchall()
+			for i in mangas:
+				controler += '<a href=\'/manga/{}\'><li>{}</li></a>'.format(i[0], i[1])
+			controler += '</ul></div>'
+
 		content = pages.manga.format(res[0], get_flag(id), id, res[1],
 			sorted(listdir(path.join(get_path('hentai'),res[1])))[0],
-			disc_content, id, id)
+			disc_content, controler)
 
+		#ADMIN MENU
 		if request.get_cookie('admin') == ADMIN_KEY:
 			content += '<div class="w3-row" style="width:480px;">' \
 				'<div class="w3-half">' \
@@ -217,7 +216,6 @@ def manga(id, cursor):
 		cursor.close()
 		abort(500)
 
-
 @route('/show/<id:int>')
 @db_work
 def show(id, cursor):
@@ -226,7 +224,6 @@ def show(id, cursor):
 	for img in sorted(listdir(path.join(get_path('hentai'), dir))):
 		content += '<img class=imgs src="/hentai/' + dir + '/' + img + '"><br>'
 	return prepare_main(pages.show.format(id, content))
-
 
 def page_scroll(id, page, last_page):
 	args = ['', '/show/'+str(id)+'/0', '/show/'+str(id)+'/'+str(page-1), page + 1, last_page, '',
@@ -238,7 +235,6 @@ def page_scroll(id, page, last_page):
 	else:
 		args[0], args[5] = 'visible', 'visible'
 	return pages.page_scroll.format(*args)
-
 
 @route('/show/<id:int>/<page:int>')
 @db_work
@@ -254,7 +250,6 @@ def show(id, page, cursor):
 	content += page_scroll(id, page, l_manga)
 	return prepare_main(pages.show.format(id, content))
 
-
 @route('/a')
 def admin():
 	if ADMIN_ON:
@@ -266,7 +261,6 @@ def admin():
 			return prepare_main(pages.admin.format(admin_welcome, admin_enter), get_header(request))
 	else:
 		abort(404)
-
 
 def admin_test(func):
 	def wrap(*a, **ka):
@@ -281,14 +275,12 @@ def admin_test(func):
 		else:
 			abort(404)
 	return wrap
-	
-	
+
 @route('/a_manga')
 @admin_test
 def add_manga():
 	return prepare_main(pages.add_manga, get_header(request))
-	
-	
+
 @post('/a_manga')
 @admin_test
 def p_add_manga():
@@ -303,7 +295,7 @@ def p_add_manga():
 	file, ext = path.splitext(zip.filename)
 	if ext != '.zip':
 		return 'То людина чи компутор? Я тобі кажу zip мені кидай'
-	
+
 	mkdir(get_path(path.join('hentai/', dir)))
 	zip.save(get_path(path.join('hentai/', dir)))
 	try:
@@ -320,7 +312,6 @@ def p_add_manga():
 	db.commit()
 	redirect('/')
 
-
 @post('/show/<id:int>/<page:int>')
 @db_work
 def show_post(id, page, cursor):
@@ -333,7 +324,6 @@ def show_post(id, page, cursor):
 		else: redirect('/show/{}/{}'.format(dict(request.url_args)['id'], new_page))
 	except ValueError: redirect(request.url)
 
-
 @post('/a')
 def admin_post():
 	if ADMIN_ON:
@@ -344,7 +334,6 @@ def admin_post():
 			abort(401)
 	else:
 		abort(404)
-
 
 @post('/a_add')
 @admin_test
@@ -357,7 +346,6 @@ def admin_add():
 	db.commit()
 	redirect('/manga/{}'.format(request.POST['id']))
 
-
 @post('/a_del')
 @admin_test
 def admin_del():
@@ -368,7 +356,6 @@ def admin_del():
 	cursor.close()
 	db.commit()
 	redirect('/manga/{}'.format(request.POST['id']))
-
 
 @post('/a_am')
 @admin_test
@@ -381,7 +368,6 @@ def admin_add_manga():
 	db.commit()
 	redirect('/a')
 
-
 @post('/a_at')
 @admin_test
 def admin_add_tag():
@@ -392,16 +378,13 @@ def admin_add_tag():
 	db.commit()
 	redirect('/a')
 
-
 @route('/about')
 def about():
 	return prepare_main(pages.about, get_header(request))
 
-
 @error(404)
 def err404(err):
 	return prepare_err('Як ти сюди потрапив?', '404.png')
-
 
 @error(500)
 def err500(err):
@@ -409,12 +392,10 @@ def err500(err):
 		'полетіла БД. І якщо це так — то пізно срати. '
 		'Може полагодим скоро, може ні', '500.png')
 
-
 @error(401)
 def err401(err):
 	return prepare_err('У тебе немає доступу до цього.'
 		' Йди-но звідси доки не втрапив у халепу', '401.png')
-
 
 if __name__ == '__main__':
 	if len(argv) <= 0:
@@ -428,12 +409,14 @@ if __name__ == '__main__':
 			SETTING = load(fd)
 	except FileNotFoundError:
 		print('Config not found! Creating template...')
-		SETTING = {'ADMIN_KEY': '', 'ADMIN_MODE': False, 'RELOAD': False, 'QUITE': True, 'IP': '127.0.0.1', 'SRV': 'wsgiref', 'PORT': 80, 'SSL': ''}
+		SETTING = {'ADMIN_KEY': '', 'ADMIN_MODE': False, 'RELOAD': False, 'QUITE': True, 'IP': '127.0.0.1', 'SRV': 'wsgiref', 'PORT': 80, 'SSL': '', 'MAIN_TYPE': 0}
 		with open(get_path('conf.json'), 'w') as fd:
 			dump(SETTING, fd)
 		print('Template was created')
 
 	print('RL:{} QT:{} AM:{}'.format(SETTING['RELOAD'], SETTING['QUITE'], SETTING['ADMIN_MODE']))
+
+	MAIN_TYPE = SETTING['MAIN_TYPE']
 
 	if SETTING['ADMIN_KEY'] == '':
 		print('Admin key not specified, admin mode disabled')
