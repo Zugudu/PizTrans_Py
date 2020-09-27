@@ -11,6 +11,8 @@ from zipfile import ZipFile, BadZipFile
 
 ADMIN_KEY = ''
 ADMIN_ON = False
+MAIN_TYPE = 0
+
 
 db = ''
 sql_search = ('chars', 'genres', 'series', 'comands')
@@ -111,7 +113,16 @@ def get_manga(sql, param='', cursor=''):
 
 @route('/')
 def index():
+	if MAIN_TYPE == 1:
+		pass
 	return prepare_main(get_manga('select id,name,dir from hentai order by id desc;'), get_header(request))
+
+
+@route('/search/series/<id:int>')
+@db_work
+def search_engine(id, cursor):
+	cursor.execute('select id_hentai from hentai_series where id_series=? order by id_hentai;', (id,))
+	redirect('/manga/{}'.format(cursor.fetchone()[0]))
 
 
 @route('/search/<type>/<id:int>')
@@ -124,7 +135,6 @@ def search_engine(type, id):
 		get_header(request))
 	else:
 		abort(404)
-
 
 @route('/list/<type>')
 @db_work
@@ -181,10 +191,24 @@ def manga(id, cursor):
 				genre_info = cursor.fetchone()
 				disc_content += pages.genre_button.format(sql_search[i], genre_info[0], genre_info[1])
 
+		controler = '<a class="w3-button w3-blue w3-mobile read-btn" href="/show/{0}/0">Читати немов книгу</a>'\
+					'<a class="w3-button w3-blue w3-mobile read-btn" href="/show/{0}">Читати немов сувій</a>'.format(id)
+
+		cursor.execute('select id_series from hentai_series where id_hentai=?;', (id,))
+		id_series = cursor.fetchone()
+		if id_series:
+			cursor.execute('select id_hentai, name, dir from hentai_series,hentai where id_series=? and id_hentai=id;', id_series)
+			controler += '<div class=\'w3-container w3-card w3-padding\' style=\'width:300px;\'><ul class=\'w3-ul w3-hoverable\' style=\'height:200px;overflow:hidden; overflow-y:scroll;\'>'
+			mangas = cursor.fetchall()
+			for i in mangas:
+				controler += '<a href=\'/manga/{}\'><li>{}</li></a>'.format(i[0], i[1])
+			controler += '</ul></div>'
+
 		content = pages.manga.format(res[0], get_flag(id), id, res[1],
 			sorted(listdir(path.join(get_path('hentai'),res[1])))[0],
-			disc_content, id, id)
+			disc_content, controler)
 
+		#ADMIN MENU
 		if request.get_cookie('admin') == ADMIN_KEY:
 			content += '<div class="w3-row" style="width:480px;">' \
 				'<div class="w3-half">' \
@@ -281,14 +305,14 @@ def admin_test(func):
 		else:
 			abort(404)
 	return wrap
-	
-	
+
+
 @route('/a_manga')
 @admin_test
 def add_manga():
 	return prepare_main(pages.add_manga, get_header(request))
-	
-	
+
+
 @post('/a_manga')
 @admin_test
 def p_add_manga():
@@ -303,7 +327,7 @@ def p_add_manga():
 	file, ext = path.splitext(zip.filename)
 	if ext != '.zip':
 		return 'То людина чи компутор? Я тобі кажу zip мені кидай'
-	
+
 	mkdir(get_path(path.join('hentai/', dir)))
 	zip.save(get_path(path.join('hentai/', dir)))
 	try:
@@ -428,12 +452,14 @@ if __name__ == '__main__':
 			SETTING = load(fd)
 	except FileNotFoundError:
 		print('Config not found! Creating template...')
-		SETTING = {'ADMIN_KEY': '', 'ADMIN_MODE': False, 'RELOAD': False, 'QUITE': True, 'IP': '127.0.0.1', 'SRV': 'wsgiref', 'PORT': 80, 'SSL': ''}
+		SETTING = {'ADMIN_KEY': '', 'ADMIN_MODE': False, 'RELOAD': False, 'QUITE': True, 'IP': '127.0.0.1', 'SRV': 'wsgiref', 'PORT': 80, 'SSL': '', 'MAIN_TYPE': 0}
 		with open(get_path('conf.json'), 'w') as fd:
 			dump(SETTING, fd)
 		print('Template was created')
 
 	print('RL:{} QT:{} AM:{}'.format(SETTING['RELOAD'], SETTING['QUITE'], SETTING['ADMIN_MODE']))
+
+	MAIN_TYPE = SETTING['MAIN_TYPE']
 
 	if SETTING['ADMIN_KEY'] == '':
 		print('Admin key not specified, admin mode disabled')
