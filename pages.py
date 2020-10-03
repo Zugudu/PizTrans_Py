@@ -107,8 +107,8 @@ about = '''
 <ul class="w3-ul w3-border w3-light-gray w3-margin w3-hoverable" style="width:300px;">
 <li style="border-bottom:1px solid #ddd;" class="anime w3-hover-none" title="Програміст, прости Госоподи веб-дизайнер, системний адміністратор, спеціаліст інформаційної безпеки і просто хороша людина">Zugudu</li>
 <li class="anime w3-hover-none" title="Додавання та присвоєння жанрів">Шурік</li>
-<a href="https://myanimelist.net/profile/s0fko" target="_blank" rel="noopener noreferrer" style="text-decoration: none;"><li style="border-bottom:1px solid #ddd;" class="anime" title="Переклад хентаю українською">s0fko</li></a>
-<li class="anime w3-hover-none" title="Розробка дизайну">MrSancho</li>
+<a href="https://myanimelist.net/profile/s0fko" target="_blank" rel="noopener noreferrer" style="text-decoration: none;"><li style="border-bottom:1px solid #ddd;" class="anime" title="Голова відділу перекладу">s0fko</li></a>
+<li class="anime w3-hover-none" title="Вєб дезіґнер">MrSancho</li>
 </ul>
 </div>
 '''
