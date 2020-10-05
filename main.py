@@ -93,7 +93,7 @@ def get_manga(sql, param='', cursor=''):
 	"""
 	:param sql: sql query to get id, name, dir
 	:param param: tuple param to sql
-	"""
+	"""	
 	if cursor == '':
 		abort(500)
 	ind = cursor.execute(sql, param).fetchall()
@@ -113,9 +113,10 @@ def get_manga(sql, param='', cursor=''):
 
 @route('/')
 def index():
-	if MAIN_TYPE == 1:
-		pass
-	return prepare_main(get_manga('select id,name,dir from hentai order by id desc;'), get_header(request))
+	if MAIN_TYPE == 0:
+		return prepare_main(get_manga('select * from last_series;'), get_header(request))
+	else:
+		return prepare_main(get_manga('select * from last_hentai;'), get_header(request))
 
 
 @route('/search/series/<id:int>')
