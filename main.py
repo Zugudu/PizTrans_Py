@@ -420,6 +420,11 @@ def admin_add_tag():
 @route('/about')
 def about():
 	return prepare_main(pages.about, get_header(request))
+	
+	
+@route('/friend')
+def friend():
+	return prepare_main(pages.friend, get_header(request))
 
 
 @error(404)

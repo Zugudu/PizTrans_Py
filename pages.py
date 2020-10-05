@@ -66,6 +66,7 @@ header = '''
 	</div>
 	{}
 	<a href=/about><button class="anime w3-button w3-medium w3-bar-item w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red w3-bottombar">Про нас</button></a>
+	<a href=/friend><button class="anime w3-button w3-medium w3-bar-item w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red w3-bottombar">Наші друзі</button></a>
 </div>
 '''
 
@@ -110,6 +111,18 @@ about = '''
 <a href="https://myanimelist.net/profile/s0fko" target="_blank" rel="noopener noreferrer" style="text-decoration: none;"><li style="border-bottom:1px solid #ddd;" class="anime" title="Голова відділу перекладу">s0fko</li></a>
 <li class="anime w3-hover-none" title="Вєб дезіґнер">MrSancho</li>
 </ul>
+</div>
+'''
+
+
+friend = '''
+<div class="w3-medium" style="width:90%;">
+	<a href='https://otaku-first.online/' target="_blank" rel="noopener noreferrer">
+	<div class='w3-card w3-padding anime w3-hover-light-gray' style="width:150px;">
+		<img src='/static/fr_logo/fis.png' style="width:90px;margin:5px;"><br>
+		Otaku-First
+	</div>
+	</a>
 </div>
 '''
 
