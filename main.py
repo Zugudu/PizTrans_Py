@@ -211,31 +211,32 @@ def manga(id, cursor):
 
 		#ADMIN MENU
 		if request.get_cookie('admin') == ADMIN_KEY:
-			content += '<div class="w3-row" style="width:480px;">' \
-				'<div class="w3-half">' \
-				'<form class="w3-container" method="post" action="/a_add">' \
-				'<input type="hidden" name=id value={}>'\
-				'<select multiple size=15 name="genres">'.format(id)
+			for type in sql_search:
+				content += '<div class="w3-row" style="width:480px;">' \
+					'<div class="w3-half">' \
+					'<form class="w3-container" method="post" action="/a_add/' + type + '">' \
+					'<input type="hidden" name=id value={}>'\
+					'<select multiple size=15 name="'.format(id) + type + '">'
 
-			genres = cursor.execute('select id_genres from hentai_genres where id_hentai={}'.format(id)).fetchall()
-			genres_full = cursor.execute('select id, name from genres;').fetchall()
-			genres_exclude = [i for i in genres_full if (i[0],) not in genres]
-			genres_x = [i for i in genres_full if (i[0],) in genres]
+				genres = cursor.execute('select id_' + type + ' from hentai_' + type + ' where id_hentai={}'.format(id)).fetchall()
+				genres_full = cursor.execute('select id, name from ' + type + ';').fetchall()
+				genres_exclude = [i for i in genres_full if (i[0],) not in genres]
+				genres_x = [i for i in genres_full if (i[0],) in genres]
 
-			for genre_i in genres_exclude:
-				content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
-			content += '</select><br><button class="w3-button '\
-				'w3-dark-gray" type="submit">Додати</button></form></div>'\
-				'<div class="w3-half">'\
-				'<form class="w3-container" method="post" action="/a_del">'\
-				'<input type="hidden" name=id value={}>'\
-				'<select multiple size=15 name="genres">'.format(id)
+				for genre_i in genres_exclude:
+					content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
+				content += '</select><br><button class="w3-button '\
+					'w3-dark-gray" type="submit">Додати</button></form></div>'\
+					'<div class="w3-half">'\
+					'<form class="w3-container" method="post" action="/a_del/' + type + '">'\
+					'<input type="hidden" name=id value={}>'\
+					'<select multiple size=15 name="'.format(id) + type + '">'
 
-			for genre_i in genres_x:
-				content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
+				for genre_i in genres_x:
+					content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
 
-			content += '</select><br><button class="w3-button w3-dark-gray"'\
-				' type="submit">Видалити</button></form></div></div>'
+				content += '</select><br><button class="w3-button w3-dark-gray"'\
+					' type="submit">Видалити</button></form></div></div>'
 
 		return prepare_main(content, get_header(request))
 	else:
@@ -371,27 +372,29 @@ def admin_post():
 		abort(404)
 
 
-@post('/a_add')
+@post('/a_add/<type>')
 @admin_test
-def admin_add():
-	cursor = db.cursor()
-	for genre in request.forms.getall('genres'):
-		cursor.execute('insert into hentai_genres values(?, ?);',
-				(request.POST['id'], genre))
-	cursor.close()
-	db.commit()
+def admin_add(type):
+	if type in sql_search:
+		cursor = db.cursor()
+		for genre in request.forms.getall(type):
+			cursor.execute('insert into hentai_' + type + ' values(?, ?);',
+					(request.POST['id'], genre))
+		cursor.close()
+		db.commit()
 	redirect('/manga/{}'.format(request.POST['id']))
 
 
-@post('/a_del')
+@post('/a_del/<type>')
 @admin_test
-def admin_del():
-	cursor = db.cursor()
-	for genre in request.forms.getall('genres'):
-		cursor.execute('delete from hentai_genres where id_hentai=? '
-					'and id_genres=?;', (request.POST['id'], genre))
-	cursor.close()
-	db.commit()
+def admin_del(type):
+	if type in sql_search:
+		cursor = db.cursor()
+		for genre in request.forms.getall(type):
+			cursor.execute('delete from hentai_' + type + ' where id_hentai=? '
+						'and id_' + type + '=?;', (request.POST['id'], genre))
+		cursor.close()
+		db.commit()
 	redirect('/manga/{}'.format(request.POST['id']))
 
 
