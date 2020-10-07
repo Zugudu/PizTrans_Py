@@ -89,12 +89,12 @@ def get_header(c_request):
 	session = get_session(c_request)
 	if session:
 		if is_admin(session):###
-			header = pages.header.format('exit', 'Вийти', pages.admin_button)
+			header = pages.header.format(pages.admin_button, 'exit', 'Вийти')
 			header += pages.admin_yes.format(choice(listdir('static/admin')))
 		else:
-			header = pages.header.format('exit', 'Вийти', '')
+			header = pages.header.format('', 'exit', 'Вийти')
 	else:
-		header = pages.header.format('login', 'Увійти', '')
+		header = pages.header.format('', 'login', 'Увійти')
 	return header
 
 
@@ -347,14 +347,16 @@ def admin_test(func):
 
 
 @route('/a_manga')
-@admin_test
 def add_manga():
-	return prepare_main(pages.add_manga, get_header(request))
+	if get_session(request):
+		return prepare_main(pages.add_manga, get_header(request))
+	else:
+		return prepare_main('Для заливання манґи, будь ласка, зареєструйтесь', get_header(request))
 
 
 @post('/a_manga')
-@admin_test
-def p_add_manga():
+@login
+def p_add_manga(session):
 	name = request.forms.get('dir')
 	dir = name.replace('.', '').replace('/', '').replace('\\', '')
 	if path.exists(get_path(path.join('hentai/', dir))):
@@ -379,6 +381,8 @@ def p_add_manga():
 	remove(get_path(path.join('hentai/', dir, zip.filename)))
 	cursor = db.cursor()
 	cursor.execute('insert into hentai values (null, ?, ?);', (name, dir))
+	hentai_id = cursor.execute('select id from hentai where dir=?;', (dir, )).fetchone()[0]
+	cursor.execute('insert into hentai_user values (?, ?);', (hentai_id, session[1]))
 	cursor.close()
 	db.commit()
 	redirect('/')

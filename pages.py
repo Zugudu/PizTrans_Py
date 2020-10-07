@@ -44,7 +44,6 @@ manga = '''
 header = '''
 <div class="w3-bar w3-margin-bottom">
 	<a href=/><button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red">Головна</button></a>
-	<a href=/{}><button class="anime w3-button w3-medium w3-bar-item w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red w3-bottombar">{}</button></a>
   	<div class="dropdown">
 		<button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red" style="float: none;">Пошук за:</button>
 		<div class="dropdown_content">
@@ -57,12 +56,13 @@ header = '''
 	{}
 	<a href=/about><button class="anime w3-button w3-medium w3-bar-item w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red w3-bottombar">Про нас</button></a>
 	<a href=/friend><button class="anime w3-button w3-medium w3-bar-item w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red w3-bottombar">Наші друзі</button></a>
+	<a href=/a_manga><button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red">Додати манґу</button></a>
+	<a href=/{}><button class="anime w3-button w3-medium w3-bar-item w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red w3-bottombar">{}</button></a>
 </div>
 '''
 
 
 admin_mode = '''
-<a href=/a_manga><div class="w3-button w3-light-gray w3-border">Додати нову манґу</div></a><hr>
 <div>
 {}
 </div>
