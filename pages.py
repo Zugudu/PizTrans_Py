@@ -41,20 +41,10 @@ manga = '''
 '''
 
 
-admin = '''
-<div class="w3-xlarge w3-padding w3-center">{}</div>
-<div class="w3-container" style="width:50%;margin:auto;">
-	<form method="post">
-		<input type="text" class="w3-input" name="key" placeholder="{}">
-		<button class="w3-button w3-dark-gray w3-margin-top w3-block" type="submit">Підтвердити</button>
-	</form>
-</div>
-'''
-
-
 header = '''
 <div class="w3-bar w3-margin-bottom">
 	<a href=/><button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red">Головна</button></a>
+	<a href=/{}><button class="anime w3-button w3-medium w3-bar-item w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red w3-bottombar">{}</button></a>
   	<div class="dropdown">
 		<button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red" style="float: none;">Пошук за:</button>
 		<div class="dropdown_content">
@@ -97,8 +87,6 @@ admin_mode_el = '''
 
 admin_button = '<a href=/a><button class="anime w3-button w3-medium w3-bar-item w3-bottombar w3-border-blue w3-hover-none w3-hover-text-black w3-hover-border-red">Адмінка</button></a>'
 admin_yes = '<div class="admin-status"><img height=128px src="/static/admin/{}"></div>'
-admin_welcome = ('Скільки годин?', 'Три останні цифри числа Пі', 'Як тебе звати?', 'CVV2 код твоєї картки', 'Що ти тут забув?', 'Як ти сюди потрапив?', 'Схоже я забув вимкнути відображення цієї сторінки...', 'Семпаю, тільки не ламай нічого')
-admin_enter = ('Сасай кудасай', 'Чємуске', 'Пароль:root', 'Введіть сюди 4225')
 
 
 error = '''
@@ -107,6 +95,11 @@ error = '''
 <img src="/static/ico/{}"><br>
 <a href="/" class="w3-button w3-block w3-dark-gray w3-margin-top">Назад</a>
 </div>
+'''
+
+
+error_head = '''
+<div class="w3-container w3-red w3-padding">{}</div>
 '''
 
 
@@ -193,3 +186,13 @@ page_scroll = '''
 </div>
 '''
 
+
+login = '''
+<form method=POST class='w3-container w3-card w3-padding w3-margin' style='width:300px;'>
+<label>Лоґін</label>
+<input name='login' type='text' placeholder='Лоґін' class='w3-input'>
+<label>Пароль</label>
+<input name='pass' type='password' placeholder='Пароль' class='w3-input'>
+<button class='w3-btn w3-black w3-block w3-margin-top' type='submit'>Увійти</button>
+</form>
+'''
