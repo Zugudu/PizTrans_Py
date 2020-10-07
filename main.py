@@ -119,6 +119,11 @@ def index():
 		return prepare_main(get_manga('select * from last_hentai;'), get_header(request))
 
 
+@route('/all')
+def all():
+	return prepare_main(get_manga('select * from last_hentai;'), get_header(request))
+
+
 @route('/search/series/<id:int>')
 @db_work
 def search_engine(id, cursor):
@@ -351,7 +356,7 @@ def p_add_manga():
 	cursor.execute('insert into hentai values (null, ?, ?);', (name, dir))
 	cursor.close()
 	db.commit()
-	redirect('/')
+	redirect('/all')
 
 
 @post('/show/<id:int>/<page:int>')
@@ -427,8 +432,8 @@ def admin_add_tag(type):
 		cursor.close()
 		db.commit()
 	redirect('/a')
-	
-	
+
+
 @post('/a_d/<type>')
 @admin_test
 def admin_add_tag(type):
@@ -444,8 +449,8 @@ def admin_add_tag(type):
 @route('/about')
 def about():
 	return prepare_main(pages.about, get_header(request))
-	
-	
+
+
 @route('/friend')
 def friend():
 	return prepare_main(pages.friend, get_header(request))
