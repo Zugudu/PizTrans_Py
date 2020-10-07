@@ -111,6 +111,25 @@ about = '''
 <a href="https://myanimelist.net/profile/s0fko" target="_blank" rel="noopener noreferrer" style="text-decoration: none;"><li style="border-bottom:1px solid #ddd;" class="anime" title="Голова відділу перекладу">s0fko</li></a>
 <li class="anime w3-hover-none" title="Вєб дезіґнер">MrSancho</li>
 </ul>
+Наші проєкти:
+<div class='w3-row-padding w3-margin ' style='width:400px;'>
+	<div class='w3-half'>
+	<a href='https://uhentai.tk'>
+	<div class='w3-card w3-padding anime w3-hover-light-gray' style="width:150px;">
+		<img src='/static/ico/logo.svg' style="width:90px;margin:5px;"><br>
+		Uhentai
+	</div>
+	</a>
+	</div>
+	<div class='w3-half'>
+	<a href='https://umanga.tk'>
+	<div class='w3-card w3-padding anime w3-hover-light-gray' style="width:150px;">
+		<img src='/static/ico/logo.svg' style="width:90px;margin:5px;"><br>
+		Umanga
+	</div>
+	</a>
+	</div>
+</div>
 </div>
 '''
 
