@@ -74,13 +74,23 @@ header = '''
 admin_mode = '''
 <a href=/a_manga><div class="w3-button w3-light-gray w3-border">Додати нову манґу</div></a><hr>
 <div>
+{}
+</div>
+'''
+
+
+admin_mode_el = '''
 <div style="width:300px;display:inline-block;">
-	<form method="post" class="w3-padding" action="a_at">
-		<div class="w3-medium" style="padding-bottom:16px;"><b>Додати тег</b></div>
+	<form method="post" class="w3-padding" action="a_a/{0}">
+		<div class="w3-medium" style="padding-bottom:16px;"><b>Додати {1}</b></div>
 		<div><input type="text" class="w3-input" style="display: table-cell;" name="name" placeholder="Назва"></div>
 		<div style="padding-top:10px;"><button class="w3-button w3-light-gray w3-border" type="submit">Додати</button></div>
 	</form>
-</div>
+	<form method="post" class="w3-padding" action="a_d/{0}">
+		<div class="w3-medium" style="padding-bottom:16px;"><b>Видалити {1}</b></div>
+		<select multiple size=15 name='el'>{2}</select>
+		<div style="padding-top:10px;"><button class="w3-button w3-light-gray w3-border" type="submit">Видалити</button></div>
+	</form>
 </div>
 '''
 

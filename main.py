@@ -282,10 +282,17 @@ def show(id, page, cursor):
 
 
 @route('/a')
-def admin():
+@db_work
+def admin(cursor):
 	if ADMIN_ON:
 		if request.get_cookie('admin') == ADMIN_KEY:
-				return prepare_main(pages.admin_mode, get_header(request))
+			el_list = ''
+			for el, eln in zip(sql_search, ('персонажа', 'жанр', 'серію', 'команду')):
+				op_list = ''
+				for op in cursor.execute('select * from ' + el + ';').fetchall():
+					op_list += '<option value="{}">{}</option>'.format(op[0], op[1])
+				el_list += pages.admin_mode_el.format(el, eln, op_list)
+			return prepare_main(pages.admin_mode.format(el_list), get_header(request))
 		else:
 			admin_welcome = choice(pages.admin_welcome)
 			admin_enter = choice(pages.admin_enter)
@@ -410,14 +417,27 @@ def admin_add_manga():
 	redirect('/a')
 
 
-@post('/a_at')
+@post('/a_a/<type>')
 @admin_test
-def admin_add_tag():
-	cursor = db.cursor()
-	cursor.execute('insert into genres values(null, ?);',
-		(request.forms.name, ))
-	cursor.close()
-	db.commit()
+def admin_add_tag(type):
+	if type in sql_search:
+		cursor = db.cursor()
+		cursor.execute('insert into ' + type + ' values(null, ?);',
+			(request.forms.name, ))
+		cursor.close()
+		db.commit()
+	redirect('/a')
+	
+	
+@post('/a_d/<type>')
+@admin_test
+def admin_add_tag(type):
+	if type in sql_search:
+		cursor = db.cursor()
+		for i in request.forms.getall('el'):
+			cursor.execute('delete from ' + type + ' where id=?;', (i, ))
+		cursor.close()
+		db.commit()
 	redirect('/a')
 
 
