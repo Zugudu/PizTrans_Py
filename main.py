@@ -218,8 +218,8 @@ def manga(id, cursor):
 					'<input type="hidden" name=id value={}>'\
 					'<select multiple size=15 name="'.format(id) + type + '">'
 
-				genres = cursor.execute('select id_' + type + ' from hentai_' + type + ' where id_hentai={}'.format(id)).fetchall()
-				genres_full = cursor.execute('select id, name from ' + type + ';').fetchall()
+				genres = cursor.execute('select id_' + type + ' from hentai_' + type + ' where id_hentai={};'.format(id)).fetchall()
+				genres_full = cursor.execute('select id, name from ' + type + ' order by name;').fetchall()
 				genres_exclude = [i for i in genres_full if (i[0],) not in genres]
 				genres_x = [i for i in genres_full if (i[0],) in genres]
 
@@ -289,7 +289,7 @@ def admin(cursor):
 			el_list = ''
 			for el, eln in zip(sql_search, ('персонажа', 'жанр', 'серію', 'команду')):
 				op_list = ''
-				for op in cursor.execute('select * from ' + el + ';').fetchall():
+				for op in cursor.execute('select * from ' + el + ' order by name;').fetchall():
 					op_list += '<option value="{}">{}</option>'.format(op[0], op[1])
 				el_list += pages.admin_mode_el.format(el, eln, op_list)
 			return prepare_main(pages.admin_mode.format(el_list), get_header(request))
