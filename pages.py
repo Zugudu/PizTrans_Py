@@ -113,6 +113,7 @@ error = '''
 about = '''
 <div class="w3-medium" style="width:90%;">
 Привіт, як ти вже встиг помітити, ти знаходишся на сайті з хентаєм.<br>Весь код є власністю Наукової ради з питань розвитку хентаю в Україні<br>
+Наш ТГ канал <a href="https://t.me/ukr_mango" target="_blank" rel="noopener noreferrer" class="w3-text-blue">ЮМагно</a><br>
 Зворотній зв'язок <a href="https://t.me/ukrMango" target="_blank" rel="noopener noreferrer" class="w3-text-blue">@ukrMango</a><br>
 Розробкою сайту займалися:
 <ul class="w3-ul w3-border w3-light-gray w3-margin w3-hoverable" style="width:300px;">
