@@ -116,8 +116,8 @@ about = '''
 Наш ТГ канал <a href="https://t.me/ukr_mango" target="_blank" rel="noopener noreferrer" class="w3-text-blue">ЮМанго</a><br>
 Зворотній зв'язок <a href="https://t.me/ukrMango" target="_blank" rel="noopener noreferrer" class="w3-text-blue">@ukrMango</a><br>
 Наші проєкти:
-<div class='w3-row-padding w3-margin ' style='width:400px;'>
-	<div class='w3-half'>
+<div class='w3-row-padding w3-margin-top w3-mobile' style='width:400px;'>
+	<div class='w3-half w3-mobile'>
 	<a href='https://uhentai.tk'>
 	<div class='w3-card w3-padding anime w3-hover-light-gray' style="width:150px;">
 		<img src='/static/ico/logo.svg' style="width:90px;margin:5px;"><br>
@@ -125,7 +125,7 @@ about = '''
 	</div>
 	</a>
 	</div>
-	<div class='w3-half'>
+	<div class='w3-half w3-mobile'>
 	<a href='https://umanga.tk'>
 	<div class='w3-card w3-padding anime w3-hover-light-gray' style="width:150px;">
 		<img src='/static/ico/logo.svg' style="width:90px;margin:5px;"><br>
