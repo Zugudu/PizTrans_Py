@@ -479,6 +479,7 @@ if __name__ == '__main__':
 		print('Specify work dir')
 		exit(1)
 	db = sqlite3.connect(get_path('db'))
+	db.execute('pragma foreign_keys = 1')
 
 	SETTING = None
 	try:
