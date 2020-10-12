@@ -1,57 +1,181 @@
-.anime, .genre, .caption
+.container
 {
-	font: 80%;
+	width: 100%;
+	padding-left: 10px;
+	padding-right: 10px;
 }
-a{font: 80%;}
+.svg:hover {transform: scale(1, 1);}
+.link-font:hover
+{
+	color: var(--light-main-color);
+	opacity: 0.6;
+}
+.font {font-size: 80%;}
+.big-font {font-size: 100%;}
 
-.wrap
+/* Меню */
+.header__body
 {
-	width: 95%;
-	margin: 10px auto;
+	padding: 0 20px;
 }
+.menu
+{
+	display: none;
+	position: fixed;
+	width: 100%;
+	height: auto;
+	top: 53px;
+	left: 0;
+	justify-content: center;
+}
+.menu__list
+{
+	flex-direction: column;
+	width: 100%;  
+}
+.menu__list:after
+{
+	content: '';
+	width: 100%;
+	height: 5px;
+	background-color: var(--selection-color);
+}
+.menu__list > li
+{
+	border-top: 2px solid var(--selection-color);
+}
+.menu__list > li:hover {background-color: var(--main-color);}
+.menu__link {padding: 10px;}
+.menu__list > li:hover .sub-menu__list {display: none;}
+
+/* Випадаюче меню */
+.sub-menu__list
+{
+	display: none;
+	position: relative;
+	top: 0;
+	left: 0;
+	padding-top: 0;
+	width: 100%;
+}
+.sub-menu__list > li {background-color: var(--light-main-color);}
+.sub-menu__link {text-align: center;}
+
+/* Меню гамбургер */
+.mobile-menu
+{
+	display: block;
+	position: relative;
+}
+.mobile-menu__button
+{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	cursor: pointer;
+}
+
+/* Стрілка */
+.mobile-menu__arrow
+{
+	position: absolute;
+	top: 13px;
+	right: 30px;
+	width: 0;
+	height: 0;
+	border-top: 10px solid #dd6341;
+	border-right: 10px solid transparent;
+	border-left: 10px solid transparent;
+	transition: transform 0.4s ease;
+}
+
+/* Поведінка mobile-menu__search */
+#mobile-menu__search:checked ~ .menu__link .mobile-menu__arrow {transform: rotate(180deg);}
+#mobile-menu__search:checked ~ .sub-menu__list {display: block;}
+
+/* Лінії */
+.mobile-menu__button > div,
+.mobile-menu__button > div:before,
+.mobile-menu__button > div:after
+{
+	width: 100%;
+	height: 4px;
+	background-color: #dd6341;
+	border-radius: 2.5px;
+	transition: all 0.4s ease;
+}
+.mobile-menu__button > div {position: relative;}
+.mobile-menu__button > div:before,
+.mobile-menu__button > div:after
+{
+	content: '';
+	position: absolute;
+	top: -9px;
+}
+.mobile-menu__button > div:after {top: 9px;}
+
+/* Анімація*/
+#burger:checked ~ .mobile-menu .mobile-menu__button > div {transform: rotate(135deg);}
+#burger:checked ~ .mobile-menu .mobile-menu__button > div:before,
+#burger:checked ~ .mobile-menu .mobile-menu__button > div:after
+{
+	top: 0;
+	transform: rotate(90deg);
+}
+
+/* Поведінка */
+#burger:checked ~ .menu {display: flex;}
+
+/* Манга на головній сторінці */
 .block
 {
-	margin: 0 5%;
-	width: 40%;
+	width: auto;
+	margin: 5px;
 }
-.image
+.block:hover
 {
-	width: 100%;
-	height: auto;
+	transform: scale(1, 1);
+	border-color: var(--main-color);
+	box-shadow: 0 0 0;
 }
-.caption
-{
-	width: 100%;
-	margin: 5% 0;
-}
-.name{font-size: 100%;}
-.disc
-{
-	display: inline-block;
-	vertical-align: top;
-	width: 100%;
-}
-.imgs
-{
-	width: 100%;
-	margin: 0 auto;
-}
-.home
-{
-	width:15%;
-	height: auto;
-	position: fixed;
-	top: 10px;
-	left: 10px;
-	float: left;
-}
-.read-btn{margin:5px 0px;}
+.block__img {height: auto;}
 
-.error{width: 100%;}
-
-.list
+/* Пошук */
+.search {margin-bottom: 50px;}
+.button:hover,
+.bottom-bar__symbol:hover,
+.list > li:hover
 {
-	margin-bottom: 10px;
-	width: 95%;
+	background-color: var(--main-color);
+	color: var(--page-color);
 }
-.touch .dropdown:hover .dropdown_content{display: block;}
+
+/* Сторінка з мангою */
+.manga {display: block;}
+.manga__block {width: 100%;}
+.manga__bottom-button
+{
+	margin: 10px -10px;
+	padding: 10px;
+	border-top: 5px solid var(--main-color);
+}
+.list {width: 100%;}
+.list > li:hover .list__link {color: var(--main-page-color)}
+.back-arrow:hover {opacity: 0.5;}
+
+/* Перегортання сторінок */
+.show-book
+{
+	margin-bottom: 40px;
+	margin-top: 20px;
+	padding: 0;
+}
+.page-scroll {height: 30px;}
+.page-scroll__form {width: 50%;}
+.page-scroll__form > button {width: 30px;}
+.page-scroll__form > button:hover {background-color: var(--light-main-color);}
+.page-scroll__group > a {margin: 0 5px;}
+
+/* Помилка */
+.error__img {width: 100%;}

@@ -97,16 +97,16 @@ def get_manga(sql, param='', cursor=''):
 	if cursor == '':
 		abort(500)
 	ind = cursor.execute(sql, param).fetchall()
-	content = '<div class=wrap>'
+	content = '<div class="content container">'
 	if len(ind) > 0:
 		for row in ind:
-			content += '''<div class=block>
+			content += '''<div class="block">
 			{}<a href=/manga/{}>
-			<img class=image src="/hentai/{}/{}"></a>
-			<div class=caption>{}</div>
+			<img class="block__img" src="/hentai/{}/{}">
+			<div class="font block__title">{}</div></a>
 			</div>'''.format(get_flag(row[0]), row[0], row[2], sorted(listdir(path.join(get_path('hentai'),row[2])))[0], row[1])
 	else:
-		content += '<img src="/static/ico/MNF.png" class=w3-margin-bottom><br><div class=anime>Схоже мальописи відсутні</div>'
+		content += '<img src="/static/ico/MNF.png"><br><div class="font">Схоже мальописи відсутні</div>'
 	content += '</div>'
 	return content
 
@@ -149,20 +149,20 @@ def genres_list(type, cursor):
 		genres = cursor.execute('SELECT * from ' + type + ';').fetchall()
 		genres.sort(key = lambda el: el[1])
 
-		content = '<div class="list">'
+		content = '<div class="search content container">'
 		current_symbol = genres[0][1][0]
-		content += pages.genre_group.format(current_symbol, current_symbol)
+		content += pages.genre_group.format(current_symbol, current_symbol.upper())
 		symbols = [current_symbol]
 		for g_id, name in genres:
 			if name[0] != current_symbol:
 				current_symbol = name[0]
-				content += '</div>' + pages.genre_group.format(current_symbol, current_symbol)
+				content += '</div>' + pages.genre_group.format(current_symbol, current_symbol.upper())
 				symbols += current_symbol
 			content += pages.genre_button.format(type, g_id, name)
 
-		content += '</div></div><div class="bottombar w3-bar w3-hide-small">'
+		content += '</div></div><div class="bottom-bar">'
 		for i in symbols:
-			content += pages.genres_bottom_bar.format(i, pages.w3_button, i)
+			content += pages.bottom_bar_symbol.format(i, i.upper())
 		content += '</div>'
 
 		return prepare_main(content, get_header(request))
@@ -191,23 +191,23 @@ def manga(id, cursor):
 				'select id_{0} from hentai_{0} where id_hentai=?;'.format(sql_search[i]), (id,)
 			).fetchall()
 			if len(genres) > 0:
-				disc_content += '<div class="anime">{}</div>'.format(info[i])
+				disc_content += '<div class="font manga__font">{}</div>'.format(info[i])
 			for genre in genres:
 				cursor.execute('select id,name from {} where id=?;'.format(sql_search[i]), (genre[0],))
 				genre_info = cursor.fetchone()
 				disc_content += pages.genre_button.format(sql_search[i], genre_info[0], genre_info[1])
 
-		controler = '<a class="w3-button w3-blue w3-mobile read-btn" href="/show/{0}/0">Читати немов книгу</a>'\
-					'<a class="w3-button w3-blue w3-mobile read-btn" href="/show/{0}">Читати немов сувій</a>'.format(id)
+		controler = '<div class="manga__bottom-button"><a class="font big-font button manga__button" href="/show/{0}/0">Читати немов книгу</a>'\
+					'<a class="font big-font button manga__button" href="/show/{0}">Читати немов сувій</a></div>'.format(id)
 
 		cursor.execute('select id_series from hentai_series where id_hentai=?;', (id,))
 		id_series = cursor.fetchone()
 		if id_series:
 			cursor.execute('select id_hentai, name, dir from hentai_series,hentai where id_series=? and id_hentai=id;', id_series)
-			controler += '<div class=\'w3-container w3-card w3-padding\' style=\'width:300px;\'><ul class=\'w3-ul w3-hoverable\' style=\'height:200px;overflow:hidden; overflow-y:scroll;\'>'
+			controler += '<div class="list-block"><ul class="font list">'
 			mangas = cursor.fetchall()
 			for i in mangas:
-				controler += '<a href=\'/manga/{}\'><li>{}</li></a>'.format(i[0], i[1])
+				controler += '<li><a class="list__link" href="/manga/{}">{}</a></li>'.format(i[0], i[1])
 			controler += '</ul></div>'
 
 		content = pages.manga.format(res[0], get_flag(id), id, res[1],
@@ -220,7 +220,7 @@ def manga(id, cursor):
 				content += '<div class="w3-row" style="width:480px;">' \
 					'<div class="w3-half">' \
 					'<form class="w3-container" method="post" action="/a_add/' + type + '">' \
-					'<input type="hidden" name=id value={}>'\
+					'<input type="hidden" name=id value={}>' \
 					'<select multiple size=15 name="'.format(id) + type + '">'
 
 				genres = cursor.execute('select id_' + type + ' from hentai_' + type + ' where id_hentai={};'.format(id)).fetchall()
@@ -232,7 +232,7 @@ def manga(id, cursor):
 					content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
 				content += '</select><br><button class="w3-button '\
 					'w3-dark-gray" type="submit">Додати</button></form></div>'\
-					'<div class="w3-half">'\
+					'<div class="">'\
 					'<form class="w3-container" method="post" action="/a_del/' + type + '">'\
 					'<input type="hidden" name=id value={}>'\
 					'<select multiple size=15 name="'.format(id) + type + '">'
@@ -255,20 +255,8 @@ def show(id, cursor):
 	dir = cursor.execute('select dir from hentai where id=?;', (id, )).fetchone()[0]
 	content = ''
 	for img in sorted(listdir(path.join(get_path('hentai'), dir))):
-		content += '<img class=imgs src="/hentai/' + dir + '/' + img + '"><br>'
-	return prepare_main(pages.show.format(id, content))
-
-
-def page_scroll(id, page, last_page):
-	args = ['', '/show/'+str(id)+'/0', '/show/'+str(id)+'/'+str(page-1), page + 1, last_page, '',
-		'/show/'+str(id)+'/'+str(page+1), '/show/'+str(id)+'/'+str(last_page - 1)]
-	if page == 0:
-		args[0], args[5] = 'hidden', 'visible'
-	elif page == last_page - 1:
-		args[0], args[5] = 'visible', 'hidden'
-	else:
-		args[0], args[5] = 'visible', 'visible'
-	return pages.page_scroll.format(*args)
+		content += '<img class="show__img" src="/hentai/' + dir + '/' + img + '"><br>'
+	return prepare_main(pages.show.format(id, content))	
 
 
 @route('/show/<id:int>/<page:int>')
@@ -282,8 +270,17 @@ def show(id, page, cursor):
 		content = pages.show_book.format('/manga/'+str(id), dir, sorted(listdir(path.join(get_path('hentai'), dir)))[page])
 	else:
 		content = pages.show_book.format('/show/'+str(id)+'/'+str(page+1), dir, sorted(listdir(path.join(get_path('hentai'), dir)))[page])
-	content += page_scroll(id, page, l_manga)
-	return prepare_main(pages.show.format(id, content))
+
+	args = [id, '', '/show/'+str(id)+'/0', '/show/'+str(id)+'/'+str(page-1), page + 1, l_manga, '',
+		'/show/'+str(id)+'/'+str(l_manga - 1), '/show/'+str(id)+'/'+str(page+1)]
+	if page == 0:
+		args[1], args[6] = 'hidden', 'visible'
+	elif page == l_manga - 1:
+		args[1], args[6] = 'visible', 'hidden'
+	else:
+		args[1], args[6] = 'visible', 'visible'
+	content += pages.page_scroll.format(*args)
+	return prepare_main(content)
 
 
 @route('/a')
@@ -514,6 +511,6 @@ if __name__ == '__main__':
 					keyfile=SETTING['SSL']+'privkey.pem',
 					certfile=SETTING['SSL']+'fullchain.pem')
 		else:
-			run(server=SETTING['SRV'], host=SETTING['IP'], port=SETTING['PORT'], quiet=SETTING['QUITE'], reloader=SETTING['RELOAD'])
+			run(server=SETTING['SRV'], host=SETTING['IP'], port=SETTING['PORT'], quiet=SETTING['QUITE'], reloader=['RELOAD'])
 	except BrokenPipeError:
 		print('Someone disconect!')

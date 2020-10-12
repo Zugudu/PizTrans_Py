@@ -2,206 +2,421 @@
 {
 	font-family: Anime;
 	src: url(a.ttf);
-	font-display: swap;
 }
-
-.anime, .genre, .caption
+:root
 {
-	font: 100% Anime;
+	--page-color: #f3f3e9;
+	--main-color: #383735;
+	--light-main-color: #4e4e4e;
+	--selection-color:  #dd6241;
+	--main-font-color: #ffca22;
 }
-a{text-decoration: none;}
-
-.wrap
+*,*:before,*:after
 {
-	width: 880px;
-	margin: 10px auto;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	box-sizing: border-box;
+}
+html, body
+{
+	height: 100%;
+	background-color: var(--page-color);
+}
+body {overflow-y: scroll;}
+a {text-decoration: none;}
+li {list-style: none;}
+
+/* Загальне */
+.font
+{
+	font-size: 100%;
+	font: 16px Anime;
+	color: var(--main-color)
+}
+.big-font {font-size: 120%;}
+.link-font 
+{
+	color: var(--light-main-color);
+	opacity: 0.6;
+}
+.link-font:hover
+{
+	color: var(--selection-color);
+	opacity: 1;
+}
+.container
+{
+	max-width: 912px;
+	margin-left: auto;
+	margin-right: auto;
 	display: block;
 }
+.svg {transition: transform 0.4s ease;}
+.svg:hover {transform: scale(1.07, 1.07);}
+
+/* Шапка */
+.header
+{
+	position: fixed;
+	width: 100%;
+	top: 0;
+	left: 0;
+	z-index: 100;
+}
+.header:before
+{
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color:  var(--main-color);
+}
+.header:after
+{
+	content: '';
+	position: absolute;
+	width: 100%;
+	height: 5px;
+	background-color: var(--selection-color);
+}
+.header__body
+{
+	position: relative;
+	z-index: 2;
+	display: flex;
+	justify-content: space-between;
+	height: 50px;
+	align-items: center;
+	padding: 0 50px;
+}
+.logo {flex: 0 0 40px;}
+.logo img
+{
+	max-width: 100%;
+	display: block;
+}
+
+/* Меню */
+.menu
+{
+	display: flex;
+	height: 100%;
+}
+.menu li
+{
+	position: relative;
+	padding: 0;
+	background-color:  var(--main-color);
+	transition: background-color 0.4s ease;
+}
+.menu__list
+{
+	display: flex;
+	height: 100%;
+}
+.menu__link, .sub-menu__link
+{
+	color: var(--main-font-color);
+	width: 100%;
+	display: inline-block;
+}
+.menu__link{
+	padding: 17px 15px;
+	text-align: center;
+}
+.menu__list > li:hover {background-color: var(--selection-color);}
+.menu__list > li:hover .sub-menu__list {display: block;}
+
+/* Випадаюче меню */
+.sub-menu__list
+{
+	display: none;
+	position: absolute;
+	left: 0;
+	top: 0;
+	padding-top: 53px;
+	min-width: 200px;
+}
+.sub-menu__list:after
+{
+	content: '';
+	position: absolute;
+	width: 100%;
+	height: 5px;
+	background-color: var(--selection-color);
+}
+.sub-menu__list > li {border-top: 2px solid var(--selection-color);}
+.sub-menu__list > li:hover {background-color: var(--light-main-color);}
+.sub-menu__link {padding: 10px;}
+
+/*Мобільне меню*/
+#mobile-menu__search {display: none;}
+#burger {display: none;}
+.mobile-menu {display: none;}
+
+/* Контент */
+.content
+{   padding-top: 70px;
+	position: relative;
+	text-align: center;
+}
+
+/* Манга на головній сторінці */
 .block
 {
 	display: inline-block;
-	margin: 0 10px 10px 10px;
 	vertical-align: top;
-	position:relative;
+	position: relative;
+	width: 208px;
+	margin: 10px;
+	border:  4px solid var(--main-color);
+	border-radius: 5px;
+	transition: transform, border-color, box-shadow 0.3s ease;
 }
-.image
+.block__img
 {
 	display: block;
-	outline: #2195f3 solid 4px;
-	width:200px;
-	height:300px;
-}
-.image:hover{outline: #f44336 inset 5px;}
-
-.block a:focus .image{outline: #f44336 inset 5px;}
-
-.caption
-{
-	display: block;
-	text-align: center;
-	width: 200px;
-	margin-top: 10px;
-}
-.name
-{
-	font: bold 120% Anime;
-	width: 80%;
-}
-.disc
-{
-	display: inline-block;
-	vertical-align: top;
-	width: 400px;
-	padding: 10px;
-}
-.imgs
-{
-	width: 60%;
-	margin: 0 auto;
-}
-.home
-{
-	width: 40px;
-	height: auto;
-	position: fixed;
-	top: 10px;
-	left: 10px;
-	float: left;
-}
-.genre
-{
-	display: inline-block;
-	text-decoration: none;
-	background-color: #d4e8f3;
-	color: black;
-	padding: 5px;
-	margin: 5px;
-	border: #2195f3b4 solid 3px;
-	border-radius: 5px;
-}
-.genre:hover
-{
-	border: #f44336 solid 3px;
-	border-radius: 5px;
-	background-color: #fddbda;
-}
-.flag
-{
-	width:30px;
-	height:20px;
-	left:0px;
-	position:absolute;
-}
-.flag:hover
-{
-	width:36px;
-	height:24px;
-}
-.flag:focus
-{
-	width:36px;
-	height:24px;
-}
-.flag-231, .flag-232
-{
-	width:100%;
-	height:50%;
-	position:absolute;
-}
-.flag-232{bottom:0px;}
-
-.admin-status
-{
-	position:fixed;
-	right:10px;
-	top:10px;
-}
-.read-btn{margin:5px;}
-
-.error{width: 50%;}
-
-.list
-{
-	margin-bottom: 5em;
-	width: 60%;
-}
-.genre_group
-{
-	border-radius: 10px;
-	background-color: #deeefc;
-	margin-top: 10px;
-	padding: 5px;
-}
-.symbol
-{
-	font: 120% Anime;
-	float: left;
 	width: 100%;
-	margin-top: 3px;
 }
-.bottombar
+.block__title
+{
+	color: var(--page-color);
+	background-color: var(--light-main-color);
+	border-top: var(--main-color) solid 3px;
+	padding: 10px 0;
+}
+.block:hover
+{
+	transform: scale(1.015, 1.015);
+	border-color: var(--selection-color);
+	box-shadow: 0 0 10px var(--main-color);
+}
+
+/* Пошук */
+.search {margin-bottom: 35px;}
+.search-group
+{
+	display: inline-block;
+	vertical-align: top;
+	position: relative;
+	text-align: center ;
+	width: 100%;
+	background-color: var(--light-main-color);
+	border: 4px solid var(--main-color);
+	border-radius: 10px;
+	margin-bottom: 20px;
+	padding: 8px;
+}
+.search-group__symbol,
+.bottom-bar__symbol
+{
+	color: var(--page-color);
+}
+.search-group__symbol
+{
+	width: 100%;
+	float: left;
+	padding-bottom: 5px;
+	padding-top: 50px;
+	margin-top: -50px;
+}
+.button
+{
+	display: inline-block;
+	background-color: var(--main-color);
+	color: var(--page-color);
+	border-radius: 5px;
+	padding: 5px 15px;
+	margin: 5px;
+	transition: background-color, color 0.4s ease;
+}
+.button:hover,
+.bottom-bar__symbol:hover,
+.list > li:hover
+{
+	background-color: var(--selection-color);
+	color: var(--main-color);
+}
+.bottom-bar
 {
 	position: fixed;
 	bottom: 0;
 	width: 100%;
-	background-color: #ffffff;
+	text-align: center;
+	background-color: var(--main-color);
+	border-top: 5px solid var(--selection-color);
 }
-.dropdown{float: left;}
-
-.dropdown_content
+.bottom-bar__symbol
 {
-	display: none;
-	position: absolute;
-	max-width: 200px;
-	max-height: auto;
-	z-index: 1;
-	border-top: #000000 solid 1px;
-	border-left: #000000 solid 1px;
+	padding: 5px 10px;
+	display: inline-block;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
 }
-.dropdown_content a
+
+/* Сторінка з мангою */
+.manga {display: flex;}
+.manga__block
+{
+	width: 300px;
+	margin: 0 10px;	
+}
+.manga__font {margin: 10px 0;}
+.manga__title
+{
+	margin-bottom: 10px;
+	padding-right: 10px;
+	padding-left: 10px;
+	border: 0;
+	border-radius: 10px;
+	background-color: var(--main-color);
+}
+.manga__bottom-button
+{
+	margin-top: 20px;
+}
+.manga__button
+{
+	margin: 5px 10px;
+	padding: 10px;
+	background-color: var(--light-main-color);
+}
+.list-block
+{
+	margin: 20px 0;
+	width: 100%;
+}
+.list
+{
+	display: inline-block;
+	width: 300px;
+	height: 200px;
+	margin: 0;
+	overflow: hidden;
+	overflow-y: scroll;
+	border: 5px solid var(--main-color);
+	border-radius: 5px;
+}
+.list > li
+{
+	background-color: var(--main-color);
+	margin: 5px;
+	border-radius: 5px;
+	transition: background-color 0.4s ease;
+}
+.list > li:hover .list__link
+{
+	color: var(--main-color)
+}
+.list__link
+{
+	color: var(--page-color);
+	display: inline-block;
+	margin: 5px 0;
+	width: 100%;
+	transition: color 0.4s ease;
+}
+
+/* Сторінка перегляду */
+.show-book {margin-bottom: 50px;}
+.show__img
 {
 	width: 100%;
-	margin: 0;
-	border-bottom: #000000 solid 1px;
-	border-right: #000000 solid 1px;
+	margin-bottom: 10px;
+	border: 5px solid var(--main-color);
 }
-.dropdown:hover .dropdown_content{display: block;}
+.back-arrow
+{
+	width: 40px;
+	position: fixed;
+	top: 10px;
+	left: 15px;
+	opacity: 0.5;
+	transition: opacity 0.4s ease;
+}
+.back-arrow:hover {opacity: 1;}
 
-.page_scroll {display: inline-block;}
-
-.page_scroll div, .page_scroll form
+/* Перегортання сторінок */
+.page-scroll
 {
-	float: left;
-	height: 30px;
-	margin: 5px 0 5px 0;
+	height: 40px;
+	display: flex;
+	position: relative;
+	justify-content: center;
+	align-items: center;
 }
-.page_scroll img
+.page-scroll__svg
 {
-	width: 28px;
-	height: 30px;
+	display: inline-block;
+	height: 100%;
 }
-.ps_form input
+.page-scroll__group
 {
-	vertical-align: top;
-	height: 30px;
-	padding: 0px;
-	border: 2px solid #f44336b2;
-	border-top-left-radius: 15px;
-	border-bottom-left-radius: 15px;
-	padding-left: 4px;
-	padding-right: 4px;
-	border-right: 0;
+	display: flex;
+	height: 80%;
 }
-.ps_form button
+.page-scroll__form
 {
-	vertical-align: top;
-	height: 30px;
-	padding: 0px;
-	width: 35px;
+	padding: 2px;
+	border-radius: 15px;
+	margin: 0 15px;
+}
+.page-scroll__form > button,
+.page-scroll__form > input
+{
+	display: inline-block;
+	text-align: center;
 	border: 0;
-	padding-right: 3px;
-	background-color: #f44336b2;
-	border-top-right-radius: 15px;
-	border-bottom-right-radius: 15px;
+	background-color: var(--light-main-color);
 }
-.ps_form button:hover {background-color: #f44336;}
+.page-scroll__form > input
+{
+	background-color: var(--page-color);
+	color: var(--main-color);
+	width: 100%;
+	border-bottom-left-radius: 11px;
+	border-top-left-radius: 11px;
+}
+.page-scroll__form > button
+{
+	border-bottom-right-radius: 11px;
+	border-top-right-radius: 11px;
+	width: 40px;
+	padding: 3px;
+	padding-right: 6px;
+}
+.page-scroll__form > button:hover {background-color: var(--selection-color);}
+
+/* Адмін */
+.admin-status
+{
+	position: fixed;
+	height: 128px;
+	top: 60;
+	right: 5;
+}
+.admin-input
+{
+	display: inline-block;
+	color: var(--light-main-color);
+	background-color: var(--page-color);
+	border: 3px solid var(--main-color);
+	border-radius: 10px;
+	width: auto;
+	margin: 5px 0;
+	text-align: center;
+}
+
+/* Про нас, друзі */
+.img-href
+{
+	width: 150px;
+	display: inline-block;
+}
+
+/* Помилка */
+.error {text-align: center;}
