@@ -373,7 +373,7 @@ def show_post(id, page, cursor):
 def admin_post():
 	if ADMIN_ON:
 		if request.POST['key'] == ADMIN_KEY:
-			response.set_cookie('admin', ADMIN_KEY)
+			response.set_cookie('admin', ADMIN_KEY, max_age=432000)
 			redirect('/')
 		else:
 			abort(401)
@@ -511,6 +511,6 @@ if __name__ == '__main__':
 					keyfile=SETTING['SSL']+'privkey.pem',
 					certfile=SETTING['SSL']+'fullchain.pem')
 		else:
-			run(server=SETTING['SRV'], host=SETTING['IP'], port=SETTING['PORT'], quiet=SETTING['QUITE'], reloader=['RELOAD'])
+			run(server=SETTING['SRV'], host=SETTING['IP'], port=SETTING['PORT'], quiet=SETTING['QUITE'], reloader=SETTING['RELOAD'])
 	except BrokenPipeError:
 		print('Someone disconect!')
