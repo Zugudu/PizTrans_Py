@@ -6,7 +6,7 @@ main_page = '''
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name=keywords content="хєнтай хентай манга манґа мангу манґу hentai manga порно комикси комікси українською читати онлайн юхентай uhentai">
 <meta name="description" content="Сайт присвячений перекладу манґи та хентаю українською, командою Юманго"> 
-<link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="/static/css/_style.css">
 <link rel="stylesheet" media="(max-device-width:768px)" href="/static/css/mob.css"/>
 <link rel="icon" type="image/png" href="/static/ico/logo.png">
 <title>uHentai</title>
@@ -33,7 +33,6 @@ manga = '''
 		</div>
 	</div>
 	{}
-</div>
 '''
 
 
@@ -86,8 +85,8 @@ header = '''
 
 
 admin_mode = '''
-<div class="content container">
-	<a class="font button" href=/a_manga>Додати нову манґу</a>
+<div class="content container font">
+	<a class="button" href=/a_manga>Додати нову манґу</a>
 	<div>
 	{}
 	</div>
@@ -97,16 +96,20 @@ admin_mode = '''
 
 admin_mode_el = '''
 <div class="list-block">
-	<form method="post" class="w3-padding" action="a_a/{0}">
-		<div class="w3-medium" style="padding-bottom:16px;"><b>Додати {1}</b></div>
-		<div><input type="text" class="w3-input" style="display: table-cell;" name="name" placeholder="Назва"></div>
-		<div style="padding-top:10px;"><button class="w3-button w3-light-gray w3-border" type="submit">Додати</button></div>
-	</form>
-	<form method="post" class="w3-padding" action="a_d/{0}">
-		<div class="w3-medium" style="padding-bottom:16px;"><b>Видалити {1}</b></div>
-		<select multiple size=15 name='el'>{2}</select>
-		<div style="padding-top:10px;"><button class="w3-button w3-light-gray w3-border" type="submit">Видалити</button></div>
-	</form>
+	<div class="list">
+		<form method="post" action="a_a/{0}">
+			<div>Додати {1}</div>
+			<input class="font admin-input" type="text" name="name" size="19" placeholder="Назва">
+			<button class="font button" type="submit">Додати</button>
+		</form>
+	</div>
+	<div class="list">
+		<form method="post" action="a_d/{0}">
+			<div>Видалити {1}</div>
+			<select multiple class="font list__select" name='el'>{2}</select>
+			<button class="font button" type="submit">Видалити</button>
+		</form>
+	</div>
 </div>
 '''
 
@@ -163,19 +166,25 @@ friend = '''
 
 
 add_manga = '''
-<div class="content container">
-<form action="/a_manga" method="post" enctype="multipart/form-data">
-<table class="font">
-<tr><td align=right>Назва</td><td><input type="text" name="dir" /></td></tr>
-<tr><td align=right>Zip архів з манґою</td><td><input type="file" name="zip" class="w3-button w3-light-gray w3-border"/></td></tr>
-<tr><td colspan=2><center><button type="submit" class="w3-button w3-light-gray w3-border">Завантажити</button></center></td><tr>
-</table>
-</form>
+<div class="font content container">
+	<form class="add-manga" action="/a_manga" method="post" enctype="multipart/form-data">
+		<div>
+			Назва
+			<input class="font" type="text" name="dir"/>
+		</div>
+		<div>
+			Zip архів з манґою
+			<input type="file" name="zip"/>
+		</div>
+		<div>
+			<button class="font button" type="submit" class="">Завантажити</button>
+		</div>
+	</form>
 </div>
 '''
 
 
-flag_ua = '<a href="/lang/1" class="flag"><div class="flag-231 w3-blue"></div><div class="flag-232 w3-yellow"></div></a>'
+flag_ua = ''
 
 
 genre_group = '<div class="search-group"><a class="font big-font search-group__symbol" name="{}">{}</a>'

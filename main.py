@@ -204,11 +204,11 @@ def manga(id, cursor):
 		id_series = cursor.fetchone()
 		if id_series:
 			cursor.execute('select id_hentai, name, dir from hentai_series,hentai where id_series=? and id_hentai=id;', id_series)
-			controler += '<div class="list-block"><ul class="font list">'
+			controler += '<ul class="font manga-list list">'
 			mangas = cursor.fetchall()
 			for i in mangas:
 				controler += '<li><a class="list__link" href="/manga/{}">{}</a></li>'.format(i[0], i[1])
-			controler += '</ul></div>'
+			controler += '</ul>'
 
 		content = pages.manga.format(res[0], get_flag(id), id, res[1],
 			sorted(listdir(path.join(get_path('hentai'),res[1])))[0],
@@ -216,12 +216,13 @@ def manga(id, cursor):
 
 		#ADMIN MENU
 		if request.get_cookie('admin') == ADMIN_KEY:
-			for type in sql_search:
-				content += '<div class="w3-row" style="width:480px;">' \
-					'<div class="w3-half">' \
-					'<form class="w3-container" method="post" action="/a_add/' + type + '">' \
-					'<input type="hidden" name=id value={}>' \
-					'<select multiple size=15 name="'.format(id) + type + '">'
+			content += '<div>'
+			for type, type_name in zip(sql_search, ('персонажа', 'жанр', 'серію', 'команду')):
+				content += '<div class="list-block">' \
+					'<form class="list" method="post" action="/a_add/' + type + '">' \
+					'<input type="hidden" name="id" value={}>' \
+					'<div class="font">Додати {}</div>' \
+					'<select multiple class="font list__select" name="'.format(id, type_name) + type + '">'
 
 				genres = cursor.execute('select id_' + type + ' from hentai_' + type + ' where id_hentai={};'.format(id)).fetchall()
 				genres_full = cursor.execute('select id, name from ' + type + ' order by name;').fetchall()
@@ -230,19 +231,20 @@ def manga(id, cursor):
 
 				for genre_i in genres_exclude:
 					content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
-				content += '</select><br><button class="w3-button '\
-					'w3-dark-gray" type="submit">Додати</button></form></div>'\
-					'<div class="">'\
-					'<form class="w3-container" method="post" action="/a_del/' + type + '">'\
-					'<input type="hidden" name=id value={}>'\
-					'<select multiple size=15 name="'.format(id) + type + '">'
+				content += '</select><br><button class="font button"' \
+					'type="submit">Додати</button></form>' \
+					'<form class="list" method="post" action="/a_del/' + type + '">' \
+					'<input type="hidden" name=id value={}>' \
+					'<div class="font">Видалити {}</div>' \
+					'<select multiple class="font list__select" name="'.format(id, type_name) + type + '">'
 
 				for genre_i in genres_x:
 					content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
 
-				content += '</select><br><button class="w3-button w3-dark-gray"'\
-					' type="submit">Видалити</button></form></div></div>'
-
+				content += '</select><br><button class="font button"'\
+					' type="submit">Видалити</button></form></div>'
+			content += '</div>'
+		content += '</div>'
 		return prepare_main(content, get_header(request))
 	else:
 		cursor.close()
@@ -292,7 +294,7 @@ def admin(cursor):
 			for el, eln in zip(sql_search, ('персонажа', 'жанр', 'серію', 'команду')):
 				op_list = ''
 				for op in cursor.execute('select * from ' + el + ' order by name;').fetchall():
-					op_list += '<option value="{}">{}</option>'.format(op[0], op[1])
+					op_list += '<option class="font" value="{}">{}</option>'.format(op[0], op[1])
 				el_list += pages.admin_mode_el.format(el, eln, op_list)
 			return prepare_main(pages.admin_mode.format(el_list), get_header(request))
 		else:

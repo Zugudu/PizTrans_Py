@@ -166,14 +166,16 @@ li {list-style: none;}
 }
 
 /* Манга на головній сторінці */
-.block
+.block,
+.list,
+.list__select
 {
 	display: inline-block;
 	vertical-align: top;
 	position: relative;
 	width: 208px;
 	margin: 10px;
-	border:  4px solid var(--main-color);
+	border: 4px solid var(--main-color);
 	border-radius: 5px;
 	transition: transform, border-color, box-shadow 0.3s ease;
 }
@@ -278,6 +280,7 @@ li {list-style: none;}
 .manga__bottom-button
 {
 	margin-top: 20px;
+	margin-bottom: 10px;
 }
 .manga__button
 {
@@ -285,30 +288,55 @@ li {list-style: none;}
 	padding: 10px;
 	background-color: var(--light-main-color);
 }
+
+/* Списки */
 .list-block
 {
-	margin: 20px 0;
-	width: 100%;
+	width: 24%;
+	margin: 10px 0.5%;
+	position: relative;
+	display: inline-block;
 }
 .list
 {
-	display: inline-block;
-	width: 300px;
-	height: 200px;
+	background-color: var(--page-color);
+	width: 100%;
 	margin: 0;
+	margin-bottom: 10px;
+	padding: 10px 0;
+}
+.list__select
+{
+	width: 100%;
+	height: 200px;
+	background-color: var(--page-color);
+	margin: 10px 0;
+	border-width: 3px 0;
+	border-radius: 0;
+}
+.list__select > option
+{
+	margin: 5px;
+	transition: color 0.3 ease;
+}
+.list__select > option:hover {color: var(--selection-color);}
+.manga-list
+{
 	overflow: hidden;
 	overflow-y: scroll;
-	border: 5px solid var(--main-color);
-	border-radius: 5px;
+	width: 300px;
+	height: 200px;
+	margin: 10px 0;
+	padding: 0;
 }
-.list > li
+.manga-list > li
 {
 	background-color: var(--main-color);
 	margin: 5px;
 	border-radius: 5px;
 	transition: background-color 0.4s ease;
 }
-.list > li:hover .list__link
+.manga-list > li:hover .list__link
 {
 	color: var(--main-color)
 }
@@ -409,6 +437,21 @@ li {list-style: none;}
 	width: auto;
 	margin: 5px 0;
 	text-align: center;
+}
+
+/* Додавання манги */
+.add-manga
+{
+	display: inline-block;
+	border: 4px solid var(--main-color);
+	border-radius: 10px;
+	padding: 5px 15px;
+}
+.add-manga > div > input
+{
+	display: inline-block;
+	padding: 0;
+	margin: 5px 10px;
 }
 
 /* Про нас, друзі */

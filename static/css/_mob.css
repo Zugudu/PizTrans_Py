@@ -128,10 +128,12 @@
 #burger:checked ~ .menu {display: flex;}
 
 /* Манга на головній сторінці */
-.block
+.block,
+.list,
+.list-block
 {
-	width: auto;
-	margin: 5px;
+	width: 98%;
+	margin: 10px 0;
 }
 .block:hover
 {
@@ -160,8 +162,8 @@
 	padding: 10px;
 	border-top: 5px solid var(--main-color);
 }
-.list {width: 100%;}
 .list > li:hover .list__link {color: var(--main-page-color)}
+.list__select {height: 30px;}
 .back-arrow:hover {opacity: 0.5;}
 
 /* Перегортання сторінок */
