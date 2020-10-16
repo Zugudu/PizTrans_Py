@@ -256,43 +256,39 @@ def manga(id, cursor):
 		#ADMIN MENU
 	session = get_session(request)
 	if session:
-		if is_admin(get_session(request)) or\
+		if is_admin(session) or\
 		cursor.execute('select * from hentai_user where id_hentai=? and id_user=?;',
-			(id, get_session(request)[1])).fetchone() is not None:
-			if request.get_cookie('admin') == ADMIN_KEY:
-				content += '<div>'
-				for type, type_name in zip(sql_search, ('персонажа', 'жанр', 'серію', 'команду')):
-					content += '<div class="list-block">' \
-						'<form class="list" method="post" action="/a_add/' + type + '">' \
-						'<input type="hidden" name="id" value={}>' \
-						'<div class="font">Додати {}</div>' \
-						'<select multiple class="font list__select" name="'.format(id, type_name) + type + '">'
+		(id, session[1])).fetchone() is not None:
+			content += '<div>'
+			for type, type_name in zip(sql_search, ('персонажа', 'жанр', 'серію', 'команду')):
+				content += '<div class="list-block">' \
+					'<form class="list" method="post" action="/a_add/' + type + '">' \
+					'<input type="hidden" name="id" value={}>' \
+					'<div class="font">Додати {}</div>' \
+					'<select multiple class="font list__select" name="'.format(id, type_name) + type + '">'
 
-					genres = cursor.execute('select id_' + type + ' from hentai_' + type + ' where id_hentai={};'.format(id)).fetchall()
-					genres_full = cursor.execute('select id, name from ' + type + ' order by name;').fetchall()
-					genres_exclude = [i for i in genres_full if (i[0],) not in genres]
-					genres_x = [i for i in genres_full if (i[0],) in genres]
+				genres = cursor.execute('select id_' + type + ' from hentai_' + type + ' where id_hentai={};'.format(id)).fetchall()
+				genres_full = cursor.execute('select id, name from ' + type + ' order by name;').fetchall()
+				genres_exclude = [i for i in genres_full if (i[0],) not in genres]
+				genres_x = [i for i in genres_full if (i[0],) in genres]
 
-					for genre_i in genres_exclude:
-						content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
-					content += '</select><br><button class="font button"' \
-						'type="submit">Додати</button></form>' \
-						'<form class="list" method="post" action="/a_del/' + type + '">' \
-						'<input type="hidden" name=id value={}>' \
-						'<div class="font">Видалити {}</div>' \
-						'<select multiple class="font list__select" name="'.format(id, type_name) + type + '">'
+				for genre_i in genres_exclude:
+					content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
+				content += '</select><br><button class="font button"' \
+					'type="submit">Додати</button></form>' \
+					'<form class="list" method="post" action="/a_del/' + type + '">' \
+					'<input type="hidden" name=id value={}>' \
+					'<div class="font">Видалити {}</div>' \
+					'<select multiple class="font list__select" name="'.format(id, type_name) + type + '">'
 
-					for genre_i in genres_x:
-						content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
+				for genre_i in genres_x:
+					content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
 
-					content += '</select><br><button class="font button"'\
-						' type="submit">Видалити</button></form></div>'
-				content += '</div>'
+				content += '</select><br><button class="font button"'\
+					' type="submit">Видалити</button></form></div>'
 			content += '</div>'
-		return prepare_main(content, get_header(request))
-	else:
-		cursor.close()
-		abort(500)
+	content += '</div>'
+	return prepare_main(content, get_header(request))
 
 
 @route('/show/<id:int>')
