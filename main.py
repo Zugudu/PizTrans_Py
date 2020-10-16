@@ -106,7 +106,7 @@ def get_manga(sql, param='', cursor=''):
 			<div class="font block__title">{}</div></a>
 			</div>'''.format(get_flag(row[0]), row[0], row[2], sorted(listdir(path.join(get_path('hentai'),row[2])))[0], row[1])
 	else:
-		content += '<img src="/static/ico/MNF.png"><br><div class="font">Схоже мальописи відсутні</div>'
+		content += '<img src="/static/ico/MNF.png"><br><div class="font">Схоже, що мальописи відсутні</div>'
 	content += '</div>'
 	return content
 
