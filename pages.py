@@ -7,6 +7,7 @@ main_page = '''
 <meta name=keywords content="хєнтай хентай манга манґа мангу манґу hentai manga порно комикси комікси українською читати онлайн юхентай uhentai">
 <meta name="description" content="Сайт присвячений перекладу манґи та хентаю українською, командою Юманго">
 <link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="/static/css/w3.css">
 <link rel="stylesheet" media="(max-device-width:768px)" href="/static/css/mob.css"/>
 <link rel="icon" type="image/png" href="/static/ico/logo.png">
 <title>uHentai</title>
@@ -65,7 +66,7 @@ header = '''
 				<li><a class="menu__link" href=/about>Про нас</a></li>
 				<li><a class="menu__link" href=/friend>Наші друзі</a></li>
 				<li>{}</li>
-				<li><a href=/{}>{}</a></li>
+				<li><a class="menu__link" href=/{} style="display:none;">{}</a></li>
 			</ul>
 		</nav>
 	</div>
@@ -209,6 +210,7 @@ page_scroll = '''
 
 
 login = '''
+<div class="container content">
 <form method=POST class='w3-container w3-card w3-padding w3-margin' style='width:300px;'>
 <label>Лоґін</label>
 <input name='login' type='text' placeholder='Лоґін' class='w3-input'>
@@ -216,4 +218,5 @@ login = '''
 <input name='pass' type='password' placeholder='Пароль' class='w3-input'>
 <button class='w3-btn w3-black w3-block w3-margin-top' type='submit'>Увійти</button>
 </form>
+</div>
 '''
