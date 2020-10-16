@@ -7,15 +7,19 @@ from json import load, dump
 from sys import argv
 from os import path, mkdir, listdir, remove, rmdir
 from zipfile import ZipFile, BadZipFile
+from hashlib import sha3_256 as sha3
 
 
 ADMIN_KEY = ''
-ADMIN_ON = False
 MAIN_TYPE = 0
 
 
 db = ''
 sql_search = ('chars', 'genres', 'series', 'comands')
+
+
+def hash(text):
+	return sha3(str(text).encode('utf-8')).hexdigest()
 
 
 def get_path(file):
@@ -34,19 +38,63 @@ def prepare_err(text, ico):
 	return _optimize(pages.main_page.format(pages.error.format(text, ico)))
 
 
+def db_work(func):
+	def wrap(*a, **ka):
+		cursor = db.cursor()
+		ret = func(*a, cursor=cursor, **ka)
+		cursor.close()
+		return ret
+	return wrap
+
+
+def login(func):
+	def wrap(*a, **ka):
+		session = get_session(request)
+		if session:
+			return func(*a, session=session, **ka)
+		redirect('/')
+	return wrap
+
+
+@db_work
+def get_session(request, cursor):
+	"""
+	return session data or None
+	"""
+	if request.get_cookie('auth') and request.get_cookie('id_auth'):
+		cursor.execute('select * from session where id=?;', (request.get_cookie('id_auth'), ))
+		res = cursor.fetchone()
+		if res is not None:
+			ip = request['REMOTE_ADDR']
+			agent = request.headers.get('User-Agent')
+			if ip == res[2] and agent == res[3] and request.get_cookie('auth') == res[4]:
+				return res
+	return None
+
+
+@db_work
+def is_admin(session, cursor):
+	if session is None:
+		return False
+	cursor.execute('select * from admin where id_user=?;', (session[1], ))
+	return cursor.fetchone() is not None
+
+
 def get_header(c_request):
 	"""
 	Check admin mode status and generate header
 
 	:param c_request: gotted request
 	"""
-	header = ''
-	if ADMIN_ON:
-		header = pages.header.format(pages.admin_button)
-		if c_request.get_cookie('admin') == ADMIN_KEY:
+	session = get_session(c_request)
+	if session:
+		if is_admin(session):###
+			header = pages.header.format(pages.admin_button, 'exit', 'Вийти')
 			header += pages.admin_yes.format(choice(listdir('static/admin')))
+		else:
+			header = pages.header.format('', 'exit', 'Вийти')
 	else:
-		header = pages.header.format('')
+		header = pages.header.format('', 'login', 'Увійти')
 	return header
 
 
@@ -79,21 +127,12 @@ def load_hentai(file):
 	return static_file(file, get_path('hentai'), 'image/jpg')
 
 
-def db_work(func):
-	def wrap(*a, **ka):
-		cursor = db.cursor()
-		ret = func(*a, cursor=cursor, **ka)
-		cursor.close()
-		return ret
-	return wrap
-
-
 @db_work
 def get_manga(sql, param='', cursor=''):
 	"""
 	:param sql: sql query to get id, name, dir
 	:param param: tuple param to sql
-	"""	
+	"""
 	if cursor == '':
 		abort(500)
 	ind = cursor.execute(sql, param).fetchall()
@@ -215,36 +254,41 @@ def manga(id, cursor):
 			disc_content, controler)
 
 		#ADMIN MENU
-		if request.get_cookie('admin') == ADMIN_KEY:
-			content += '<div>'
-			for type, type_name in zip(sql_search, ('персонажа', 'жанр', 'серію', 'команду')):
-				content += '<div class="list-block">' \
-					'<form class="list" method="post" action="/a_add/' + type + '">' \
-					'<input type="hidden" name="id" value={}>' \
-					'<div class="font">Додати {}</div>' \
-					'<select multiple class="font list__select" name="'.format(id, type_name) + type + '">'
+	session = get_session(request)
+	if session:
+		if is_admin(get_session(request)) or\
+		cursor.execute('select * from hentai_user where id_hentai=? and id_user=?;',
+			(id, get_session(request)[1])).fetchone() is not None:
+			if request.get_cookie('admin') == ADMIN_KEY:
+				content += '<div>'
+				for type, type_name in zip(sql_search, ('персонажа', 'жанр', 'серію', 'команду')):
+					content += '<div class="list-block">' \
+						'<form class="list" method="post" action="/a_add/' + type + '">' \
+						'<input type="hidden" name="id" value={}>' \
+						'<div class="font">Додати {}</div>' \
+						'<select multiple class="font list__select" name="'.format(id, type_name) + type + '">'
 
-				genres = cursor.execute('select id_' + type + ' from hentai_' + type + ' where id_hentai={};'.format(id)).fetchall()
-				genres_full = cursor.execute('select id, name from ' + type + ' order by name;').fetchall()
-				genres_exclude = [i for i in genres_full if (i[0],) not in genres]
-				genres_x = [i for i in genres_full if (i[0],) in genres]
+					genres = cursor.execute('select id_' + type + ' from hentai_' + type + ' where id_hentai={};'.format(id)).fetchall()
+					genres_full = cursor.execute('select id, name from ' + type + ' order by name;').fetchall()
+					genres_exclude = [i for i in genres_full if (i[0],) not in genres]
+					genres_x = [i for i in genres_full if (i[0],) in genres]
 
-				for genre_i in genres_exclude:
-					content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
-				content += '</select><br><button class="font button"' \
-					'type="submit">Додати</button></form>' \
-					'<form class="list" method="post" action="/a_del/' + type + '">' \
-					'<input type="hidden" name=id value={}>' \
-					'<div class="font">Видалити {}</div>' \
-					'<select multiple class="font list__select" name="'.format(id, type_name) + type + '">'
+					for genre_i in genres_exclude:
+						content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
+					content += '</select><br><button class="font button"' \
+						'type="submit">Додати</button></form>' \
+						'<form class="list" method="post" action="/a_del/' + type + '">' \
+						'<input type="hidden" name=id value={}>' \
+						'<div class="font">Видалити {}</div>' \
+						'<select multiple class="font list__select" name="'.format(id, type_name) + type + '">'
 
-				for genre_i in genres_x:
-					content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
+					for genre_i in genres_x:
+						content += '<option value="{}">{}</option>'.format(genre_i[0], genre_i[1])
 
-				content += '</select><br><button class="font button"'\
-					' type="submit">Видалити</button></form></div>'
+					content += '</select><br><button class="font button"'\
+						' type="submit">Видалити</button></form></div>'
+				content += '</div>'
 			content += '</div>'
-		content += '</div>'
 		return prepare_main(content, get_header(request))
 	else:
 		cursor.close()
@@ -258,7 +302,7 @@ def show(id, cursor):
 	content = ''
 	for img in sorted(listdir(path.join(get_path('hentai'), dir))):
 		content += '<img class="show__img" src="/hentai/' + dir + '/' + img + '"><br>'
-	return prepare_main(pages.show.format(id, content))	
+	return prepare_main(pages.show.format(id, content))
 
 
 @route('/show/<id:int>/<page:int>')
@@ -287,48 +331,43 @@ def show(id, page, cursor):
 
 @route('/a')
 @db_work
-def admin(cursor):
-	if ADMIN_ON:
-		if request.get_cookie('admin') == ADMIN_KEY:
-			el_list = ''
-			for el, eln in zip(sql_search, ('персонажа', 'жанр', 'серію', 'команду')):
-				op_list = ''
-				for op in cursor.execute('select * from ' + el + ' order by name;').fetchall():
-					op_list += '<option class="font" value="{}">{}</option>'.format(op[0], op[1])
-				el_list += pages.admin_mode_el.format(el, eln, op_list)
-			return prepare_main(pages.admin_mode.format(el_list), get_header(request))
-		else:
-			admin_welcome = choice(pages.admin_welcome)
-			admin_enter = choice(pages.admin_enter)
-			return prepare_main(pages.admin.format(admin_welcome, admin_enter), get_header(request))
+@login
+def admin(cursor, session):
+	if is_admin(session):###
+		el_list = ''
+		for el, eln in zip(sql_search, ('персонажа', 'жанр', 'серію', 'команду')):
+			op_list = ''
+			for op in cursor.execute('select * from ' + el + ' order by name;').fetchall():
+				op_list += '<option class="font" value="{}">{}</option>'.format(op[0], op[1])
+			el_list += pages.admin_mode_el.format(el, eln, op_list)
+		return prepare_main(pages.admin_mode.format(el_list), get_header(request))
 	else:
-		abort(404)
+		abort(401)
 
 
 def admin_test(func):
 	def wrap(*a, **ka):
-		if ADMIN_ON:
-			if request.get_cookie('admin') == ADMIN_KEY:
-				try:
-					return func(*a, **ka)
-				except KeyError:
-					abort(404)
-			else:
-				abort(401)
+		if is_admin(get_session(request)):
+			try:
+				return func(*a, **ka)
+			except KeyError:
+				abort(404)
 		else:
-			abort(404)
+			abort(401)
 	return wrap
 
 
 @route('/a_manga')
-@admin_test
 def add_manga():
-	return prepare_main(pages.add_manga, get_header(request))
+	if get_session(request):
+		return prepare_main(pages.add_manga, get_header(request))
+	else:
+		return prepare_main('Для заливання манґи, будь ласка, зареєструйтесь', get_header(request))
 
 
 @post('/a_manga')
-@admin_test
-def p_add_manga():
+@login
+def p_add_manga(session):
 	name = request.forms.get('dir')
 	dir = name.replace('.', '').replace('/', '').replace('\\', '')
 	if path.exists(get_path(path.join('hentai/', dir))):
@@ -353,6 +392,8 @@ def p_add_manga():
 	remove(get_path(path.join('hentai/', dir, zip.filename)))
 	cursor = db.cursor()
 	cursor.execute('insert into hentai values (null, ?, ?);', (name, dir))
+	hentai_id = cursor.execute('select id from hentai where dir=?;', (dir, )).fetchone()[0]
+	cursor.execute('insert into hentai_user values (?, ?);', (hentai_id, session[1]))
 	cursor.close()
 	db.commit()
 	redirect('/all')
@@ -365,48 +406,44 @@ def show_post(id, page, cursor):
 	hentai = len(listdir(path.join(get_path('hentai'), dir)))
 	try:
 		new_page = int(request.forms.page) - 1
-		if new_page < 0 or new_page >= hentai: 
+		if new_page < 0 or new_page >= hentai:
 			redirect(request.url)
 		else: redirect('/show/{}/{}'.format(dict(request.url_args)['id'], new_page))
 	except ValueError: redirect(request.url)
 
 
-@post('/a')
-def admin_post():
-	if ADMIN_ON:
-		if request.POST['key'] == ADMIN_KEY:
-			response.set_cookie('admin', ADMIN_KEY, max_age=432000)
-			redirect('/')
-		else:
-			abort(401)
-	else:
-		abort(404)
-
-
 @post('/a_add/<type>')
-@admin_test
+@db_work
+@login
 def admin_add(type):
-	if type in sql_search:
-		cursor = db.cursor()
-		for genre in request.forms.getall(type):
-			cursor.execute('insert into hentai_' + type + ' values(?, ?);',
-					(request.POST['id'], genre))
-		cursor.close()
-		db.commit()
-	redirect('/manga/{}'.format(request.POST['id']))
+	if is_admin(get_session(request)) or \
+	cursor.execute('select count(*) from hentai_user where id_hentai=? and id_user=?;', (request.POST['id'], session[1])).fetchone():
+		if type in sql_search:
+			cursor = db.cursor()
+			for genre in request.forms.getall(type):
+				cursor.execute('insert into hentai_' + type + ' values(?, ?);',
+						(request.POST['id'], genre))
+			cursor.close()
+			db.commit()
+		redirect('/manga/{}'.format(request.POST['id']))
+	else:
+		abort(401)
 
 
 @post('/a_del/<type>')
-@admin_test
 def admin_del(type):
-	if type in sql_search:
-		cursor = db.cursor()
-		for genre in request.forms.getall(type):
-			cursor.execute('delete from hentai_' + type + ' where id_hentai=? '
-						'and id_' + type + '=?;', (request.POST['id'], genre))
-		cursor.close()
-		db.commit()
-	redirect('/manga/{}'.format(request.POST['id']))
+	if is_admin(get_session(request)) or \
+	cursor.execute('select count(*) from hentai_user where id_hentai=? and id_user=?;', (request.POST['id'], session[1])).fetchone():
+		if type in sql_search:
+			cursor = db.cursor()
+			for genre in request.forms.getall(type):
+				cursor.execute('delete from hentai_' + type + ' where id_hentai=? '
+							'and id_' + type + '=?;', (request.POST['id'], genre))
+			cursor.close()
+			db.commit()
+		redirect('/manga/{}'.format(request.POST['id']))
+	else:
+		abort(401)
 
 
 @post('/a_am')
@@ -455,6 +492,55 @@ def friend():
 	return prepare_main(pages.friend, get_header(request))
 
 
+@route('/login')
+def g_login():
+	session = get_session(request)
+	if session:
+		redirect('/')
+	else:
+		err = ('Немає такого користувача', 'Неправильний пароль')
+		try:
+			err_num = int(request.query.err)
+			if err_num >= 0 and err_num < len(err):
+				return prepare_main(pages.error_head.format(err[err_num])+pages.login, get_header(request))
+		except ValueError:
+			pass
+		return prepare_main(pages.login, get_header(request))
+
+
+@post('/login')
+@db_work
+def p_index(cursor):
+	cursor.execute('select pass from user where id=?;', (request.forms.get('login'),))
+	res = cursor.fetchone()
+	if res is None:
+		redirect('/login?err=0')
+	else:
+		if hash(request.forms.get('pass')) == res[0]:
+			ip = request['REMOTE_ADDR']
+			agent = request.headers.get('User-Agent')
+			_hash = hash(hash(hash(request.forms.get('pass'))+ip)+agent)
+			cursor.execute('insert into session values(null, ?, ?, ?, ?);', (request.forms.get('login'), ip, agent, _hash))
+			db.commit()
+			cursor.execute('select id from session where id_user=? and ip=? and agent=?;', (request.forms.get('login'), ip, agent))
+			response.set_cookie('auth', _hash, max_age=432000)
+			response.set_cookie('id_auth', str(cursor.fetchone()[0]), max_age=432000)
+		else:
+			redirect('/login?err=1')
+	redirect('/login')
+
+
+@route('/exit')
+@db_work
+@login
+def exit(cursor, session):
+	response.set_cookie('auth', '')
+	response.set_cookie('id_auth', '')
+	cursor.execute('delete from session where id=?;', (session[0],))
+	db.commit()
+	redirect('/')
+
+
 @error(404)
 def err404(err):
 	return prepare_err('Як ти сюди потрапив?', '404.png')
@@ -495,11 +581,6 @@ if __name__ == '__main__':
 
 	MAIN_TYPE = SETTING['MAIN_TYPE']
 
-	if SETTING['ADMIN_KEY'] == '':
-		print('Admin key not specified, admin mode disabled')
-		ADMIN_ON = False
-	else:
-		ADMIN_ON = SETTING['ADMIN_MODE']
 	print('Admin key is: {}'.format(SETTING['ADMIN_KEY']))
 
 	ADMIN_KEY = SETTING['ADMIN_KEY']
