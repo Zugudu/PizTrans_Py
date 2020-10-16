@@ -5,7 +5,7 @@ main_page = '''
 <meta charset=utf8>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name=keywords content="хєнтай хентай манга манґа мангу манґу hentai manga порно комикси комікси українською читати онлайн юхентай uhentai">
-<meta name="description" content="Сайт присвячений перекладу манґи та хентаю українською, командою Юманго"> 
+<meta name="description" content="Сайт присвячений перекладу манґи та хентаю українською, командою Юманго">
 <link rel="stylesheet" href="/static/css/style.css">
 <link rel="stylesheet" media="(max-device-width:768px)" href="/static/css/mob.css"/>
 <link rel="icon" type="image/png" href="/static/ico/logo.png">
@@ -36,17 +36,6 @@ manga = '''
 '''
 
 
-admin = '''
-<div class="content container">
-	<div class="font">{}</div>
-	<form method="post">
-		<input type="text" size="20" class="font admin-input" name="key" placeholder="{}"><br>
-		<button class="font button" type="submit">Підтвердити</button>
-	</form>
-</div>
-'''
-
-
 header = '''
 <header class="header">
 	<div class="header__body">
@@ -57,7 +46,7 @@ header = '''
 			<input type="checkbox" id="burger">
 			<label for="burger" class="mobile-menu">
 				<div class="mobile-menu__button"><div></div></div>
-			</label>	
+			</label>
 		<nav class="menu font">
 			<ul class="menu__list">
 				<li>
@@ -76,6 +65,7 @@ header = '''
 				<li><a class="menu__link" href=/about>Про нас</a></li>
 				<li><a class="menu__link" href=/friend>Наші друзі</a></li>
 				<li>{}</li>
+				<li><a href=/{}>{}</a></li>
 			</ul>
 		</nav>
 	</div>
@@ -116,8 +106,6 @@ admin_mode_el = '''
 
 admin_button = '<a class="menu__link" href=/a>Адмінка</a>'
 admin_yes = '<div class="admin-status"><img src="/static/admin/{}"></div>'
-admin_welcome = ('Скільки годин?', 'Три останні цифри числа Пі', 'Як тебе звати?', 'CVV2 код твоєї картки', 'Що ти тут забув?', 'Як ти сюди потрапив?', 'Схоже, я забув вимкнути відображення цієї сторінки...', 'Семпаю, тільки не ламай нічого')
-admin_enter = ('Сасай кудасай', 'Чємуске', 'Пароль:root', 'Введіть сюди 4225')
 
 
 error = '''
@@ -126,6 +114,11 @@ error = '''
 	<img class="error__img" src="/static/ico/{}"><br>
 	<a href="/" class="font button">Назад</a>
 </div>
+'''
+
+
+error_head = '''
+<div class="w3-container w3-red w3-padding">{}</div>
 '''
 
 
@@ -212,4 +205,15 @@ page_scroll = '''
 		</div>
 	</div>
 </div>
+'''
+
+
+login = '''
+<form method=POST class='w3-container w3-card w3-padding w3-margin' style='width:300px;'>
+<label>Лоґін</label>
+<input name='login' type='text' placeholder='Лоґін' class='w3-input'>
+<label>Пароль</label>
+<input name='pass' type='password' placeholder='Пароль' class='w3-input'>
+<button class='w3-btn w3-black w3-block w3-margin-top' type='submit'>Увійти</button>
+</form>
 '''
