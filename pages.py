@@ -65,8 +65,7 @@ header = '''
 				</li>
 				<li><a class="menu__link" href=/about>Про нас</a></li>
 				<li><a class="menu__link" href=/friend>Наші друзі</a></li>
-				<li>{}</li>
-				<li><a class="menu__link" href=/{} style="display:none;">{}</a></li>
+				{}
 			</ul>
 		</nav>
 	</div>
@@ -77,10 +76,7 @@ header = '''
 
 admin_mode = '''
 <div class="content container font">
-	<a class="button" href=/a_manga>Додати нову манґу</a>
-	<div>
 	{}
-	</div>
 </div>
 '''
 
@@ -104,8 +100,12 @@ admin_mode_el = '''
 </div>
 '''
 
+template_btn = '<li><a class="menu__link" href=/{}>{}</a></li>'
+admin_button = template_btn.format('a', 'Адмінка')
+login_button = template_btn.format('login', 'Увійти')
+exit_button = template_btn.format('exit', 'Вийти')
+add_manga_button = template_btn.format('a_manga', 'Завантажити главу')
 
-admin_button = '<a class="menu__link" href=/a>Адмінка</a>'
 admin_yes = '<div class="admin-status"><img src="/static/admin/{}"></div>'
 
 
@@ -159,23 +159,21 @@ friend = '''
 '''
 
 
-add_manga = '''
-<div class="font content container">
-	<form class="add-manga" action="/a_manga" method="post" enctype="multipart/form-data">
-		<div>
-			Назва
-			<input class="font" type="text" name="dir"/>
-		</div>
-		<div>
-			Zip архів з манґою
-			<input type="file" name="zip"/>
-		</div>
-		<div>
-			<button class="font button" type="submit" class="">Завантажити</button>
-		</div>
-	</form>
-</div>
-'''
+add_manga = admin_mode.format('''
+<form class="add-manga" action="/a_manga" method="post" enctype="multipart/form-data">
+	<div>
+		Назва
+		<input class="font" type="text" name="dir"/>
+	</div>
+	<div>
+		Zip архів з манґою
+		<input type="file" name="zip"/>
+	</div>
+	<div>
+		<button class="font button" type="submit" class="">Завантажити</button>
+	</div>
+</form>
+''')
 
 
 flag_ua = ''

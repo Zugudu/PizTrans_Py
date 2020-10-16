@@ -89,12 +89,12 @@ def get_header(c_request):
 	session = get_session(c_request)
 	if session:
 		if is_admin(session):###
-			header = pages.header.format(pages.admin_button, 'exit', 'Вийти')
+			header = pages.header.format(pages.add_manga_button + pages.admin_button + pages.exit_button)
 			header += pages.admin_yes.format(choice(listdir('static/admin')))
 		else:
-			header = pages.header.format('', 'exit', 'Вийти')
+			header = pages.header.format(pages.add_manga_button + pages.exit_button)
 	else:
-		header = pages.header.format('', 'login', 'Увійти')
+		header = pages.header.format('')#Дописати кнопку увійти
 	return header
 
 
@@ -358,7 +358,7 @@ def add_manga():
 	if get_session(request):
 		return prepare_main(pages.add_manga, get_header(request))
 	else:
-		return prepare_main('Для заливання манґи, будь ласка, зареєструйтесь', get_header(request))
+		return prepare_main(pages.admin_mode.format('Для заливання манґи, будь ласка, зареєструйтесь'), get_header(request))
 
 
 @post('/a_manga')
