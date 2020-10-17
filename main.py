@@ -411,7 +411,7 @@ def show_post(id, page, cursor):
 @post('/a_add/<type>')
 @db_work
 @login
-def admin_add(type):
+def admin_add(type, cursor, session):
 	if is_admin(get_session(request)) or \
 	cursor.execute('select count(*) from hentai_user where id_hentai=? and id_user=?;', (request.POST['id'], session[1])).fetchone():
 		if type in sql_search:
