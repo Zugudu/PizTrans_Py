@@ -6,7 +6,7 @@ main_page = '''
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name=keywords content="хєнтай хентай манга манґа мангу манґу hentai manga порно комикси комікси українською читати онлайн юхентай uhentai">
 <meta name="description" content="Сайт присвячений перекладу манґи та хентаю українською, командою Юманго">
-<link rel="stylesheet" href="/static/css/_style.css">
+<link rel="stylesheet" href="/static/css/style.css">
 <link rel="stylesheet" media="(max-device-width:768px)" href="/static/css/mob.css"/>
 <link rel="icon" type="image/png" href="/static/ico/logo.png">
 <title>uHentai</title>
