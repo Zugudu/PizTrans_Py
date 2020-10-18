@@ -128,12 +128,16 @@
 #burger:checked ~ .menu {display: flex;}
 
 /* Манга на головній сторінці */
-.block,
 .list,
 .list-block
 {
 	width: 98%;
 	margin: 10px 0;
+}
+.block
+{
+	width: 46%;
+	margin: 10px 2%;
 }
 .block:hover
 {

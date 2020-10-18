@@ -7,7 +7,6 @@ main_page = '''
 <meta name=keywords content="хєнтай хентай манга манґа мангу манґу hentai manga порно комикси комікси українською читати онлайн юхентай uhentai">
 <meta name="description" content="Сайт присвячений перекладу манґи та хентаю українською, командою Юманго">
 <link rel="stylesheet" href="/static/css/style.css">
-<link rel="stylesheet" href="/static/css/w3.css">
 <link rel="stylesheet" media="(max-device-width:768px)" href="/static/css/mob.css"/>
 <link rel="icon" type="image/png" href="/static/ico/logo.png">
 <title>uHentai</title>
@@ -24,7 +23,7 @@ show_book = '<div class="container show-book"><a href="{}"><img class="show__img
 
 
 manga = '''
-<div class="content container">
+<div class="wrap container">
 	<div class="font big-font block__title manga__title">{}</div>
 	<div class="manga">
 		{}
@@ -75,7 +74,7 @@ header = '''
 
 
 admin_mode = '''
-<div class="content container font">
+<div class="wrap container font">
 	{}
 </div>
 '''
@@ -119,12 +118,12 @@ error = '''
 
 
 error_head = '''
-<div class="w3-container w3-red w3-padding">{}</div>
+<div class="font login__error">{}</div>
 '''
 
 
 about = '''
-<div class="container content font">
+<div class="container wrap font">
 	Привіт, як ти вже встиг помітити, ти знаходишся на сайті з хентаєм.<br>Весь код є власністю Наукової ради з питань розвитку хентаю в Україні<br>
 	Наш ТГ канал <a href="https://t.me/ukr_mango" target="_blank" rel="noopener noreferrer" class="link-font">ЮМанго</a><br>
 	Зворотній зв'язок <a href="https://t.me/ukrMango" target="_blank" rel="noopener noreferrer" class="link-font">@ukrMango</a><br>
@@ -148,7 +147,7 @@ about = '''
 
 
 friend = '''
-<div class="content container">
+<div class="wrap container">
 	<a href='https://otaku-first.online/' target="_blank" rel="noopener noreferrer">
 	<div class="font block img-href">
 		<img src="/static/fr_logo/fis.png"><br>
@@ -208,13 +207,14 @@ page_scroll = '''
 
 
 login = '''
-<div class="container content">
-<form method=POST class='w3-container w3-card w3-padding w3-margin' style='width:300px;'>
-<label>Лоґін</label>
-<input name='login' type='text' placeholder='Лоґін' class='w3-input'>
-<label>Пароль</label>
-<input name='pass' type='password' placeholder='Пароль' class='w3-input'>
-<button class='w3-btn w3-black w3-block w3-margin-top' type='submit'>Увійти</button>
+<div class="container wrap font">
+{}
+<form method=POST class="block block-not-hover login">
+<label>Лоґін</label><br>
+<input name='login' type='text' placeholder='Лоґін' class="admin-input font"><br>
+<label>Пароль</label><br>
+<input name='pass' type='password' placeholder='Пароль' class="admin-input font"><br>
+<button class="button font" type='submit'>Увійти</button>
 </form>
 </div>
 '''
