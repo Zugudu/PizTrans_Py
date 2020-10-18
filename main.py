@@ -39,21 +39,21 @@ def prepare_err(text, ico):
 
 
 def db_work(func):
-	def wrap(*a, **ka):
+	def container(*a, **ka):
 		cursor = db.cursor()
 		ret = func(*a, cursor=cursor, **ka)
 		cursor.close()
 		return ret
-	return wrap
+	return container
 
 
 def login(func):
-	def wrap(*a, **ka):
+	def container(*a, **ka):
 		session = get_session(request)
 		if session:
 			return func(*a, session=session, **ka)
 		redirect('/')
-	return wrap
+	return container
 
 
 @db_work
@@ -136,7 +136,7 @@ def get_manga(sql, param='', cursor=''):
 	if cursor == '':
 		abort(500)
 	ind = cursor.execute(sql, param).fetchall()
-	content = '<div class="content wrap">'
+	content = '<div class="wrap container">'
 	if len(ind) > 0:
 		for row in ind:
 			content += '''<div class="block">
@@ -188,7 +188,7 @@ def genres_list(type, cursor):
 		genres = cursor.execute('SELECT * from ' + type + ';').fetchall()
 		genres.sort(key = lambda el: el[1])
 
-		content = '<div class="search content wrap">'
+		content = '<div class="search wrap container">'
 		current_symbol = genres[0][1][0]
 		content += pages.genre_group.format(current_symbol, current_symbol.upper())
 		symbols = [current_symbol]
@@ -342,7 +342,7 @@ def admin(cursor, session):
 
 
 def admin_test(func):
-	def wrap(*a, **ka):
+	def container(*a, **ka):
 		if is_admin(get_session(request)):
 			try:
 				return func(*a, **ka)
@@ -350,7 +350,7 @@ def admin_test(func):
 				abort(404)
 		else:
 			abort(401)
-	return wrap
+	return container
 
 
 @route('/a_manga')

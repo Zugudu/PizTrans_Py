@@ -6,7 +6,7 @@ main_page = '''
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name=keywords content="хєнтай хентай манга манґа мангу манґу hentai manga порно комикси комікси українською читати онлайн юхентай uhentai">
 <meta name="description" content="Сайт присвячений перекладу манґи та хентаю українською, командою Юманго">
-<link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="/static/css/_style.css">
 <link rel="stylesheet" media="(max-device-width:768px)" href="/static/css/mob.css"/>
 <link rel="icon" type="image/png" href="/static/ico/logo.png">
 <title>uHentai</title>
@@ -18,12 +18,12 @@ main_page = '''
 '''
 
 
-show = '<a href="/manga/{}"><img class="svg back-arrow" src="/static/ico/back_arrow.svg"></a><div class="wrap show-book">{}</div>'
-show_book = '<div class="wrap show-book"><a href="{}"><img class="show__img" src="/hentai/{}/{}"></a></div>'
+show = '<a href="/manga/{}"><img class="svg back-arrow" src="/static/ico/back_arrow.svg"></a><div>{}</div>'
+show_book = '<div class="container show-book"><a href="{}"><img class="show__img" src="/hentai/{}/{}"></a></div>'
 
 
 manga = '''
-<div class="content wrap">
+<div class="wrap container">
 	<div class="font big-font block__title manga__title">{}</div>
 	<div class="manga">
 		{}
@@ -74,7 +74,7 @@ header = '''
 
 
 admin_mode = '''
-<div class="content wrap font">
+<div class="wrap container font">
 	{}
 </div>
 '''
@@ -109,7 +109,7 @@ admin_yes = '<div class="admin-status"><img src="/static/admin/{}"></div>'
 
 
 error = '''
-<div class="error wrap">
+<div class="error container">
 	<div class="font big-font manga__font block__title manga__title">{}</div>
 	<img class="error__img" src="/static/ico/{}"><br>
 	<a href="/" class="font button">Назад</a>
@@ -123,7 +123,7 @@ error_head = '''
 
 
 about = '''
-<div class="wrap content font">
+<div class="container wrap font">
 	Привіт, як ти вже встиг помітити, ти знаходишся на сайті з хентаєм.<br>Весь код є власністю Наукової ради з питань розвитку хентаю в Україні<br>
 	Наш ТГ канал <a href="https://t.me/ukr_mango" target="_blank" rel="noopener noreferrer" class="link-font">ЮМанго</a><br>
 	Зворотній зв'язок <a href="https://t.me/ukrMango" target="_blank" rel="noopener noreferrer" class="link-font">@ukrMango</a><br>
@@ -147,7 +147,7 @@ about = '''
 
 
 friend = '''
-<div class="content wrap">
+<div class="wrap container">
 	<a href='https://otaku-first.online/' target="_blank" rel="noopener noreferrer">
 	<div class="font block img-href">
 		<img src="/static/fr_logo/fis.png"><br>
@@ -186,7 +186,7 @@ bottom_bar_symbol = '<a href="#{}" class="font big-font bottom-bar__symbol">{}</
 page_scroll = '''
 <div class="bottom-bar">
 	<a href="/manga/{}"><img class="svg back-arrow" src="/static/ico/back_arrow.svg"></a>
-	<div class="wrap page-scroll">
+	<div class="container page-scroll">
 		<div class="page-scroll__group" style="visibility: {};">
 			<a href="{}"><img class="svg page-scroll__svg" src="/static/ico/double_arrow.svg"></a>
 			<a href="{}"><img class="svg page-scroll__svg" src="/static/ico/arrow.svg"></a>
@@ -207,7 +207,7 @@ page_scroll = '''
 
 
 login = '''
-<div class="wrap content font">
+<div class="container wrap font">
 {}
 <form method=POST class="block block-not-hover login">
 <label>Лоґін</label><br>
