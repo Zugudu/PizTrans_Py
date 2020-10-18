@@ -39,21 +39,21 @@ def prepare_err(text, ico):
 
 
 def db_work(func):
-	def container(*a, **ka):
+	def wrap(*a, **ka):
 		cursor = db.cursor()
 		ret = func(*a, cursor=cursor, **ka)
 		cursor.close()
 		return ret
-	return container
+	return wrap
 
 
 def login(func):
-	def container(*a, **ka):
+	def wrap(*a, **ka):
 		session = get_session(request)
 		if session:
 			return func(*a, session=session, **ka)
 		redirect('/')
-	return container
+	return wrap
 
 
 @db_work
@@ -342,7 +342,7 @@ def admin(cursor, session):
 
 
 def admin_test(func):
-	def container(*a, **ka):
+	def wrap(*a, **ka):
 		if is_admin(get_session(request)):
 			try:
 				return func(*a, **ka)
@@ -350,7 +350,7 @@ def admin_test(func):
 				abort(404)
 		else:
 			abort(401)
-	return container
+	return wrap
 
 
 @route('/a_manga')
