@@ -18,7 +18,7 @@ main_page = '''
 '''
 
 
-show = '<a href="/manga/{}"><img class="svg back-arrow" src="/static/ico/back_arrow.svg"></a><div>{}</div>'
+show = '<a href="/manga/{}"><img class="svg back-arrow" src="/static/ico/back_arrow.svg"></a><div class="container show-book">{}</div>'
 show_book = '<div class="container show-book"><a href="{}"><img class="show__img" src="/hentai/{}/{}"></a></div>'
 
 
