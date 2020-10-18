@@ -136,7 +136,7 @@ def get_manga(sql, param='', cursor=''):
 	if cursor == '':
 		abort(500)
 	ind = cursor.execute(sql, param).fetchall()
-	content = '<div class="content container">'
+	content = '<div class="content wrap">'
 	if len(ind) > 0:
 		for row in ind:
 			content += '''<div class="block">
@@ -188,7 +188,7 @@ def genres_list(type, cursor):
 		genres = cursor.execute('SELECT * from ' + type + ';').fetchall()
 		genres.sort(key = lambda el: el[1])
 
-		content = '<div class="search content container">'
+		content = '<div class="search content wrap">'
 		current_symbol = genres[0][1][0]
 		content += pages.genre_group.format(current_symbol, current_symbol.upper())
 		symbols = [current_symbol]
@@ -498,10 +498,10 @@ def g_login():
 		try:
 			err_num = int(request.query.err)
 			if err_num >= 0 and err_num < len(err):
-				return prepare_main(pages.error_head.format(err[err_num])+pages.login, get_header(request))
+				return prepare_main(pages.login.format(pages.error_head.format(err[err_num])), get_header(request))
 		except ValueError:
 			pass
-		return prepare_main(pages.login, get_header(request))
+		return prepare_main(pages.login.format(''), get_header(request))
 
 
 @post('/login')

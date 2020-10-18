@@ -46,7 +46,7 @@ li {list-style: none;}
 	color: var(--selection-color);
 	opacity: 1;
 }
-.container
+.wrap
 {
 	max-width: 912px;
 	margin-left: auto;
@@ -196,6 +196,12 @@ li {list-style: none;}
 	transform: scale(1.015, 1.015);
 	border-color: var(--selection-color);
 	box-shadow: 0 0 10px var(--main-color);
+}
+.block-not-hover:hover
+{
+	transform: scale(1, 1);
+	border-color: var(--main-color);
+	box-shadow: 0 0 0;
 }
 
 /* Пошук */
@@ -437,6 +443,15 @@ li {list-style: none;}
 	width: auto;
 	margin: 5px 0;
 	text-align: center;
+}
+.login
+{
+	padding: 10px 0;
+	width: 300px;
+}
+.login__error
+{
+	color: var(--selection-color);
 }
 
 /* Додавання манги */
