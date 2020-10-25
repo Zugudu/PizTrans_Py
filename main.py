@@ -23,7 +23,7 @@ def hash(text):
 
 
 def get_path(file):
-	return path.join(path.dirname(path.abspath(__file__)), argv[1],file)
+	return path.join(path.dirname(path.abspath(__file__)), argv[1], file)
 
 
 def _optimize(text):
@@ -56,6 +56,16 @@ def login(func):
 	return wrap
 
 
+def red(cursor, redir):
+	cursor.close()
+	redirect(redir)
+
+
+def ab(cursor, ab):
+	cursor.close()
+	abort(ab)
+
+
 @db_work
 def get_session(request, cursor):
 	"""
@@ -78,6 +88,11 @@ def is_admin(session, cursor):
 		return False
 	cursor.execute('select * from admin where id_user=?;', (session[1], ))
 	return cursor.fetchone() is not None
+
+
+@db_work
+def is_access(manga_id, session, cursor):
+	return is_admin(session) or cursor.execute('select * from hentai_user where id_hentai=? and id_user=?;', (manga_id, session[1])).fetchone() is not None
 
 
 def get_header(c_request):
@@ -107,6 +122,13 @@ def get_flag(id):
 	return flag
 
 
+def get_wall(dir):
+	try:
+		return '/hentai/{}/{}'.format(dir, sorted(listdir(path.join(get_path('hentai'), dir)))[0])
+	except (IndexError, FileNotFoundError):
+		return '/static/ico/U_logo.svg'
+
+
 @route('/sitemap.xml')
 def sitemap():
 	return static_file("sitemap.xml", argv[1])
@@ -115,6 +137,13 @@ def sitemap():
 @route('/robots.txt')
 def sitemap():
 	return static_file("robots.txt", argv[1])
+
+
+@route('/static/css/<file:path>')
+def load_static(file):
+	with open(path.join(path.dirname(path.abspath(__file__)), 'static', 'css', file), encoding='utf-8') as fd:
+		return _optimize(fd.read())
+	abort(404)
 
 
 @route('/static/<file:path>')
@@ -141,9 +170,9 @@ def get_manga(sql, param='', cursor=''):
 		for row in ind:
 			content += '''<div class="block">
 			{}<a href=/manga/{}>
-			<img class="block__img" src="/hentai/{}/{}">
+			<img class="block__img" src="{}">
 			<div class="font block__title">{}</div></a>
-			</div>'''.format(get_flag(row[0]), row[0], row[2], sorted(listdir(path.join(get_path('hentai'),row[2])))[0], row[1])
+			</div>'''.format(get_flag(row[0]), row[0], get_wall(row[2]), row[1])
 	else:
 		content += '<img src="/static/ico/MNF.png"><br><div class="font">Схоже, що мальописи відсутні</div>'
 	content += '</div>'
@@ -167,7 +196,7 @@ def all():
 @db_work
 def search_engine(id, cursor):
 	cursor.execute('select id_hentai from hentai_series where id_series=? order by id_hentai;', (id,))
-	redirect('/manga/{}'.format(cursor.fetchone()[0]))
+	red(cursor, '/manga/{}'.format(cursor.fetchone()[0]))
 
 
 @route('/search/<type>/<id:int>')
@@ -206,7 +235,7 @@ def genres_list(type, cursor):
 
 		return prepare_main(content, get_header(request))
 	else:
-		abort(404)
+		ab(cursor, 404)
 
 
 @route('/lang/<id:int>')
@@ -219,7 +248,7 @@ def lang(id):
 @route('/manga/<id:int>')
 @db_work
 def manga(id, cursor):
-	cursor.execute('select name,dir from hentai where id=?;', (id,))
+	cursor.execute('select name, dir from hentai where id=?;', (id,))
 	res = cursor.fetchone()
 	if res is not None:
 		disc_content = ''
@@ -249,16 +278,14 @@ def manga(id, cursor):
 				controler += '<li><a class="list__link" href="/manga/{}">{}</a></li>'.format(i[0], i[1])
 			controler += '</ul>'
 
-		content = pages.manga.format(res[0], get_flag(id), id, res[1],
-			sorted(listdir(path.join(get_path('hentai'),res[1])))[0],
+		content = pages.manga.format(res[0], get_flag(id), id,
+			get_wall(res[1]),
 			disc_content, controler)
 
 		#ADMIN MENU
 	session = get_session(request)
 	if session:
-		if is_admin(session) or\
-		cursor.execute('select * from hentai_user where id_hentai=? and id_user=?;',
-		(id, session[1])).fetchone() is not None:
+		if is_access(id, session):
 			content += '<div>'
 			for type, type_name in zip(sql_search, ('персонажа', 'жанр', 'серію', 'команду')):
 				content += '<div class="list-block">' \
@@ -286,6 +313,7 @@ def manga(id, cursor):
 
 				content += '</select><br><button class="font button"'\
 					' type="submit">Видалити</button></form></div>'
+			content += pages.u_manga_edit.format(id)
 			content += '</div>'
 	content += '</div>'
 	return prepare_main(content, get_header(request))
@@ -307,7 +335,7 @@ def show(id, page, cursor):
 	dir = cursor.execute('select dir from hentai where id=?;', (id, )).fetchone()[0]
 	l_manga = len(listdir(path.join(get_path('hentai'), dir)))
 	if l_manga <= page or 0 > page:
-		abort(404)
+		ab(cursor, 404)
 	elif l_manga <= page+1:
 		content = pages.show_book.format('/manga/'+str(id), dir, sorted(listdir(path.join(get_path('hentai'), dir)))[page])
 	else:
@@ -338,7 +366,7 @@ def admin(cursor, session):
 			el_list += pages.admin_mode_el.format(el, eln, op_list)
 		return prepare_main(pages.admin_mode.format(el_list), get_header(request))
 	else:
-		abort(401)
+		ab(cursor, 401)
 
 
 def admin_test(func):
@@ -362,8 +390,9 @@ def add_manga():
 
 
 @post('/a_manga')
+@db_work
 @login
-def p_add_manga(session):
+def p_add_manga(cursor, session):
 	name = request.forms.get('dir')
 	dir = name.replace('.', '').replace('/', '').replace('\\', '')
 	if path.exists(get_path(path.join('hentai/', dir))):
@@ -373,32 +402,74 @@ def p_add_manga(session):
 		dir += '-' + str(suffix)
 	zip = request.files.get('zip')
 	file, ext = path.splitext(zip.filename)
-	if ext != '.zip':
+	if ext.lower() != '.zip':
 		return 'То людина чи компутор? Я тобі кажу zip мені кидай'
 
-	mkdir(get_path(path.join('hentai/', dir)))
-	zip.save(get_path(path.join('hentai/', dir)))
+	real_dir = get_path(path.join('hentai/', dir))
+	mkdir(real_dir)
+	zip.save(real_dir)
 	try:
-		with ZipFile(get_path(path.join('hentai/', dir, zip.filename))) as file:
-			file.extractall(get_path(path.join('hentai/', dir)))
+		with ZipFile(path.join(real_dir, zip.filename)) as file:
+			file.extractall(real_dir)
 	except BadZipFile:
-		remove(get_path(path.join('hentai/', dir, zip.filename)))
-		rmdir(get_path(path.join('hentai/', dir)))
+		remove(path.join(real_dir, zip.filename))
+		rmdir(real_dir)
 		return 'Поганий файл, йолопе'
-	remove(get_path(path.join('hentai/', dir, zip.filename)))
-	cursor = db.cursor()
+	remove(path.join(real_dir, zip.filename))
+
 	cursor.execute('insert into hentai values (null, ?, ?);', (name, dir))
 	hentai_id = cursor.execute('select id from hentai where dir=?;', (dir, )).fetchone()[0]
 	cursor.execute('insert into hentai_user values (?, ?);', (hentai_id, session[1]))
-	cursor.close()
 	db.commit()
-	redirect('/all')
+	red(cursor, '/all')
+
+
+@post('/c_file/<id:int>')
+@login
+@db_work
+def c_file(id, cursor, session):
+	if is_access(id, session):
+		zip = request.files.zip
+		file, ext = path.splitext(zip.filename)
+		if ext.lower() != '.zip':
+			return 'То людина чи компутор? Я тобі кажу zip мені кидай'
+
+		dir = cursor.execute('select dir from hentai where id=?;', (id,)).fetchone()[0]
+		dir = path.join(get_path('hentai'), dir)
+		for i in listdir(dir):
+			remove(path.join(dir, i))
+
+		zip.save(dir)
+		try:
+			with ZipFile(path.join(dir, zip.filename)) as file:
+				file.extractall(dir)
+		except BadZipFile:
+			remove(path.join(dir, zip.filename))
+			rmdir(dir)
+			return 'Поганий файл, йолопе'
+		remove(path.join(dir, zip.filename))
+
+		red(cursor, '/manga/' + str(id))
+	else:
+		ab(cursor, 401)
+
+
+@post('/c_name/<id:int>')
+@login
+@db_work
+def c_name(id, cursor, session):
+	if is_access(id, session):
+		name = request.forms.name
+		cursor.execute('update hentai set name=? where id=?;', (name, id))
+		db.commit()
+	red(cursor, '/manga/' + str(id))
 
 
 @post('/show/<id:int>/<page:int>')
 @db_work
 def show_post(id, page, cursor):
 	dir = cursor.execute('select dir from hentai where id=?;', (id, )).fetchone()[0]
+	cursor.close()
 	hentai = len(listdir(path.join(get_path('hentai'), dir)))
 	try:
 		new_page = int(request.forms.page) - 1
@@ -412,70 +483,52 @@ def show_post(id, page, cursor):
 @db_work
 @login
 def admin_add(type, cursor, session):
-	if is_admin(get_session(request)) or \
-	cursor.execute('select count(*) from hentai_user where id_hentai=? and id_user=?;', (request.POST['id'], session[1])).fetchone():
+	if is_access(request.POST['id'], session):
 		if type in sql_search:
-			cursor = db.cursor()
 			for genre in request.forms.getall(type):
 				cursor.execute('insert into hentai_' + type + ' values(?, ?);',
 						(request.POST['id'], genre))
-			cursor.close()
 			db.commit()
-		redirect('/manga/{}'.format(request.POST['id']))
+		red(cursor, '/manga/{}'.format(request.POST['id']))
 	else:
-		abort(401)
+		ab(cursor, 401)
 
 
 @post('/a_del/<type>')
-def admin_del(type):
-	if is_admin(get_session(request)) or \
-	cursor.execute('select count(*) from hentai_user where id_hentai=? and id_user=?;', (request.POST['id'], session[1])).fetchone():
+@db_work
+def admin_del(cursor, type):
+	if is_access(request.POST['id'], session):
 		if type in sql_search:
-			cursor = db.cursor()
 			for genre in request.forms.getall(type):
 				cursor.execute('delete from hentai_' + type + ' where id_hentai=? '
 							'and id_' + type + '=?;', (request.POST['id'], genre))
-			cursor.close()
 			db.commit()
-		redirect('/manga/{}'.format(request.POST['id']))
+		red(cursor, '/manga/{}'.format(request.POST['id']))
 	else:
-		abort(401)
-
-
-@post('/a_am')
-@admin_test
-def admin_add_manga():
-	cursor = db.cursor()
-	cursor.execute('insert into hentai values(null, ?, ?);',
-		(request.forms.name,
-		request.forms.dir))
-	cursor.close()
-	db.commit()
-	redirect('/a')
+		cursor.close()
+		ab(cursor, 401)
 
 
 @post('/a_a/<type>')
+@db_work
 @admin_test
-def admin_add_tag(type):
+def admin_add_tag(type, cursor):
 	if type in sql_search:
-		cursor = db.cursor()
 		cursor.execute('insert into ' + type + ' values(null, ?);',
 			(request.forms.name, ))
-		cursor.close()
 		db.commit()
-	redirect('/a')
+	red(cursor, '/a')
 
 
 @post('/a_d/<type>')
+@db_work
 @admin_test
-def admin_add_tag(type):
+def admin_add_tag(type, cursor):
 	if type in sql_search:
-		cursor = db.cursor()
 		for i in request.forms.getall('el'):
 			cursor.execute('delete from ' + type + ' where id=?;', (i, ))
-		cursor.close()
 		db.commit()
-	redirect('/a')
+	red(cursor, '/a')
 
 
 @route('/about')
@@ -510,7 +563,7 @@ def p_index(cursor):
 	cursor.execute('select pass from user where id=?;', (request.forms.get('login'),))
 	res = cursor.fetchone()
 	if res is None:
-		redirect('/login?err=0')
+		red(cursor, '/login?err=0')
 	else:
 		if hash(request.forms.get('pass')) == res[0]:
 			ip = request['REMOTE_ADDR']
@@ -522,8 +575,8 @@ def p_index(cursor):
 			response.set_cookie('auth', _hash, max_age=432000)
 			response.set_cookie('id_auth', str(cursor.fetchone()[0]), max_age=432000)
 		else:
-			redirect('/login?err=1')
-	redirect('/login')
+			red(cursor, '/login?err=1')
+	red(cursor, '/login')
 
 
 @route('/exit')
@@ -534,7 +587,7 @@ def exit(cursor, session):
 	response.set_cookie('id_auth', '')
 	cursor.execute('delete from session where id=?;', (session[0],))
 	db.commit()
-	redirect('/')
+	red(cursor, '/')
 
 
 @error(404)

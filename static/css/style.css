@@ -1,1 +1,485 @@
-@font-face{font-family: Anime;src: url(a.ttf);}:root{--page-color: #f3f3e9;--main-color: #383735;--light-main-color: #4e4e4e;--selection-color:  #dd6241;--main-font-color: #ffca22;}*,*:before,*:after{margin: 0;padding: 0;border: 0;outline: 0;box-sizing: border-box;}html, body{height: 100%;background-color: var(--page-color);}body {overflow-y: scroll;}a {text-decoration: none;}li {list-style: none;}/* Загальне */.font{font-size: 100%;font: 16px Anime;color: var(--main-color)}.big-font {font-size: 120%;}.link-font {color: var(--light-main-color);opacity: 0.6;}.link-font:hover{color: var(--selection-color);opacity: 1;}.container{max-width: 912px;margin-left: auto;margin-right: auto;display: block;}.svg {transition: transform 0.4s ease;}.svg:hover {transform: scale(1.07, 1.07);}/* Шапка */.header{position: fixed;width: 100%;top: 0;left: 0;z-index: 100;}.header:before{content: '';position: absolute;top: 0;left: 0;width: 100%;height: 100%;background-color:  var(--main-color);}.header:after{content: '';position: absolute;width: 100%;height: 5px;background-color: var(--selection-color);}.header__body{position: relative;z-index: 2;display: flex;justify-content: space-between;height: 50px;align-items: center;padding: 0 50px;}.logo {flex: 0 0 40px;}.logo img{max-width: 100%;display: block;}/* Меню */.menu{display: flex;height: 100%;}.menu li{position: relative;padding: 0;background-color:  var(--main-color);transition: background-color 0.4s ease;}.menu__list{display: flex;height: 100%;}.menu__link, .sub-menu__link{color: var(--main-font-color);width: 100%;display: inline-block;}.menu__link{padding: 17px 15px;text-align: center;}.menu__list > li:hover {background-color: var(--selection-color);}.menu__list > li:hover .sub-menu__list {display: block;}/* Випадаюче меню */.sub-menu__list{display: none;position: absolute;left: 0;top: 0;padding-top: 53px;min-width: 200px;}.sub-menu__list:after{content: '';position: absolute;width: 100%;height: 5px;background-color: var(--selection-color);}.sub-menu__list > li {border-top: 2px solid var(--selection-color);}.sub-menu__list > li:hover {background-color: var(--light-main-color);}.sub-menu__link {padding: 10px;}/*Мобільне меню*/#mobile-menu__search {display: none;}#burger {display: none;}.mobile-menu {display: none;}/* Контент */.wrap{   margin-top: 60px;position: relative;text-align: center;}/* Манга на головній сторінці */.block,.list,.list__select{display: inline-block;vertical-align: top;position: relative;width: 208px;margin: 10px;border: 4px solid var(--main-color);border-radius: 5px;transition: transform, border-color, box-shadow 0.3s ease;}.block__img{display: block;width: 100%;}.block__title{color: var(--page-color);background-color: var(--light-main-color);border-top: var(--main-color) solid 3px;padding: 10px 0;}.block:hover{transform: scale(1.015, 1.015);border-color: var(--selection-color);box-shadow: 0 0 10px var(--main-color);}.block-not-hover:hover{transform: scale(1, 1);border-color: var(--main-color);box-shadow: 0 0 0;}/* Пошук */.search {margin-bottom: 35px;}.search-group{display: inline-block;vertical-align: top;position: relative;text-align: center ;width: 100%;background-color: var(--light-main-color);border: 4px solid var(--main-color);border-radius: 10px;margin-bottom: 20px;padding: 8px;}.search-group__symbol,.bottom-bar__symbol{color: var(--page-color);}.search-group__symbol{width: 100%;float: left;padding-bottom: 5px;padding-top: 50px;margin-top: -50px;}.button{display: inline-block;background-color: var(--main-color);color: var(--page-color);border-radius: 5px;padding: 5px 15px;margin: 5px;transition: background-color, color 0.4s ease;}.button:hover,.bottom-bar__symbol:hover,.list > li:hover{background-color: var(--selection-color);color: var(--main-color);}.bottom-bar{position: fixed;bottom: 0;width: 100%;text-align: center;background-color: var(--main-color);border-top: 5px solid var(--selection-color);}.bottom-bar__symbol{padding: 5px 10px;display: inline-block;border-bottom-left-radius: 5px;border-bottom-right-radius: 5px;}/* Сторінка з мангою */.manga {display: flex;}.manga__block{width: 300px;margin: 0 10px;}.manga__font {margin: 10px 0;}.manga__title{margin-bottom: 10px;padding-right: 10px;padding-left: 10px;border: 0;border-radius: 10px;background-color: var(--main-color);}.manga__bottom-button{margin-top: 20px;margin-bottom: 10px;}.manga__button{margin: 5px 10px;padding: 10px;background-color: var(--light-main-color);}/* Списки */.list-block{width: 24%;margin: 10px 0.5%;position: relative;display: inline-block;}.list{background-color: var(--page-color);width: 100%;margin: 0;margin-bottom: 10px;padding: 10px 0;}.list__select{width: 100%;height: 200px;background-color: var(--page-color);margin: 10px 0;border-width: 3px 0;border-radius: 0;}.list__select > option{margin: 5px;transition: color 0.3 ease;}.list__select > option:hover {color: var(--selection-color);}.manga-list{overflow: hidden;overflow-y: scroll;width: 300px;height: 200px;margin: 10px 0;padding: 0;}.manga-list > li{background-color: var(--main-color);margin: 5px;border-radius: 5px;transition: background-color 0.4s ease;}.manga-list > li:hover .list__link{color: var(--main-color)}.list__link{color: var(--page-color);display: inline-block;margin: 5px 0;width: 100%;transition: color 0.4s ease;}/* Сторінка перегляду */.show-book {margin-bottom: 50px;}.show__img{width: 100%;margin-bottom: 10px;border: 5px solid var(--main-color);}.back-arrow{width: 40px;position: fixed;top: 10px;left: 15px;opacity: 0.5;transition: opacity 0.4s ease;}.back-arrow:hover {opacity: 1;}/* Перегортання сторінок */.page-scroll{height: 40px;display: flex;position: relative;justify-content: center;align-items: center;}.page-scroll__svg{display: inline-block;height: 100%;}.page-scroll__group{display: flex;height: 80%;}.page-scroll__form{padding: 2px;border-radius: 15px;margin: 0 15px;}.page-scroll__form > button,.page-scroll__form > input{display: inline-block;text-align: center;border: 0;background-color: var(--light-main-color);}.page-scroll__form > input{background-color: var(--page-color);color: var(--main-color);width: 100%;border-bottom-left-radius: 11px;border-top-left-radius: 11px;}.page-scroll__form > button{border-bottom-right-radius: 11px;border-top-right-radius: 11px;width: 40px;padding: 3px;padding-right: 6px;}.page-scroll__form > button:hover {background-color: var(--selection-color);}/* Адмін */.admin-status{position: fixed;height: 128px;top: 60;right: 5;}.admin-input{display: inline-block;color: var(--light-main-color);background-color: var(--page-color);border: 3px solid var(--main-color);border-radius: 10px;width: auto;margin: 5px 0;text-align: center;}.login{padding: 10px 0;width: 300px;}.login__error{margin-top: 5px;display: inline-block;width: 100%;color: var(--selection-color);}/* Додавання манги */.add-manga{display: inline-block;border: 4px solid var(--main-color);border-radius: 10px;padding: 5px 15px;}.add-manga > div > input{display: inline-block;padding: 0;margin: 5px 10px;}/* Про нас, друзі */.img-href{width: 150px;display: inline-block;}/* Помилка */.error {text-align: center;}
+@font-face
+{
+	font-family: Anime;
+	src: url(a.ttf);
+}
+:root
+{
+	--page-color: #f3f3e9;
+	--main-color: #383735;
+	--light-main-color: #4e4e4e;
+	--selection-color:  #dd6241;
+	--main-font-color: #ffca22;
+}
+*,*:before,*:after
+{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	box-sizing: border-box;
+}
+html, body
+{
+	height: 100%;
+	background-color: var(--page-color);
+}
+body {overflow-y: scroll;}
+a {text-decoration: none;}
+li {list-style: none;}
+
+/* Загальне */
+.font
+{
+	font-size: 100%;
+	font: 16px Anime;
+	color: var(--main-color)
+}
+.big-font {font-size: 120%;}
+.link-font 
+{
+	color: var(--light-main-color);
+	opacity: 0.6;
+}
+.link-font:hover
+{
+	color: var(--selection-color);
+	opacity: 1;
+}
+.container
+{
+	max-width: 912px;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+}
+.svg {transition: transform 0.4s ease;}
+.svg:hover {transform: scale(1.07, 1.07);}
+
+/* Шапка */
+.header
+{
+	position: fixed;
+	width: 100%;
+	top: 0;
+	left: 0;
+	z-index: 100;
+}
+.header:before
+{
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color:  var(--main-color);
+}
+.header:after
+{
+	content: '';
+	position: absolute;
+	width: 100%;
+	height: 5px;
+	background-color: var(--selection-color);
+}
+.header__body
+{
+	position: relative;
+	z-index: 2;
+	display: flex;
+	justify-content: space-between;
+	height: 50px;
+	align-items: center;
+	padding: 0 50px;
+}
+.logo {flex: 0 0 40px;}
+.logo img
+{
+	max-width: 100%;
+	display: block;
+}
+
+/* Меню */
+.menu
+{
+	display: flex;
+	height: 100%;
+}
+.menu li
+{
+	position: relative;
+	padding: 0;
+	background-color:  var(--main-color);
+	transition: background-color 0.4s ease;
+}
+.menu__list
+{
+	display: flex;
+	height: 100%;
+}
+.menu__link, .sub-menu__link
+{
+	color: var(--main-font-color);
+	width: 100%;
+	display: inline-block;
+}
+.menu__link{
+	padding: 17px 15px;
+	text-align: center;
+}
+.menu__list > li:hover {background-color: var(--selection-color);}
+.menu__list > li:hover .sub-menu__list {display: block;}
+
+/* Випадаюче меню */
+.sub-menu__list
+{
+	display: none;
+	position: absolute;
+	left: 0;
+	top: 0;
+	padding-top: 53px;
+	min-width: 200px;
+}
+.sub-menu__list:after
+{
+	content: '';
+	position: absolute;
+	width: 100%;
+	height: 5px;
+	background-color: var(--selection-color);
+}
+.sub-menu__list > li {border-top: 2px solid var(--selection-color);}
+.sub-menu__list > li:hover {background-color: var(--light-main-color);}
+.sub-menu__link {padding: 10px;}
+
+/*Мобільне меню*/
+#mobile-menu__search {display: none;}
+#burger {display: none;}
+.mobile-menu {display: none;}
+
+/* Контент */
+.wrap
+{   margin-top: 60px;
+	position: relative;
+	text-align: center;
+}
+
+/* Манга на головній сторінці */
+.block,
+.list,
+.list__select
+{
+	display: inline-block;
+	vertical-align: top;
+	position: relative;
+	width: 208px;
+	margin: 10px;
+	border: 4px solid var(--main-color);
+	border-radius: 5px;
+	transition: transform, border-color, box-shadow 0.3s ease;
+}
+.block__img
+{
+	display: block;
+	width: 100%;
+}
+.block__title
+{
+	color: var(--page-color);
+	background-color: var(--light-main-color);
+	border-top: var(--main-color) solid 3px;
+	padding: 10px 0;
+}
+.block:hover
+{
+	transform: scale(1.015, 1.015);
+	border-color: var(--selection-color);
+	box-shadow: 0 0 10px var(--main-color);
+}
+.block-not-hover:hover
+{
+	transform: scale(1, 1);
+	border-color: var(--main-color);
+	box-shadow: 0 0 0;
+}
+
+/* Пошук */
+.search {margin-bottom: 35px;}
+.search-group
+{
+	display: inline-block;
+	vertical-align: top;
+	position: relative;
+	text-align: center ;
+	width: 100%;
+	background-color: var(--light-main-color);
+	border: 4px solid var(--main-color);
+	border-radius: 10px;
+	margin-bottom: 20px;
+	padding: 8px;
+}
+.search-group__symbol,
+.bottom-bar__symbol
+{
+	color: var(--page-color);
+}
+.search-group__symbol
+{
+	width: 100%;
+	float: left;
+	padding-bottom: 5px;
+	padding-top: 50px;
+	margin-top: -50px;
+}
+.button
+{
+	display: inline-block;
+	background-color: var(--main-color);
+	color: var(--page-color);
+	border-radius: 5px;
+	padding: 5px 15px;
+	margin: 5px;
+	transition: background-color, color 0.4s ease;
+}
+.button:hover,
+.bottom-bar__symbol:hover,
+.list > li:hover
+{
+	background-color: var(--selection-color);
+	color: var(--main-color);
+}
+.bottom-bar
+{
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	text-align: center;
+	background-color: var(--main-color);
+	border-top: 5px solid var(--selection-color);
+}
+.bottom-bar__symbol
+{
+	padding: 5px 10px;
+	display: inline-block;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+
+/* Сторінка з мангою */
+.manga {display: flex;}
+.manga__block
+{
+	width: 300px;
+	margin: 0 10px;	
+}
+.manga__font {margin: 10px 0;}
+.manga__title
+{
+	margin-bottom: 10px;
+	padding-right: 10px;
+	padding-left: 10px;
+	border: 0;
+	border-radius: 10px;
+	background-color: var(--main-color);
+}
+.manga__bottom-button
+{
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+.manga__button
+{
+	margin: 5px 10px;
+	padding: 10px;
+	background-color: var(--light-main-color);
+}
+
+/* Списки */
+.list-block
+{
+	width: 24%;
+	margin: 0 0.5%;
+	position: relative;
+	display: inline-block;
+}
+.list
+{
+	background-color: var(--page-color);
+	width: 100%;
+	margin: 0;
+	margin-bottom: 10px;
+	padding: 10px 0;
+}
+.list__select
+{
+	width: 100%;
+	height: 200px;
+	background-color: var(--page-color);
+	margin: 10px 0;
+	border-width: 3px 0;
+	border-radius: 0;
+}
+.list__select > option
+{
+	margin: 5px;
+	transition: color 0.3 ease;
+}
+.list__select > option:hover {color: var(--selection-color);}
+.manga-list
+{
+	overflow: hidden;
+	overflow-y: scroll;
+	width: 300px;
+	height: 200px;
+	margin: 10px 0;
+	padding: 0;
+}
+.manga-list > li
+{
+	background-color: var(--main-color);
+	margin: 5px;
+	border-radius: 5px;
+	transition: background-color 0.4s ease;
+}
+.manga-list > li:hover .list__link
+{
+	color: var(--main-color)
+}
+.list__link
+{
+	color: var(--page-color);
+	display: inline-block;
+	margin: 5px 0;
+	width: 100%;
+	transition: color 0.4s ease;
+	padding: 0 5px;
+}
+
+/* Сторінка перегляду */
+.show-book {margin-bottom: 50px;}
+.show__img
+{
+	width: 100%;
+	margin-bottom: 10px;
+	border: 5px solid var(--main-color);
+}
+.back-arrow
+{
+	width: 40px;
+	position: fixed;
+	top: 10px;
+	left: 15px;
+	opacity: 0.5;
+	transition: opacity 0.4s ease;
+}
+.back-arrow:hover {opacity: 1;}
+
+/* Перегортання сторінок */
+.page-scroll
+{
+	height: 40px;
+	display: flex;
+	position: relative;
+	justify-content: center;
+	align-items: center;
+}
+.page-scroll__svg
+{
+	display: inline-block;
+	height: 100%;
+}
+.page-scroll__group
+{
+	display: flex;
+	height: 80%;
+}
+.page-scroll__form
+{
+	padding: 2px;
+	border-radius: 15px;
+	margin: 0 15px;
+}
+.page-scroll__form > button,
+.page-scroll__form > input
+{
+	display: inline-block;
+	text-align: center;
+	border: 0;
+	background-color: var(--light-main-color);
+}
+.page-scroll__form > input
+{
+	background-color: var(--page-color);
+	color: var(--main-color);
+	width: 100%;
+	border-bottom-left-radius: 11px;
+	border-top-left-radius: 11px;
+}
+.page-scroll__form > button
+{
+	border-bottom-right-radius: 11px;
+	border-top-right-radius: 11px;
+	width: 40px;
+	padding: 3px;
+	padding-right: 6px;
+}
+.page-scroll__form > button:hover {background-color: var(--selection-color);}
+
+/* Адмін */
+.admin-status
+{
+	position: fixed;
+	height: 128px;
+	top: 60;
+	right: 5;
+}
+.admin-input
+{
+	display: inline-block;
+	color: var(--light-main-color);
+	background-color: var(--page-color);
+	border: 3px solid var(--main-color);
+	border-radius: 10px;
+	width: auto;
+	margin: 5px 0;
+	padding: 0 5px;
+	max-width: 200px;
+}
+.login
+{
+	padding: 10px 0;
+	width: 300px;
+}
+.login__error
+{
+	margin-top: 5px;
+	display: inline-block;
+	width: 100%;
+	color: var(--selection-color);
+}
+
+/* Додавання манги */
+.add-manga
+{
+	display: inline-block;
+	border: 4px solid var(--main-color);
+	border-radius: 10px;
+	padding: 5px 15px;
+}
+.add-manga > div > input
+{
+	display: inline-block;
+	padding: 0;
+	margin: 5px 10px;
+}
+
+/* Про нас, друзі */
+.img-href
+{
+	width: 150px;
+	display: inline-block;
+}
+
+/* Помилка */
+.error {text-align: center;}

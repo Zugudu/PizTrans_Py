@@ -27,7 +27,7 @@ manga = '''
 	<div class="font big-font block__title manga__title">{}</div>
 	<div class="manga">
 		{}
-		<a href="/show/{}"><img class="block manga__block" src="/hentai/{}/{}"></a>
+		<a href="/show/{}"><img class="block manga__block" src="{}"></a>
 		<div>
 			{}
 		</div>
@@ -173,6 +173,18 @@ add_manga = admin_mode.format('''
 	</div>
 </form>
 ''')
+
+
+u_manga_edit = '''
+<form class="add-manga" action="/c_name/{0}" method="post">
+	<input class="font admin-input" type="text" name="name" placeholder="Нова назва"/><br>
+	<button class="font button" type="submit" class="">Змінити назву</button>
+</form><br>
+<form class="add-manga font" action="/c_file/{0}" method="post" enctype="multipart/form-data" style="margin-top: 10px;">
+	Zip архів з манґою <input type="file" name="zip"/><br>
+	<button class="font button" type="submit" class="">Перезалити</button>
+</form>
+'''
 
 
 flag_ua = ''
