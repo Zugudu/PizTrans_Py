@@ -139,7 +139,7 @@ def sitemap():
 	return static_file("robots.txt", argv[1])
 
 
-@route('/static/css/<file:path>')
+@route('/static/css/<file:re:.*css>')
 def load_static(file):
 	with open(path.join(path.dirname(path.abspath(__file__)), 'static', 'css', file), encoding='utf-8') as fd:
 		return _optimize(fd.read())
