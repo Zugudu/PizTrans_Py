@@ -496,7 +496,8 @@ def admin_add(type, cursor, session):
 
 @post('/a_del/<type>')
 @db_work
-def admin_del(cursor, type):
+@login
+def admin_del(cursor, type, session):
 	if is_access(request.POST['id'], session):
 		if type in sql_search:
 			for genre in request.forms.getall(type):
