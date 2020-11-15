@@ -124,7 +124,8 @@ error_head = '''
 
 about = '''
 <div class="container wrap font">
-	Привіт, як ти вже встиг помітити, ти знаходишся на сайті з хентаєм.<br>Весь код є власністю Наукової ради з питань розвитку хентаю в Україні<br>
+	Привіт, як ти вже встиг помітити, ти знаходишся на сайті з хентаєм.<br>Весь код є власністю Наукової ради з питань розвитку хентаю в Україні<br><br>
+	Якщо Ви бажаєте викладати у нас україномовні мальописи чи хентай<br>ми з радістю допоможемо Вам<br><br>
 	Наш ТГ канал <a href="https://t.me/ukr_mango" target="_blank" rel="noopener noreferrer" class="link-font">ЮМанго</a><br>
 	Зворотній зв'язок <a href="https://t.me/ukrMango" target="_blank" rel="noopener noreferrer" class="link-font">@ukrMango</a><br>
 	Наші проєкти:
